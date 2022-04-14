@@ -1,35 +1,30 @@
-<!-- <template>
-  <v-layout column>
-    <v-flex xs2 offset-xs3>
+<template>
+  <v-layout class="d-flex justify-center">
+    <v-card width="50%">
       <div color="white elevation-2">
         <v-toolbar flat dense color="blue" dark>
           <v-toolbar-title>Register</v-toolbar-title>
         </v-toolbar>
 
         <div class="pl-4 pr-4 pt-2 pb-2">
-          <input
-            type="email"
-            name="email"
+          <v-text-field
+            label="Email"
             v-model="email"
-            placeholder="email"
-          />
+          ></v-text-field>
           <br />
-          <input
-            type="password"
-            name="password"
+          <v-text-field
+            label="Password"
             v-model="password"
-            placeholder="password"
-          />
+          ></v-text-field>
           <br />
           <div class="error" v-html="error"></div>
           <v-btn @click="register">Register</v-btn>
         </div>
       </div>
-    </v-flex>
+    </v-card>
   </v-layout>
-</template> -->
-
-<template>
+</template>
+<!-- <template>
   <div class="d-flex justify-center">
     <v-card max-width="600">
         <v-form
@@ -50,7 +45,7 @@
       </v-form>
     </v-card>
   </div>
-</template>
+</template> -->
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService'
