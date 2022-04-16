@@ -24,28 +24,6 @@
     </v-card>
   </v-layout>
 </template>
-<!-- <template>
-  <div class="d-flex justify-center">
-    <v-card max-width="600">
-        <v-form
-          ref="form"
-          class="ma-8"
-          elevation="2"
-        >
-            <v-text-field
-              label="Name"
-            ></v-text-field>
-
-            <v-btn
-              color="success"
-              class="mr-4"
-            >
-            Register
-          </v-btn>
-      </v-form>
-    </v-card>
-  </div>
-</template> -->
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService'
