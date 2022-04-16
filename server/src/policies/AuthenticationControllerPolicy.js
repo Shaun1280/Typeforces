@@ -10,10 +10,9 @@ module.exports = {
     })
 
     try {
-      await schema.validateAsync(req.body);
+      await schema.validateAsync(req.body)
       next()
     } catch (error) {
-      console.log(error)
       switch (error.details[0].context.key) {
         case 'email':
           res.status(400).send({
