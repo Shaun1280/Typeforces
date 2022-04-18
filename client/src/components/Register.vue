@@ -17,7 +17,7 @@
             v-model="password"
           ></v-text-field>
           <br />
-          <div class="error" v-html="error"></div>
+          <div class="error1" v-html="error"></div>
           <v-btn @click="register">Register</v-btn>
         </div>
       </div>
@@ -58,7 +58,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.error {
+.error1 {
   color: red
 }
 </style>
