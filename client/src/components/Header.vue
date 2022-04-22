@@ -8,15 +8,25 @@
     <v-toolbar dense class="blue">
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-      <v-toolbar-title>
-        <button
-          text
-          tile
-          class="blue white--text"
-          @click="navigateTo({name: 'root'})">
-          Home
-        </button>
-      </v-toolbar-title>
+      <v-btn
+        text
+        left
+        class="blue white--text"
+        @click="navigateTo({name: 'root'})"
+      >
+        <v-icon>mdi-home</v-icon>
+        Home
+      </v-btn>
+
+      <v-btn
+        text
+        left
+        class="blue white--text"
+        @click="navigateTo({name: 'contests'})"
+      >
+        <v-icon>mdi-rocket</v-icon>
+        Contests
+      </v-btn>
 
       <v-spacer></v-spacer>
 
@@ -31,6 +41,7 @@
       <v-btn
         text
         class="blue white--text"
+        v-if="!$store.state.isUserLoggedIn"
         @click="navigateTo({name: 'login'})"
       >
         Login
@@ -39,9 +50,29 @@
       <v-btn
         text
         class="blue white--text"
+        v-if="!$store.state.isUserLoggedIn"
         @click="navigateTo({name: 'register'})"
       >
         Sign Up
+      </v-btn>
+
+      <v-btn
+        text
+        class="blue white--text"
+         v-if="$store.state.isUserLoggedIn"
+        @click="navigateTo({name: 'profile'})"
+      >
+        <v-icon>mdi-account</v-icon>
+        Profile
+      </v-btn>
+
+      <v-btn
+        text
+        class="blue white--text"
+        v-if="$store.state.isUserLoggedIn"
+        @click="logout"
+      >
+        Log Out
       </v-btn>
 
       <v-btn icon>
@@ -56,6 +87,13 @@ export default {
   methods: {
     navigateTo (route) {
       this.$router.push(route)
+    },
+    logout () {
+      this.$store.dispatch('setToken', null)
+      this.$store.dispatch('setUser', null)
+      this.$router.push({
+        name: 'root'
+      })
     }
   }
 }
