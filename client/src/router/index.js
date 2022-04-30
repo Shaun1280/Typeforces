@@ -3,7 +3,8 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
-import Contests from '@/components/Contests'
+import ViewContests from '@/components/contests/ViewContests'
+import ManageContests from '@/components/contests/ManageContests'
 import Profile from '@/components/Profile'
 
 Vue.use(Router)
@@ -39,7 +40,12 @@ export default new Router({
     {
       path: '/Contests',
       name: 'contests',
-      component: Contests
+      component: ViewContests
+    },
+    {
+      path: '/ManageContests',
+      name: 'manageContests',
+      component: ManageContests
     }
   ]
 })
