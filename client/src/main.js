@@ -6,12 +6,15 @@ import router from './router'
 import Vuetify from 'vuetify'
 import { sync } from 'vuex-router-sync'
 import store from '@/store/store'
+import Panel from '@/components/globals/Panel'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
 export default new Vuetify({ })
 
 sync(store, router)
+
+Vue.component('pannel', Panel)
 
 /* eslint-disable no-new */
 new Vue({

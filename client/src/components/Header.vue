@@ -60,6 +60,16 @@
         text
         class="blue white--text"
          v-if="$store.state.isUserLoggedIn"
+        @click="navigateTo({name: 'manageContests'})"
+      >
+        <v-icon>mdi-atom</v-icon>
+        Manage Contests
+      </v-btn>
+
+      <v-btn
+        text
+        class="blue white--text"
+         v-if="$store.state.isUserLoggedIn"
         @click="navigateTo({name: 'profile'})"
       >
         <v-icon>mdi-account</v-icon>

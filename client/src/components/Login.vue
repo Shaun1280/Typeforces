@@ -1,28 +1,20 @@
 <template>
   <v-layout class="d-flex justify-center">
-    <v-card width="50%">
-      <div color="white elevation-2">
-        <v-toolbar flat dense color="blue" dark>
-          <v-toolbar-title>Login</v-toolbar-title>
-        </v-toolbar>
-
-        <div class="pl-4 pr-4 pt-2 pb-2">
-          <v-text-field
-            label="Email"
-            v-model="email"
-          ></v-text-field>
-          <br />
-          <v-text-field
-            label="Password"
-            type="password"
-            v-model="password"
-          ></v-text-field>
-          <br />
-          <div class="error1" v-html="error"></div>
-          <v-btn @click="login">Login</v-btn>
-        </div>
-      </div>
-    </v-card>
+    <pannel title="Login">
+      <v-text-field
+        label="Email"
+        v-model="email"
+      ></v-text-field>
+      <br />
+      <v-text-field
+        label="Password"
+        type="password"
+        v-model="password"
+      ></v-text-field>
+      <br />
+      <div class="error1" v-html="error"></div>
+      <v-btn @click="login">Login</v-btn>
+    </pannel>
   </v-layout>
 </template>
 
