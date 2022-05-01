@@ -13,4 +13,6 @@ module.exports = (app) => {
 
   app.get('/contests',
     ContestsController.index)
+  app.post('/manage-contests',
+    ContestsController.post)
 }
