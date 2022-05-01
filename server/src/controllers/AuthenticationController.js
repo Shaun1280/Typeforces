@@ -19,10 +19,20 @@ module.exports = {
         token: jwtSignUser(userJson)
       })
     } catch (err) {
-      // email already exist
-      res.status(400).send({
-        error: 'This email account is aleady in use'
-      })
+      if (err.errors[0].message === 'users.user_name must be unique') { // duplicate username
+        res.status(400).send({
+          error: 'The username is already in use'
+        })
+      } else if (err.errors[0].message === 'users.PRIMARY must be unique') { // email already exist
+        res.status(400).send({
+          error: 'This email account is aleady in use'
+        })
+      } else {
+        res.status(400).send({
+          error: 'authentication error',
+          detail: err
+        })
+      }
     }
   },
   async login (req, res) {

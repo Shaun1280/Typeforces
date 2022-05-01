@@ -8,6 +8,11 @@
       ></v-text-field>
       <br />
       <v-text-field
+        label="Username"
+        type="username"
+        v-model="username"
+      ></v-text-field>
+      <v-text-field
         label="Password"
         type="password"
         autocomplete="new-password"
@@ -28,6 +33,7 @@ export default {
     return {
       email: '',
       password: '',
+      username: '',
       error: null
     }
   },
@@ -36,6 +42,7 @@ export default {
       try {
         await AuthenticationService.register({
           email: this.email,
+          user_name: this.username,
           password: this.password
         })
       } catch (error) {

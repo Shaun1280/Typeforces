@@ -17,14 +17,27 @@ async function hashPassword (user, options) {
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     email: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
+      primaryKey: true
+    },
+    password: DataTypes.STRING(255),
+    user_name: {
+      type: DataTypes.STRING(255),
       unique: true
     },
-    password: DataTypes.STRING
+    status: {
+      type: DataTypes.STRING(8),
+      validate: {
+        isIn: ['admin', 'student', 'bot', 'other']
+      }
+    },
+    country: DataTypes.STRING(32),
+    register_time: DataTypes.DATE,
+    last_visit: DataTypes.DATE
   }, {
     hooks: {
       beforeCreate: hashPassword,
-      beforeUpdate: hashPassword,
+      beforeUpdate: hashPassword
       // beforeSave: hashPassword
     }
   })
