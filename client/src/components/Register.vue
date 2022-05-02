@@ -1,6 +1,6 @@
 <template>
   <v-layout class="d-flex justify-center">
-    <pannel title="Register">
+    <pannel title="Register" width="50%">
       <v-text-field
         label="Email"
         autocomplete="off"

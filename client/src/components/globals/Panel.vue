@@ -1,5 +1,5 @@
 <template>
-  <v-card width="50%">
+  <v-card v-bind:width="width">
     <div class="white elevation-2">
       <v-toolbar flat dense class="blue" dark>
         <v-toolbar-title>{{title}}</v-toolbar-title>
@@ -17,9 +17,10 @@
 
 <script>
 export default {
-  props: [
-    'title'
-  ]
+  props: {
+    title: String,
+    width: String
+  }
 }
 </script>
 
