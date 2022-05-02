@@ -12,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
     start_time: DataTypes.DATE,
     duration: DataTypes.INTEGER,
     content_id: DataTypes.INTEGER,
-    division: DataTypes.INTEGER
+    division: DataTypes.STRING
+  }, {
+    timestamps: false
   })
   return Round
 }
