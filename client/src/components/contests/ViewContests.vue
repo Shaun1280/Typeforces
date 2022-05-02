@@ -1,13 +1,13 @@
 <template>
   <v-layout class="d-flex justify-center">
-    <pannel title="Contests">
+    <pannel title="Contests" width="50%">
       <div
         v-for="round in contests"
         :key="round.round_no">
-        {{round.round_name}}
-        {{round.start_time}}
-        {{round.duration}}
-        {{round.division}}
+        Round: {{round.round_name}}
+        StartTime: {{new Date(round.start_time)}}
+        Dutation: {{round.duration}} minutes
+        Div-{{round.division}}
       </div>
     </pannel>
   </v-layout>
@@ -26,7 +26,8 @@ export default {
 
   },
   async mounted () {
-    this.contests = await ContestServices.index()
+    const response = await ContestServices.index()
+    this.contests = response.data
   }
   // watch: {
   //   email (value) {
