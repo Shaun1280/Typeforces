@@ -12,7 +12,7 @@
         v-model="password"
       ></v-text-field>
       <br />
-      <div class="error1" v-html="error"></div>
+      <div class="danger-alert" v-html="error"></div>
       <v-btn @click="login">Login</v-btn>
     </pannel>
   </v-layout>
@@ -54,7 +54,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.error1 {
-  color: red
-}
 </style>
