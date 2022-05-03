@@ -28,6 +28,16 @@
         Contests
       </v-btn>
 
+      <v-btn
+        text
+        left
+        class="blue white--text"
+        @click="navigateTo({name: 'rating'})"
+      >
+        <v-icon>mdi-fencing</v-icon>
+        Rating
+      </v-btn>
+
       <v-spacer></v-spacer>
 
       <v-btn icon>
