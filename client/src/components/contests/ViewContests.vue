@@ -1,15 +1,72 @@
 <template>
-  <v-layout class="d-flex justify-center">
-    <pannel title="Contests" width="50%">
-      <div
-        v-for="round in contests"
-        :key="round.round_no">
-        Round: {{round.round_name}}
-        StartTime: {{new Date(round.start_time)}}
-        Dutation: {{round.duration}} minutes
-        Div-{{round.division}}
-      </div>
-    </pannel>
+  <v-layout class="d-flex flex-column justify-center">
+    <v-flex row class="justify-center">
+      <pannel title="Current or upcoming contests" width="60%">
+        <v-col>
+          <v-card
+            hover
+            v-for="round in unclosed"
+            class="mt-4 md-4"
+            shaped
+            :key="round.round_no"
+          >
+            Round: {{round.round_name}}
+            <br/>
+            StartTime: {{new Date(round.start_time)}}
+            <br/>
+            Dutation: {{round.duration}} min
+            <br/>
+            Divison: {{round.division}}
+            <br/>
+            <div v-html="round.timeTag"></div>
+
+            <v-card-actions class="justify-center">
+              <v-btn
+                class="md-4"
+                rounded
+              >
+                Enter
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </pannel>
+    </v-flex>
+
+    <v-flex row class="justify-center mt-15">
+      <pannel title="Past contests" width="60%">
+        <v-col>
+          <v-card
+            hover
+            v-for="round in closed"
+            class="mt-4 md-4"
+            shaped
+            :key="round.round_no"
+          >
+            Round: {{round.round_name}}
+            <br/>
+            StartTime: {{new Date(round.start_time)}}
+            <br/>
+            Dutation: {{round.duration}} min
+            <br/>
+            Divison: {{round.division}}
+            <br/>
+            <div v-html="round.timeTag"></div>
+
+            <br/>
+
+            <v-card-actions class="justify-center">
+              <v-btn
+                class="md-4"
+                rounded
+              >
+                Enter
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </pannel>
+    </v-flex>
   </v-layout>
 </template>
 
@@ -19,15 +76,89 @@ import ContestServices from '@/services/ContestServices'
 export default {
   data () {
     return {
-      contests: null
+      contests: [],
+      serverTime: (new Date()).getTime()
+    }
+  },
+  computed: {
+    unclosed () {
+      return this.contests.filter((contest) => {
+        return (new Date(contest.start_time)).getTime() +
+          contest.duration * 60000 >= this.serverTime
+      })
+    },
+    closed () {
+      return this.contests.filter((contest) => {
+        return (new Date(contest.start_time)).getTime() +
+          contest.duration * 60000 < this.serverTime
+      })
+    },
+    getBeforeStart (startTime) {
+      let timeDif = (new Date(startTime)).getTime() - this.serverTime
+      if (timeDif > 0) {
+        let days = parseInt(timeDif / (86400 * 1000))
+        let hours = parseInt(timeDif % (86400 * 1000) / (60 * 60 * 1000))
+        let minutes = parseInt(timeDif % (60 * 60 * 1000) / (60 * 1000))
+        let seconds = parseInt(timeDif % (60 * 1000) / 1000)
+        if (days) return `<br/> Before Start <br/> ${days} ${days === 1 ? 'day' : 'days'}`
+        else {
+          let s1 = `${hours < 10 ? `0${hours}` : `${hours}`}`
+          let s2 = `${minutes < 10 ? `0${minutes}` : `${minutes}`}`
+          let s3 = `${seconds < 10 ? `0${seconds}` : `${seconds}`}`
+          return `<br/> Before Start <br/> ${s1} : ${s2} : ${s3}`
+        }
+      } else {
+        return `<br/> Final Standing <br/>`
+      }
     }
   },
   methods: {
-
+    setTimeTag () {
+      this.contests.forEach((item) => {
+        let timeDif = (new Date(item.start_time)).getTime() - this.serverTime
+        if (timeDif > 0) {
+          let days = parseInt(timeDif / (86400 * 1000))
+          let hours = parseInt(timeDif % (86400 * 1000) / (60 * 60 * 1000))
+          let minutes = parseInt(timeDif % (60 * 60 * 1000) / (60 * 1000))
+          let seconds = parseInt(timeDif % (60 * 1000) / 1000)
+          if (days) item.timeTag = `<br/> Before Start <br/> ${days} ${days === 1 ? 'day' : 'days'}`
+          else {
+            let s1 = `${hours < 10 ? `0${hours}` : `${hours}`}`
+            let s2 = `${minutes < 10 ? `0${minutes}` : `${minutes}`}`
+            let s3 = `${seconds < 10 ? `0${seconds}` : `${seconds}`}`
+            item.timeTag = `<br/> Before Start <br/> ${s1} : ${s2} : ${s3}<br/>`
+          }
+        } else {
+          timeDif = (new Date(item.start_time)).getTime() - this.serverTime + item.duration * 60000
+          if (timeDif > 0) {
+            let hours = parseInt(timeDif % (86400 * 1000) / (60 * 60 * 1000))
+            let minutes = parseInt(timeDif % (60 * 60 * 1000) / (60 * 1000))
+            let seconds = parseInt(timeDif % (60 * 1000) / 1000)
+            let s1 = `${hours < 10 ? `0${hours}` : `${hours}`}`
+            let s2 = `${minutes < 10 ? `0${minutes}` : `${minutes}`}`
+            let s3 = `${seconds < 10 ? `0${seconds}` : `${seconds}`}`
+            item.timeTag = `<br/> Before End <br/> ${s1} : ${s2} : ${s3}<br/>`
+          } else item.timeTag = `<br/> Final Standing <br/>`
+        }
+      })
+    }
   },
   async mounted () {
     const response = await ContestServices.index()
-    this.contests = response.data
+    this.contests = response.data.contests
+    this.contests.forEach((item) => {
+      return Object.assign(item, {timeTag: ``})
+    })
+
+    this.serverTime = (new Date(response.data.serverTime)).getTime()
+
+    let that = this
+    window.setInterval(() => { // used for count down
+      setTimeout(function () {
+        that.serverTime = that.serverTime + 1000
+        that.setTimeTag()
+      }, 0)
+    }, 1000)
   }
   // watch: {
   //   email (value) {
