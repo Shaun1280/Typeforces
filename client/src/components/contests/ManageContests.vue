@@ -1,50 +1,51 @@
 <template>
   <v-layout class="d-flex flex-column justify-center">
     <!-- buttons -->
-      <v-flex class="text-center">
-        <v-btn
-          class="mx-2"
-          fab
-          dark
-          color="indigo"
-          title="Add Contest"
-        >
-          <v-icon dark>
-            mdi-plus
-          </v-icon>
-        </v-btn>
+    <v-flex class="text-center">
+      <v-btn
+        class="mx-2"
+        fab
+        dark
+        color="indigo"
+        title="Add Contest"
+      >
+        <v-icon dark>
+          mdi-plus
+        </v-icon>
+      </v-btn>
 
-        <v-btn
-          class="mx-2"
-          fab
-          dark
-          color="red"
-          title="Delete Upcoming Contest"
-        >
-          <v-icon dark>
-            mdi-delete
-          </v-icon>
-        </v-btn>
+      <v-btn
+        class="mx-2"
+        fab
+        dark
+        color="red"
+        title="Delete Upcoming Contest"
+      >
+        <v-icon dark>
+          mdi-delete
+        </v-icon>
+      </v-btn>
 
-        <v-btn
-          class="mx-2"
-          fab
-          dark
-          large
-          color="cyan"
-          title="Modify Contest"
-        >
-          <v-icon dark>
-            mdi-pencil
-          </v-icon>
-        </v-btn>
-      </v-flex>
+      <v-btn
+        class="mx-2"
+        fab
+        dark
+        large
+        color="cyan"
+        title="Modify Contest"
+      >
+        <v-icon dark>
+          mdi-pencil
+        </v-icon>
+      </v-btn>
+    </v-flex>
 
     <v-flex row class="justify-center mt-10">
       <v-flex xs4>
         <pannel title="New Contest">
           <v-text-field
-            label="RoundName"
+            label="RoundName*"
+            :rules="[required]"
             v-model="contest.round_name"
           ></v-text-field>
           <br />
@@ -123,8 +124,17 @@
           </v-menu>
 
           <v-autocomplete
+            :items="['1', '30', '60', '90']"
+            label="Duration(minutes)*"
+            :rules="[required]"
+            v-model="contest.duration"
+          ></v-autocomplete>
+          <br />
+
+          <v-autocomplete
             :items="['Div1', 'Div2', 'Div1 + Div2']"
-            label="Division"
+            label="Division*"
+            :rules="[required]"
             v-model="contest.division"
           ></v-autocomplete>
           <br />
@@ -134,10 +144,12 @@
       <v-flex xs6>
         <pannel title="New Contest Content" class="ml-4">
           <v-textarea
-            label="Content"
+            label="Content*"
+            :rules="[required]"
             v-model="contest.content"
           ></v-textarea>
 
+          <div class="danger-alert" v-html="error"></div>
           <v-btn @click="createContest">Add Contest</v-btn>
         </pannel>
       </v-flex>
@@ -154,29 +166,39 @@ export default {
     return {
       date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
       menu1: false,
-      time: null,
+      time: `20:00`,
       menu2: false,
       operation_type: 1, // 1 add, 2 delete, 3 update
       contest: {
         round_name: null,
         start_time: null,
         content: null,
-        division: null,
-        error: null
-      }
+        duration: null,
+        division: null
+      },
+      error: null,
+      required: (value) => !!value || 'Required.'
     }
   },
   methods: {
     async createContest () {
+      this.error = null
+      this.contest.start_time = Date.parse(`${this.date} ${this.time}`)
+      const areAllFilledIn = Object
+        .keys(this.contest)
+        .every(key => !!this.contest[key])
+
+      if (!areAllFilledIn) {
+        this.error = 'Please fill in all the required fields'
+        return
+      }
       // call api
       try {
-        // this.date = (new Date(new Date('2022/05/02 00:00:00') - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
-        // this.time = `12:30`
-        console.log(this.contest.division)
-        this.contest.start_time = Date.parse(`${this.date} ${this.time}`)
         await ContestServices.post(this.contest)
-      } catch (err) {
-        console.log(err)
+        console.log('success')
+      } catch (error) {
+        console.log(error)
+        this.error = error.response.data.error
       }
     }
   }
