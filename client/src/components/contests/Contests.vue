@@ -1,7 +1,7 @@
 <template>
   <v-layout class="d-flex flex-column justify-center">
     <v-flex row class="justify-center">
-      <pannel title="Current or upcoming contests" width="60%">
+      <panel title="Current or upcoming contests" width="60%">
         <v-col>
           <v-card
             hover
@@ -30,11 +30,11 @@
             </v-card-actions>
           </v-card>
         </v-col>
-      </pannel>
+      </panel>
     </v-flex>
 
     <v-flex row class="justify-center mt-15">
-      <pannel title="Past contests" width="60%">
+      <panel title="Past contests" width="60%">
         <v-col>
           <v-card
             hover
@@ -65,7 +65,7 @@
             </v-card-actions>
           </v-card>
         </v-col>
-      </pannel>
+      </panel>
     </v-flex>
   </v-layout>
 </template>
@@ -92,24 +92,6 @@ export default {
         return (new Date(contest.start_time)).getTime() +
           contest.duration * 60000 < this.serverTime
       })
-    },
-    getBeforeStart (startTime) {
-      let timeDif = (new Date(startTime)).getTime() - this.serverTime
-      if (timeDif > 0) {
-        let days = parseInt(timeDif / (86400 * 1000))
-        let hours = parseInt(timeDif % (86400 * 1000) / (60 * 60 * 1000))
-        let minutes = parseInt(timeDif % (60 * 60 * 1000) / (60 * 1000))
-        let seconds = parseInt(timeDif % (60 * 1000) / 1000)
-        if (days) return `<br/> Before Start <br/> ${days} ${days === 1 ? 'day' : 'days'}`
-        else {
-          let s1 = `${hours < 10 ? `0${hours}` : `${hours}`}`
-          let s2 = `${minutes < 10 ? `0${minutes}` : `${minutes}`}`
-          let s3 = `${seconds < 10 ? `0${seconds}` : `${seconds}`}`
-          return `<br/> Before Start <br/> ${s1} : ${s2} : ${s3}`
-        }
-      } else {
-        return `<br/> Final Standing <br/>`
-      }
     }
   },
   methods: {
@@ -152,11 +134,11 @@ export default {
 
     this.serverTime = (new Date(response.data.serverTime)).getTime()
 
-    let that = this
+    let _this = this
     window.setInterval(() => { // used for count down
       setTimeout(function () {
-        that.serverTime = that.serverTime + 1000
-        that.setTimeTag()
+        _this.serverTime = _this.serverTime + 1000
+        _this.setTimeTag()
       }, 0)
     }, 1000)
   }
