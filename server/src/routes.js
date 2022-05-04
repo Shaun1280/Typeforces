@@ -13,6 +13,8 @@ module.exports = (app) => {
 
   app.get('/contests',
     ContestsController.index)
+  app.get('/contests/:id',
+    ContestsController.show)
   app.post('/manage-contests',
     ContestsController.post)
 }

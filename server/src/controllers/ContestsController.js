@@ -16,6 +16,29 @@ module.exports = {
       })
     }
   },
+  async show (req, res) {
+    try {
+      const contest = await Round.findOne({
+        where: {
+          round_no: req.params.id
+        }
+      })
+      const content = await Content.findOne({
+        where: {
+          content_id: contest.content_id
+        }
+      })
+      res.send({
+        contest: contest,
+        content: content,
+        serverTime: (new Date()).getTime()
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: `An error has occured trying to get contest${req.params.id}`
+      })
+    }
+  },
   async post (req, res) {
     try {
       const round = await Round.findOne({
@@ -38,7 +61,7 @@ module.exports = {
         start_time: req.body.start_time,
         division: req.body.division,
         duration: req.body.duration,
-        content_id: content.id
+        content_id: content.content_id
       })
       res.send({
         contest: contest,

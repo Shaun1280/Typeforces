@@ -3,7 +3,8 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
-import ViewContests from '@/components/contests/ViewContests'
+import Contests from '@/components/contests/Contests'
+import ViewContest from '@/components/contests/ViewContest'
 import ManageContests from '@/components/contests/ManageContests'
 import Profile from '@/components/Profile'
 
@@ -40,12 +41,17 @@ export default new Router({
     {
       path: '/Contests',
       name: 'contests',
-      component: ViewContests
+      component: Contests
     },
     {
       path: '/ManageContests',
       name: 'manageContests',
       component: ManageContests
+    },
+    {
+      path: '/Contests/:id',
+      name: 'viewContest',
+      component: ViewContest
     }
   ]
 })
