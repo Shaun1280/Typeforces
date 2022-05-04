@@ -6,22 +6,10 @@
         fab
         dark
         color="indigo"
-        title="Add Contest"
+        title="Typing"
       >
         <v-icon dark>
-          mdi-plus
-        </v-icon>
-      </v-btn>
-
-      <v-btn
-        class="mx-2"
-        fab
-        dark
-        color="red"
-        title="Delete Upcoming Contest"
-      >
-        <v-icon dark>
-          mdi-delete
+          mdi-typewriter
         </v-icon>
       </v-btn>
 
@@ -31,10 +19,10 @@
         dark
         large
         color="cyan"
-        title="Modify Contest"
+        title="Standing"
       >
         <v-icon dark>
-          mdi-pencil
+          mdi-seal-variant
         </v-icon>
       </v-btn>
     </v-flex>
@@ -46,16 +34,22 @@
       >
         <v-flex
           class="d-flex justify-start"
-          height="300px"
+          width="500"
+          flex-wrap
         >
           <v-chip
             v-for="(item, index) in content.content"
             :key="index"
-            class="ml-1"
             label
-            color="white"
+            color=white
+            class="md-2 mt-2"
           >
-            {{item}}
+            <font
+              class="content_font"
+              v-bind:color="color[index]"
+            >
+              {{item === ' ' ? '␣' : item}}
+            </font>
           </v-chip>
         </v-flex>
       </panel>
@@ -71,6 +65,7 @@ export default {
     return {
       contest: '',
       content: '',
+      color: '',
       serverTime: (new Date()).getTime()
     }
   },
@@ -109,9 +104,12 @@ export default {
     const response = await ContestServices.show(this.$store.state.route.params.id)
     this.contest = response.data.contest
     this.content = response.data.content
-    console.log(this.contest)
-    console.log(this.contest.round_name)
-    console.log(this.content)
+    this.color = []
+    this.color.length = this.content.content.length
+    for (let i = 0; i < this.content.content.length; i++) {
+      if (this.content.content[i] === ' ') this.color[i] = '#E0E0E0'
+      else this.color[i] = 'black'
+    }
   }
   // watch: {
   //   email (value) {
@@ -123,4 +121,13 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.content_font {
+  font-family: "Ubuntu Mono", monospace;
+  font-size: 1.8rem;
+  line-height: 2.5rem;
+}
+
+.test {
+  color: rgba(188, 115, 115, 0.566)
+}
 </style>
