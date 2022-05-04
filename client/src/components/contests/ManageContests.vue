@@ -42,7 +42,7 @@
 
     <v-flex row class="justify-center mt-10">
       <v-flex xs4>
-        <pannel title="New Contest">
+        <panel title="New Contest">
           <v-text-field
             label="RoundName*"
             :rules="[required]"
@@ -138,11 +138,11 @@
             v-model="contest.division"
           ></v-autocomplete>
           <br />
-        </pannel>
+        </panel>
       </v-flex>
 
       <v-flex xs6>
-        <pannel title="New Contest Content" class="ml-4">
+        <panel title="New Contest Content" class="ml-4">
           <v-textarea
             label="Content*"
             :rules="[required]"
@@ -151,7 +151,7 @@
 
           <div class="danger-alert" v-html="error"></div>
           <v-btn @click="createContest">Add Contest</v-btn>
-        </pannel>
+        </panel>
       </v-flex>
     </v-flex>
   </v-layout>

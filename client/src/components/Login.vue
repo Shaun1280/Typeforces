@@ -1,6 +1,6 @@
 <template>
   <v-layout class="d-flex justify-center">
-    <pannel title="Login" width="50%">
+    <panel title="Login" width="50%">
       <v-text-field
         label="Email"
         v-model="email"
@@ -14,7 +14,7 @@
       <br />
       <div class="danger-alert" v-html="error"></div>
       <v-btn @click="login">Login</v-btn>
-    </pannel>
+    </panel>
   </v-layout>
 </template>
 

@@ -14,7 +14,7 @@ export default new Vuetify({ })
 
 sync(store, router)
 
-Vue.component('pannel', Panel)
+Vue.component('panel', Panel)
 
 /* eslint-disable no-new */
 new Vue({

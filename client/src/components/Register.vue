@@ -1,6 +1,6 @@
 <template>
   <v-layout class="d-flex justify-center">
-    <pannel title="Register" width="50%">
+    <panel title="Register" width="50%">
       <v-text-field
         label="Email"
         autocomplete="off"
@@ -21,7 +21,7 @@
       <br />
       <div class="danger-alert" v-html="error"></div>
       <v-btn @click="register">Register</v-btn>
-    </pannel>
+    </panel>
   </v-layout>
 </template>
 
