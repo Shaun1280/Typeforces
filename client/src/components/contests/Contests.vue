@@ -24,6 +24,7 @@
               <v-btn
                 class="md-4"
                 rounded
+                @click="navigateTo({name: 'viewContest', params: {id: round.round_no}})"
               >
                 Enter
               </v-btn>
@@ -38,10 +39,10 @@
         <v-col>
           <v-card
             hover
-            v-for="round in closed"
+            v-for="(round, index) in closed"
             class="mt-4 md-4"
             shaped
-            :key="round.round_no"
+            :key="index"
           >
             Round: {{round.round_name}}
             <br/>
@@ -95,6 +96,9 @@ export default {
     }
   },
   methods: {
+    navigateTo (route) {
+      this.$router.push(route)
+    },
     setTimeTag () {
       this.contests.forEach((item) => {
         let timeDif = (new Date(item.start_time)).getTime() - this.serverTime
@@ -133,6 +137,7 @@ export default {
     })
 
     this.serverTime = (new Date(response.data.serverTime)).getTime()
+    this.setTimeTag()
 
     let _this = this
     window.setInterval(() => { // used for count down
