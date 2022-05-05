@@ -60,6 +60,7 @@
               <v-btn
                 class="md-4"
                 rounded
+                @click="navigateTo({name: 'viewContest', params: {id: round.round_no}})"
               >
                 Enter
               </v-btn>
@@ -73,6 +74,7 @@
 
 <script>
 import ContestServices from '@/services/ContestServices'
+import global from '@/global'
 
 export default {
   data () {
@@ -104,26 +106,14 @@ export default {
         let timeDif = (new Date(item.start_time)).getTime() - this.serverTime
         if (timeDif > 0) {
           let days = parseInt(timeDif / (86400 * 1000))
-          let hours = parseInt(timeDif % (86400 * 1000) / (60 * 60 * 1000))
-          let minutes = parseInt(timeDif % (60 * 60 * 1000) / (60 * 1000))
-          let seconds = parseInt(timeDif % (60 * 1000) / 1000)
           if (days) item.timeTag = `<br/> Before Start <br/> ${days} ${days === 1 ? 'day' : 'days'}`
           else {
-            let s1 = `${hours < 10 ? `0${hours}` : `${hours}`}`
-            let s2 = `${minutes < 10 ? `0${minutes}` : `${minutes}`}`
-            let s3 = `${seconds < 10 ? `0${seconds}` : `${seconds}`}`
-            item.timeTag = `<br/> Before Start <br/> ${s1} : ${s2} : ${s3}<br/>`
+            item.timeTag = `<br/> Before Start <br/> ${global.timeDifToString(timeDif)}<br/>`
           }
         } else {
           timeDif = (new Date(item.start_time)).getTime() - this.serverTime + item.duration * 60000
           if (timeDif > 0) {
-            let hours = parseInt(timeDif % (86400 * 1000) / (60 * 60 * 1000))
-            let minutes = parseInt(timeDif % (60 * 60 * 1000) / (60 * 1000))
-            let seconds = parseInt(timeDif % (60 * 1000) / 1000)
-            let s1 = `${hours < 10 ? `0${hours}` : `${hours}`}`
-            let s2 = `${minutes < 10 ? `0${minutes}` : `${minutes}`}`
-            let s3 = `${seconds < 10 ? `0${seconds}` : `${seconds}`}`
-            item.timeTag = `<br/> Before End <br/> ${s1} : ${s2} : ${s3}<br/>`
+            item.timeTag = `<br/> Before End <br/> ${global.timeDifToString(timeDif)}<br/>`
           } else item.timeTag = `<br/> Final Standing <br/>`
         }
       })
@@ -132,7 +122,7 @@ export default {
   async mounted () {
     const response = await ContestServices.index()
     this.contests = response.data.contests
-    this.contests.forEach((item) => {
+    this.contests.forEach((item) => { // add time tag for each contest (end, close, ongoing...)
       return Object.assign(item, {timeTag: ``})
     })
 
