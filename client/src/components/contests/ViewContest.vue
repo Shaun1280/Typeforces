@@ -34,19 +34,21 @@
       >
         <v-flex
           class="d-flex justify-start"
-          width="500"
           flex-wrap
+          :style="`max-height: ${maxHeight}px`"
+          overflow-y-auto
         >
           <v-chip
             v-for="(item, index) in content.content"
             :key="index"
+            ref="vChips"
             label
             color="white"
             class="md-2 mt-2"
           >
             <font
               v-bind:class="`content_font ${index === cursor ? '_line' : ''}`"
-              v-bind:color="changingColor[index]"
+              v-bind:color="color[index]"
             >
               {{item === ' ' ? '␣' : item}}
             </font>
@@ -67,6 +69,8 @@ export default {
       content: '',
       color: '',
       cursor: 0,
+      vChips: null,
+      maxHeight: 400,
       typingStatus: 0, // 0 wait for typing, 1 is typing, 2 end typing
       typingStartTime: (new Date()).getTime(),
       serverTime: (new Date()).getTime()
@@ -102,11 +106,23 @@ export default {
         }
       })
     },
+    adjustOffset (curoffsest, delta) {
+      let arr = this.$refs.vChips
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].$el.offsetTop === curoffsest) {
+          arr[i].$el.scrollIntoView()
+        }
+      }
+    },
     keyDown () {
       const _this = this
       document.onkeypress = (event) => {
+        event.preventDefault()
+        // console.log(this.$refs)
         if (_this.typingStatus === 0) _this.typingStatus = 1
         else if (_this.typingStatus === 2) return
+
+        // console.log(_this.$refs.vChips[_this.cursor].$el.offsetTop)
 
         let e = event || window.event
         let key = e.keyCode || e.which || e.charCode
@@ -120,16 +136,11 @@ export default {
             _this.typingStatus = 2
           }
         } else _this.$set(_this.color, _this.cursor, 'red')
-      }
-    }
-  },
-  computed: {
-    changingColor: {
-      get: function () {
-        return this.color
-      },
-      set: function (value) {
-        this.colro = value
+
+        if (_this.$refs.vChips[_this.cursor].$el.offsetTop >
+          _this.maxHeight + 24) {
+          _this.adjustOffset(_this.$refs.vChips[_this.cursor].$el.offsetTop, -_this.maxHeight)
+        }
       }
     }
   },
@@ -161,12 +172,8 @@ export default {
   line-height: 2.5rem;
 }
 
-.test {
-  color: rgba(188, 115, 115, 0.566)
-}
-
 ._line {
-  border-left: 0.1rem solid black;
+  border-left: 0.12rem solid black;
 }
 
 </style>
