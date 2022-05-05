@@ -41,12 +41,12 @@
             v-for="(item, index) in content.content"
             :key="index"
             label
-            color=white
+            color="white"
             class="md-2 mt-2"
           >
             <font
-              class="content_font"
-              v-bind:color="color[index]"
+              v-bind:class="`content_font ${index === cursor ? '_line' : ''}`"
+              v-bind:color="changingColor[index]"
             >
               {{item === ' ' ? '␣' : item}}
             </font>
@@ -66,6 +66,9 @@ export default {
       contest: '',
       content: '',
       color: '',
+      cursor: 0,
+      typingStatus: 0, // 0 wait for typing, 1 is typing, 2 end typing
+      typingStartTime: (new Date()).getTime(),
       serverTime: (new Date()).getTime()
     }
   },
@@ -98,6 +101,36 @@ export default {
           } else item.timeTag = `<br/> Final Standing <br/>`
         }
       })
+    },
+    keyDown () {
+      const _this = this
+      document.onkeypress = (event) => {
+        if (_this.typingStatus === 0) _this.typingStatus = 1
+        else if (_this.typingStatus === 2) return
+
+        let e = event || window.event
+        let key = e.keyCode || e.which || e.charCode
+
+        if ((String.fromCharCode(key)[0]) === _this.content.content[_this.cursor]) {
+          if (_this.color[_this.cursor] !== 'red') {
+            _this.$set(_this.color, _this.cursor, '#E0E0E0')
+          }
+          _this.cursor = _this.cursor + 1
+          if (_this.cursor === _this.color.length) {
+            _this.typingStatus = 2
+          }
+        } else _this.$set(_this.color, _this.cursor, 'red')
+      }
+    }
+  },
+  computed: {
+    changingColor: {
+      get: function () {
+        return this.color
+      },
+      set: function (value) {
+        this.colro = value
+      }
     }
   },
   async mounted () {
@@ -110,6 +143,7 @@ export default {
       if (this.content.content[i] === ' ') this.color[i] = '#E0E0E0'
       else this.color[i] = 'black'
     }
+    this.keyDown()
   }
   // watch: {
   //   email (value) {
@@ -130,4 +164,9 @@ export default {
 .test {
   color: rgba(188, 115, 115, 0.566)
 }
+
+._line {
+  border-left: 0.1rem solid black;
+}
+
 </style>
