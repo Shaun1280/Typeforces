@@ -13,7 +13,11 @@ module.exports = {
     })
 
     try {
-      await schema.validateAsync(req.body)
+      await schema.validateAsync({
+        email: req.body.email,
+        password: req.body.password,
+        user_name: req.body.user_name
+      })
       next()
     } catch (error) {
       switch (error.details[0].context.key) {
@@ -47,7 +51,8 @@ module.exports = {
 
         default:
           res.status(400).send({
-            error: 'Invalid registration information'
+            error: 'Invalid registration information',
+            detail: error
           })
       }
     }
