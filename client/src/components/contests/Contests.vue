@@ -5,10 +5,10 @@
         <v-col>
           <v-card
             hover
-            v-for="round in unclosed"
+            v-for="(round, index) in unclosedContests"
             class="mt-4 md-4"
             shaped
-            :key="round.round_no"
+            :key="index"
           >
             Round: {{round.round_name}}
             <br/>
@@ -30,6 +30,12 @@
               </v-btn>
             </v-card-actions>
           </v-card>
+
+          <v-pagination
+            v-model="pageCurrent"
+            class="my-4"
+            :length="lengthCurrent"
+          ></v-pagination>
         </v-col>
       </panel>
     </v-flex>
@@ -39,7 +45,7 @@
         <v-col>
           <v-card
             hover
-            v-for="(round, index) in closed"
+            v-for="(round, index) in closedContests"
             class="mt-4 md-4"
             shaped
             :key="index"
@@ -67,6 +73,12 @@
             </v-card-actions>
           </v-card>
         </v-col>
+
+        <v-pagination
+          v-model="pagePast"
+          class="my-4"
+          :length="lengthPast"
+        ></v-pagination>
       </panel>
     </v-flex>
   </v-layout>
@@ -80,21 +92,57 @@ export default {
   data () {
     return {
       contests: [],
+      pagePast: 1,
+      pageCurrent: 1,
       serverTime: (new Date()).getTime()
     }
   },
   computed: {
-    unclosed () {
-      return this.contests.filter((contest) => {
+    unclosedContests () {
+      let tmp = this.contests.filter((contest) => {
         return (new Date(contest.start_time)).getTime() +
           contest.duration * 60000 >= this.serverTime
       })
+      tmp.sort(function (a, b) {
+        return (new Date(a.start_time)) - (new Date(b.start_time))
+      })
+      let ret = []
+      for (let i = 0; i < tmp.length; i++) {
+        if (Math.trunc(i / 4) + 1 === this.pageCurrent) {
+          ret.push(tmp[i])
+        }
+      }
+      return ret
     },
-    closed () {
-      return this.contests.filter((contest) => {
+    closedContests () {
+      let tmp = this.contests.filter((contest) => {
         return (new Date(contest.start_time)).getTime() +
           contest.duration * 60000 < this.serverTime
       })
+      tmp.sort(function (a, b) {
+        return (new Date(b.start_time)) - (new Date(a.start_time))
+      })
+      let ret = []
+      for (let i = 0; i < tmp.length; i++) {
+        if (Math.trunc(i / 10) + 1 === this.pagePast) {
+          ret.push(tmp[i])
+        }
+      }
+      return ret
+    },
+    lengthPast () {
+      let tmp = this.contests.filter((contest) => {
+        return (new Date(contest.start_time)).getTime() +
+          contest.duration * 60000 < this.serverTime
+      })
+      return Math.max(1, Math.ceil(tmp.length / 10))
+    },
+    lengthCurrent () {
+      let tmp = this.contests.filter((contest) => {
+        return (new Date(contest.start_time)).getTime() +
+          contest.duration * 60000 >= this.serverTime
+      })
+      return Math.max(1, Math.ceil(tmp.length / 4))
     }
   },
   methods: {
