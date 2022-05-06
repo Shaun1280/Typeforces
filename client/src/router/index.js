@@ -7,6 +7,7 @@ import Contests from '@/components/contests/Contests'
 import ViewContest from '@/components/contests/ViewContest'
 import ManageContests from '@/components/contests/ManageContests'
 import Profile from '@/components/Profile'
+import Search from '@/components/Search'
 
 Vue.use(Router)
 
@@ -52,6 +53,11 @@ export default new Router({
       path: '/Contests/:id',
       name: 'viewContest',
       component: ViewContest
+    },
+    {
+      path: '/Search',
+      name: 'Search',
+      component: Search
     }
   ]
 })

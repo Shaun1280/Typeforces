@@ -14,7 +14,7 @@
         class="blue white--text"
         @click="navigateTo({name: 'root'})"
       >
-        <v-icon>mdi-home</v-icon>
+        <v-icon small>mdi-home</v-icon>
         Home
       </v-btn>
 
@@ -24,7 +24,7 @@
         class="blue white--text"
         @click="navigateTo({name: 'contests'})"
       >
-        <v-icon>mdi-rocket</v-icon>
+        <v-icon small>mdi-rocket</v-icon>
         Contests
       </v-btn>
 
@@ -34,18 +34,25 @@
         class="blue white--text"
         @click="navigateTo({name: 'rating'})"
       >
-        <v-icon>mdi-fencing</v-icon>
+        <v-icon small>mdi-fencing</v-icon>
         Rating
       </v-btn>
 
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
+      <div>
+        <v-text-field
+          hint="Search contest/practice/user"
+          dense
+          prepend-icon="mdi-magnify"
+          v-model="search"
+          @keyup.enter.native="goToSearch"
+        >
+        </v-text-field>
+      </div>
 
       <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
+        <v-icon small>mdi-heart</v-icon>
       </v-btn>
 
       <v-btn
@@ -72,7 +79,7 @@
          v-if="$store.state.isUserLoggedIn"
         @click="navigateTo({name: 'manageContests'})"
       >
-        <v-icon>mdi-atom</v-icon>
+        <v-icon small>mdi-atom</v-icon>
         Manage Contests
       </v-btn>
 
@@ -82,7 +89,7 @@
          v-if="$store.state.isUserLoggedIn"
         @click="navigateTo({name: 'profile'})"
       >
-        <v-icon>mdi-account</v-icon>
+        <v-icon small>mdi-account</v-icon>
         Profile
       </v-btn>
 
@@ -96,14 +103,21 @@
       </v-btn>
 
       <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
+        <v-icon small>mdi-dots-vertical</v-icon>
       </v-btn>
     </v-toolbar>
   </v-card>
 </template>
 
 <script>
+import _ from 'lodash'
+
 export default {
+  data () {
+    return {
+      search: ''
+    }
+  },
   methods: {
     navigateTo (route) {
       this.$router.push(route)
@@ -114,6 +128,33 @@ export default {
       this.$router.push({
         name: 'root'
       })
+    },
+    goToSearch: _.debounce(async function () {
+      this.$router.push({
+        name: 'Search',
+        query: {
+          search: this.search
+        }
+      })
+    }, 500)
+  },
+  watch: {
+    search: _.debounce(async function (value) {
+      const route = {
+        name: this.$store.state.route.name
+      }
+      if (this.search !== '') {
+        route.query = {
+          search: this.search
+        }
+      }
+      this.$router.push(route)
+    }, 1000),
+    '$route.query.search': {
+      immediate: true,
+      async handler (value) {
+        this.search = value
+      }
     }
   }
 }

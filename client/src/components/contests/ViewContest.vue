@@ -34,11 +34,11 @@
       >
         <template v-slot:action>
           <v-spacer></v-spacer>
-          <v-toolbar-title>Wpm: {{wpm.toFixed(2)}}</v-toolbar-title>
+          <v-toolbar-title>Wpm: {{wpm.toFixed(1)}}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-title>Miss: {{missCount}}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-toolbar-title>Accuracy: {{accuracy.toFixed(2)}}</v-toolbar-title>
+          <v-toolbar-title>Accuracy: {{accuracy.toFixed(1)}}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-title>{{timeTag}}</v-toolbar-title>
         </template>
@@ -83,7 +83,7 @@ export default {
       cursor: 0,
       vChips: null,
       maxHeight: 400,
-
+      mode: 0, // 0 typing, 1 view standing
       // user data
       wpm: 0,
       missCount: 0,

@@ -4,6 +4,8 @@ const AuthenticationControllerPolicy = require('./policies/AuthenticationControl
 
 const ContestsController = require('./controllers/ContestsController')
 
+const SearchController = require('./controllers/SearchController')
+
 module.exports = (app) => {
   app.post('/register',
     AuthenticationControllerPolicy.register,
@@ -17,4 +19,7 @@ module.exports = (app) => {
     ContestsController.show)
   app.post('/manage-contests',
     ContestsController.post)
+
+  app.get('/search',
+    SearchController.index)
 }
