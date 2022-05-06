@@ -168,22 +168,26 @@ export default {
     }
   },
   async mounted () {
-    const response = await ContestServices.index()
-    this.contests = response.data.contests
-    this.contests.forEach((item) => { // add time tag for each contest (end, close, ongoing...)
-      return Object.assign(item, {timeTag: ``})
-    })
+    try {
+      const response = await ContestServices.index()
+      this.contests = response.data.contests
+      this.contests.forEach((item) => { // add time tag for each contest (end, close, ongoing...)
+        return Object.assign(item, {timeTag: ``})
+      })
 
-    this.serverTime = (new Date(response.data.serverTime)).getTime()
-    this.setTimeTag()
+      this.serverTime = (new Date(response.data.serverTime)).getTime()
+      this.setTimeTag()
 
-    let _this = this
-    window.setInterval(() => { // used for count down
-      setTimeout(function () {
-        _this.serverTime = _this.serverTime + 1000
-        _this.setTimeTag()
-      }, 0)
-    }, 1000)
+      let _this = this
+      window.setInterval(() => { // used for count down
+        setTimeout(function () {
+          _this.serverTime = _this.serverTime + 1000
+          _this.setTimeTag()
+        }, 0)
+      }, 1000)
+    } catch (error) {
+      console.log(error)
+    }
   }
   // watch: {
   //   email (value) {
