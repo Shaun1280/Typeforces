@@ -11,16 +11,22 @@ import SearchServices from '@/services/SearchServices'
 export default {
   data () {
     return {
-      contests: []
+      users: [],
+      contests: [],
+      practices: []
     }
   },
   watch: {
     '$route.query.search': {
       immediate: true,
       async handler (value) {
-        console.log('calling handler in Search.js')
+        if (value === undefined) return
+        console.log('calling handler in Search.js', value)
         try {
-          await SearchServices.index(value)
+          const response = await SearchServices.index(value)
+          this.contests = response.data.contests
+          this.users = response.data.users
+          this.practices = response.data.practices
         } catch (error) {
           console.log(error)
         }

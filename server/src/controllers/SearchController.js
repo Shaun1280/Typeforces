@@ -1,4 +1,5 @@
-const { Round, Content, User } = require('../models')
+const { Round, User } = require('../models')
+const { Op } = require("sequelize");
 
 module.exports = {
   async index (req, res) {
@@ -7,24 +8,25 @@ module.exports = {
       if (search) {
         const contests = await Round.findAll({
           where: {
-            $or: [
-              'round_name', 'round_no'
-            ].map(key => ({
-              [key]: {
-                like: `%${search}%`,
+            [Op.or]: [
+              {
+                round_name: {
+                  [Op.like]: `%${search}%`,
+                }
+              },
+              {
+                round_no: {
+                  [Op.like]: `%${search}%`,
+                }
               }
-            }))
+            ]
           }
         })
         const users = await User.findAll({
           where: {
-            $or: [
-                'user_name', 'email'
-            ].map(key => ({
-                [key]: {
-                like: `%${search}%`,
-                }
-            }))
+            user_name: {
+              [Op.like]: `%${search}%`,
+            }
           }
         })
         res.send({
@@ -40,8 +42,10 @@ module.exports = {
         })
       }
     } catch (err) {
+      console.log(err)
       res.status(500).send({
-        error: 'An error has occured trying to search'
+        error: 'An error has occured trying to search',
+        detail: err
       })
     }
   }
