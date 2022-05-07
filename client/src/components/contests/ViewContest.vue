@@ -149,6 +149,15 @@ export default {
           _this.adjustOffset(_this.$refs.vChips[_this.cursor].$el.offsetTop, -_this.maxHeight)
         }
       }
+    },
+    calc () {
+      if (this.typingStatus === 2) return
+      // calc wpm
+      this.wpm = (this.cursor) / ((new Date()).getTime() - this.typingStartTime) * 200 * 60
+      if (isNaN(this.wpm)) this.wpm = 0
+      // calc accuracy
+      this.accuracy = (this.cursor - this.missCount) / (this.cursor) * 100
+      if (isNaN(this.accuracy)) this.accuracy = 100
     }
   },
   async mounted () {
@@ -169,15 +178,9 @@ export default {
     // used for wpm & accuracy
     window.setInterval(() => {
       setTimeout(function () {
-        // calc wpm
-        if (_this.typingStatus === 2) return
-        _this.wpm = (_this.cursor) / ((new Date()).getTime() - _this.typingStartTime) * 200 * 60
-        if (isNaN(_this.wpm)) _this.wpm = 0
-        // calc accuracy
-        _this.accuracy = (_this.cursor - _this.missCount) / (_this.cursor) * 100
-        if (isNaN(_this.accuracy)) _this.accuracy = 100
+        _this.calc()
       }, 0)
-    }, 250)
+    }, 80)
 
     // typing content related
     this.content = response.data.content
