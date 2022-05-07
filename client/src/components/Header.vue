@@ -152,7 +152,7 @@ export default {
     }, 1000),
     '$route.query.search': {
       immediate: true,
-      async handler (value) {
+      handler (value) {
         this.search = value
       }
     }
