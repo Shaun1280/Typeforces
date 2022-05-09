@@ -46,6 +46,9 @@ export default {
           user_name: this.username,
           password: this.password
         })
+        this.$router.push({
+          name: 'login'
+        })
       } catch (error) {
         this.error = error.response.data.error
       }
