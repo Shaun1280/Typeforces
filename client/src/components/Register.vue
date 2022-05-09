@@ -39,6 +39,7 @@ export default {
   },
   methods: {
     async register () {
+      this.error = null
       try {
         await AuthenticationService.register({
           email: this.email,
