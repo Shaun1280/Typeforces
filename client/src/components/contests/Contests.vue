@@ -70,15 +70,17 @@ export default {
       let _this = this
       this.serverTime = (new Date(response.data.serverTime)).getTime()
       global.setTimeTag(_this.contests, _this.serverTime)
-      window.setInterval(() => { // used for count down
-        setTimeout(function () {
-          _this.serverTime = _this.serverTime + 1000
-          global.setTimeTag(_this.contests, _this.serverTime)
-        }, 0)
+
+      _this.IntervalTime = setInterval(() => {
+        _this.serverTime = _this.serverTime + 1000
+        global.setTimeTag(_this.contests, _this.serverTime)
       }, 1000)
     } catch (error) {
       console.log(error)
     }
+  },
+  destroyed () {
+    clearInterval(this.IntervalTime)
   }
   // watch: {
   //   email (value) {
