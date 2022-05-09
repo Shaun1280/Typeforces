@@ -58,6 +58,10 @@ export default new Router({
       path: '/Search',
       name: 'Search',
       component: Search
+    },
+    {
+      path: '/*',
+      redirect: '/'
     }
   ]
 })
