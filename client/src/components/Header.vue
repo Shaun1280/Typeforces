@@ -6,22 +6,21 @@
     class="mb-10"
   >
     <v-toolbar dense class="blue">
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
       <v-btn
         text
-        left
+        fab
+        small
         class="blue white--text"
+        title="Home"
         @click="navigateTo({name: 'root'})"
       >
         <v-icon small>mdi-home</v-icon>
-        Home
       </v-btn>
 
       <v-btn
         text
         left
-        class="blue white--text"
+        class="blue white--text ml-2"
         @click="navigateTo({name: 'contests'})"
       >
         <v-icon small>mdi-rocket</v-icon>
@@ -84,26 +83,28 @@
       </v-btn>
 
       <v-btn
-        text
+        icon
         class="blue white--text"
-         v-if="$store.state.isUserLoggedIn"
+        v-if="$store.state.isUserLoggedIn"
+        title="profile"
         @click="navigateTo({name: 'profile'})"
       >
-        <v-icon small>mdi-account</v-icon>
-        Profile
+        <v-icon dark>
+          mdi-account-circle
+        </v-icon>
       </v-btn>
 
       <v-btn
-        text
+        icon
         class="blue white--text"
+        color="indigo"
+        title="logout"
         v-if="$store.state.isUserLoggedIn"
         @click="logout"
       >
-        Log Out
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon small>mdi-dots-vertical</v-icon>
+        <v-icon dark small>
+          mdi-application-export
+        </v-icon>
       </v-btn>
     </v-toolbar>
   </v-card>
