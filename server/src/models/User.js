@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     status: {
       type: DataTypes.STRING(8),
       validate: {
-        isIn: ['admin', 'student', 'bot', 'other']
+        isIn: [['admin', 'student', 'bot', 'other']]
       }
     },
     country: DataTypes.STRING(32),

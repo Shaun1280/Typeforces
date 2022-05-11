@@ -1,0 +1,16 @@
+[
+  {
+    "email": "2498861110@qq.com",
+    "password": "118294191",
+    "user_name": "shaun",
+    "status": "admin",
+    "country": "Admin"
+  },
+  {
+    "email": "1953181@tongji.edu.cn",
+    "password": "118294191",
+    "user_name": "shaun2",
+    "status": "student",
+    "country": "China"
+  }
+]

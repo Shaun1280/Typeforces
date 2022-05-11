@@ -1,5 +1,5 @@
 const { Round, User } = require('../models')
-const { Op } = require("sequelize");
+const { Op } = require('sequelize')
 
 module.exports = {
   async index (req, res) {
@@ -11,12 +11,12 @@ module.exports = {
             [Op.or]: [
               {
                 round_name: {
-                  [Op.like]: `%${search}%`,
+                  [Op.like]: `%${search}%`
                 }
               },
               {
                 round_no: {
-                  [Op.like]: `%${search}%`,
+                  [Op.like]: `%${search}%`
                 }
               }
             ]
@@ -25,7 +25,7 @@ module.exports = {
         const users = await User.findAll({
           where: {
             user_name: {
-              [Op.like]: `%${search}%`,
+              [Op.like]: `%${search}%`
             }
           }
         })
