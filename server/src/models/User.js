@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(255),
       unique: true
     },
+    rating: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1500
+    },
     status: {
       type: DataTypes.STRING(8),
       validate: {

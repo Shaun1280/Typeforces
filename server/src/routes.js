@@ -6,6 +6,8 @@ const ContestsController = require('./controllers/ContestsController')
 
 const SearchController = require('./controllers/SearchController')
 
+const ProfileController = require('./controllers/ProfileController')
+
 module.exports = (app) => {
   app.post('/register',
     AuthenticationControllerPolicy.register,
@@ -22,4 +24,6 @@ module.exports = (app) => {
 
   app.get('/search',
     SearchController.index)
+  
+  app.get('/profile/:username', ProfileController.index)
 }

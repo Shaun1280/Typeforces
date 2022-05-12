@@ -19,6 +19,7 @@ sequelize.sync({ force: true })
           id: uuid.v4(),
           email: user.email,
           password: user.password,
+          user_name: user.user_name,
           status: user.status,
           country: user.country,
           register_time: Date.parse(new Date())
