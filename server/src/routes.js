@@ -24,6 +24,6 @@ module.exports = (app) => {
 
   app.get('/search',
     SearchController.index)
-  
+
   app.get('/profile/:username', ProfileController.index)
 }

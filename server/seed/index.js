@@ -15,7 +15,7 @@ sequelize.sync({ force: true })
   .then(async function () {
     await Promise.all(
       users.map(user => {
-        User.create({
+        return User.create({
           id: uuid.v4(),
           email: user.email,
           password: user.password,
@@ -23,15 +23,15 @@ sequelize.sync({ force: true })
           status: user.status,
           country: user.country,
           register_time: Date.parse(new Date())
-        });
+        })
       })
     )
 
     await Promise.all(
       rounds.map(round => {
-        Round.create({
+        return Round.create({
           round_name: round.name,
-          start_time: Date.parse(new Date("2022/05/02 00:00:00")),
+          start_time: Date.parse(new Date('2022/05/02 00:00:00')),
           duration: round.duration,
           content_id: round.content_id,
           division: round.division
@@ -41,7 +41,7 @@ sequelize.sync({ force: true })
 
     await Promise.all(
       contents.map(content => {
-        Content.create(content)
+        return Content.create(content)
       })
     )
   })
