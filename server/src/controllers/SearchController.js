@@ -42,7 +42,6 @@ module.exports = {
         })
       }
     } catch (err) {
-      console.log(err)
       res.status(500).send({
         error: 'An error has occured trying to search',
         detail: err
