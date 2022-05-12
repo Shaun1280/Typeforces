@@ -73,21 +73,11 @@
       </v-btn>
 
       <v-btn
-        text
-        class="blue white--text"
-         v-if="$store.state.isUserLoggedIn"
-        @click="navigateTo({name: 'manageContests'})"
-      >
-        <v-icon small>mdi-atom</v-icon>
-        Manage Contests
-      </v-btn>
-
-      <v-btn
         icon
         class="blue white--text"
         v-if="$store.state.isUserLoggedIn"
         title="profile"
-        @click="navigateTo({name: 'profile'})"
+        @click="navigateTo({name: 'profile', params: {username: $store.state.user.user_name}})"
       >
         <v-icon dark>
           mdi-account-circle
@@ -102,8 +92,8 @@
         v-if="$store.state.isUserLoggedIn"
         @click="logout"
       >
-        <v-icon dark small>
-          mdi-application-export
+        <v-icon dark>
+          mdi-export
         </v-icon>
       </v-btn>
     </v-toolbar>
