@@ -16,12 +16,48 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn
-              color="white"
-              icon
+            <v-menu
+              left
+              bottom
             >
-              <v-icon>mdi-dots-vertical</v-icon>
-            </v-btn>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  icon
+                  color="white"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </template>
+
+              <v-list>
+                <v-list-item
+                  v-if="$store.state.isUserLoggedIn && $store.state.user.status==='admin'"
+                  @click="navigateTo({name: 'manageContests'})"
+                >
+                  <v-list-item-title>Manage contests</v-list-item-title>
+                </v-list-item>
+
+                <v-list-item
+                  @click="() => {}"
+                >
+                  <v-list-item-title>Competition history</v-list-item-title>
+                </v-list-item>
+
+                <v-list-item
+                  @click="() => {}"
+                >
+                  <v-list-item-title>Practice history</v-list-item-title>
+                </v-list-item>
+
+                <v-list-item
+                  @click="() => {}"
+                >
+                  <v-list-item-title>Friends</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </v-app-bar>
 
           <v-card-title class="white--text mt-8">
@@ -94,6 +130,8 @@
 </template>
 
 <script>
+import ProfileServices from '@/services/ProfileServices'
+
 export default {
   data () {
     return {
@@ -101,7 +139,18 @@ export default {
     }
   },
   methods: {
+    navigateTo (route) {
+      this.$router.push(route)
+    }
+  },
+  async mounted () {
+    try {
+      console.log(this.$store.state.route.params.username)
+      const response = await ProfileServices.index(this.$store.state.route.params.username)
+      console.log(response.data)
+    } catch (error) {
 
+    }
   }
   // watch: {
   //   email (value) {
