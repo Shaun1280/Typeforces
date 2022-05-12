@@ -33,6 +33,7 @@
             <div class="ml-3">
               <p> Internation Grandmaster </p>
               <p> John Doe </p>
+              <p> Student </p>
             </div>
           </v-card-title>
         </v-card-text>
