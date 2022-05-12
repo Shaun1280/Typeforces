@@ -1,30 +1,28 @@
-const { User, CompetitionHistory } = require('../models')
-
-function calcContestWpm (competitionHistory) {
-  return 0
-}
-
-function calcPracticeWpm (practiceHistory) {
-  return 0
-}
+const { User, CompetitionHistory, PracticeHistory } = require('../models')
 
 module.exports = {
   async index (req, res) {
     try {
-      const user_name = req.params.username;
+      const userName = req.params.username
       const user = await User.findOne({
         where: {
-          user_name: user_name
+          user_name: userName
         }
       })
       if (!user) {
         return res.status(500).send({
-          error: `User doesn't exist`
+          error: 'User doesn\'t exist'
         })
       }
-      const competitionHistory = await CompetitionHistory.findAll({
+      const competitionHistories = await CompetitionHistory.findAll({
         where: {
           participant_id: user.id
+        }
+      })
+
+      const practiceHistories = await PracticeHistory.findAll({
+        where: {
+          practicer_id: user.id
         }
       })
 
@@ -36,10 +34,8 @@ module.exports = {
         rating: user.rating,
         register_time: user.register_time,
         last_visit: user.last_visit,
-        contest_wpm: calcContestWpm(competitionHistory),
-        practice_wpm: 0,
-        max_rating: 1500,
-        average_accuracy: 100,
+        competitionHistories: competitionHistories,
+        practiceHistories: practiceHistories,
         friends: 0
       })
     } catch (err) {
@@ -50,4 +46,3 @@ module.exports = {
     }
   }
 }
-  
