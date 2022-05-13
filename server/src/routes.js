@@ -8,6 +8,8 @@ const SearchController = require('./controllers/SearchController')
 
 const ProfileController = require('./controllers/ProfileController')
 
+const isAuthenticated = require('./policies/isAuthenticated')
+
 module.exports = (app) => {
   app.post('/register',
     AuthenticationControllerPolicy.register,
@@ -20,6 +22,7 @@ module.exports = (app) => {
   app.get('/contests/:id',
     ContestsController.show)
   app.post('/manage-contests',
+    isAuthenticated,
     ContestsController.post)
 
   app.get('/search',

@@ -41,6 +41,11 @@ module.exports = {
   },
   async post (req, res) {
     try {
+      if (req.user.status !== 'admin') {
+        return res.status(403).send({
+          error: 'You do not have access to this resource'
+        })
+      }
       const round = await Round.findOne({
         where: {
           round_name: req.body.round_name
