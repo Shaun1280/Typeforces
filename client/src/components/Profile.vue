@@ -39,6 +39,12 @@
                 <v-list-item
                   @click="() => {}"
                 >
+                  <v-list-item-title>Manage Practices</v-list-item-title>
+                </v-list-item>
+
+                <v-list-item
+                  @click="() => {}"
+                >
                   <v-list-item-title>Competition history</v-list-item-title>
                 </v-list-item>
 
@@ -65,7 +71,7 @@
                 mdi-account-circle
               </v-icon>
             </v-avatar>
-            <div class="ml-3">
+            <div class="ml-10">
               <!-- user title -->
               <font
                 v-for="(char, index) in calcTitle"
@@ -86,7 +92,7 @@
                 {{char}}
               </font>
               <br/>
-              <font>({{user.status}})</font>
+              <font>{{user.status ? `(${user.status})` : ''}}</font>
             </div>
           </v-card-title>
         </v-card-text>
@@ -94,15 +100,31 @@
         <v-divider></v-divider>
 
         <v-card-text>
-          <div class="font-weight-bold ml-8 mb-2">
-            Contest rating: {{user.rating}} (max. Internation Grandmaster, 2657)
+          <div class="font-weight-bold ml-8 mb-2 row justify-center">
+            Contest rating: &nbsp;
+            <font v-bind:color="ratingColor">
+              {{user.competitionHistories.length ? user.rating: 'Unrated'}}
+            </font>
+
+            <div v-if="user.competitionHistories.length">
+              &nbsp;(max.
+              <font v-bind:color="titleColor">
+                {{calcTitle}}
+              </font>
+              ,
+              <font v-bind:color="ratingColor">
+                {{maxRating}}
+              </font>
+              )
+            </div>
           </div>
+
           <div class="font-weight-bold ml-8 mb-2">
             WPM :
           </div>
 
           <div class="font-weight-bold ml-8 mb-2">
-            Average accuracy: 100
+            Average accuracy:
           </div>
 
           <div class="font-weight-bold ml-8 mb-2">
@@ -150,6 +172,7 @@
 
 <script>
 import ProfileServices from '@/services/ProfileServices'
+import global from '@/global'
 
 export default {
   data () {
@@ -158,7 +181,8 @@ export default {
         rating: 1500,
         register_time: 0,
         user_name: '',
-        title: 'unrated'
+        title: 'unrated',
+        competitionHistories: []
       }
     }
   },
@@ -169,44 +193,19 @@ export default {
   },
   computed: {
     calcTitle () {
-      if (this.user.rating < 1200) return 'Newbie'
-      else if (this.user.rating < 1500) return 'Pupil'
-      else if (this.user.rating < 1600) return 'Specialist'
-      else if (this.user.rating < 1900) return 'Expert'
-      else if (this.user.rating < 2100) return `Candidate Master`
-      else if (this.user.rating < 2300) return 'Master'
-      else if (this.user.rating < 2400) return `International Master`
-      else if (this.user.rating < 2600) return 'Grandmaster'
-      else if (this.user.response < 3000) return `International Grandmaster`
-      else return `Legendary Grandmaster`
+      return global.calcTitle(this.user.rating, this.user.competitionHistories)
     },
     titleColor () {
-      if (this.user.rating < 1200) return '#778899'
-      else if (this.user.rating < 1500) return '#008000'
-      else if (this.user.rating < 1600) return '#03A89E'
-      else if (this.user.rating < 1900) return '#0000FF'
-      else if (this.user.rating < 2100) return '#AA00AA'
-      else if (this.user.rating < 2300) return '#FA8C00'
-      else if (this.user.rating < 2400) return '#FF8C00'
-      else return '#FF0000'
+      return global.titleColor(this.user.rating, this.user.competitionHistories)
     },
     nameColor () {
-      let ret = []
-      ret.length = this.user.user_name.length
-      let color
-      if (this.user.rating < 1200) color = '#778899'
-      else if (this.user.rating < 1500) color = '#008000'
-      else if (this.user.rating < 1600) color = '#03A89E'
-      else if (this.user.rating < 1900) color = '#0000FF'
-      else if (this.user.rating < 2100) color = '#AA00AA'
-      else if (this.user.rating < 2300) color = '#FA8C00'
-      else if (this.user.rating < 2400) color = '#FF8C00'
-      else color = '#FF0000'
-      for (let i = 0; i < ret.length; i++) {
-        ret[i] = color
-        if (i === 0 && this.user.rating >= 3000) ret[i] = '#000000'
-      }
-      return ret
+      return global.nameColor(this.user.user_name, this.user.rating, this.user.competitionHistories)
+    },
+    ratingColor () {
+      return global.ratingColor(this.user.rating, this.user.competitionHistories)
+    },
+    maxRating () {
+      return this.user.rating
     }
   },
   async mounted () {

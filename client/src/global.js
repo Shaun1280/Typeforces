@@ -24,5 +24,51 @@ export default {
         } else item.timeTag = `<br/> Final Standing <br/>`
       }
     })
+  },
+  calcTitle (rating, competitionHistory) {
+    if (competitionHistory.length === 0) return 'Unrated'
+    else if (rating < 1200) return 'Newbie'
+    else if (rating < 1400) return 'Pupil'
+    else if (rating < 1600) return 'Specialist'
+    else if (rating < 1900) return 'Expert'
+    else if (rating < 2100) return `Candidate Master`
+    else if (rating < 2300) return 'Master'
+    else if (rating < 2400) return `International Master`
+    else if (rating < 2600) return 'Grandmaster'
+    else if (rating < 3000) return `International Grandmaster`
+    else return `Legendary Grandmaster`
+  },
+  titleColor (rating, competitionHistory) {
+    if (competitionHistory.length === 0) return '#000000'
+    else if (rating < 1200) return '#778899'
+    else if (rating < 1400) return '#008000'
+    else if (rating < 1600) return '#03A89E'
+    else if (rating < 1900) return '#0000FF'
+    else if (rating < 2100) return '#AA00AA'
+    else if (rating < 2300) return '#FA8C00'
+    else if (rating < 2400) return '#FF8C00'
+    else return '#FF0000'
+  },
+  nameColor (username, rating, competitionHistory) { // ret color array
+    let ret = []
+    ret.length = username.length
+    let color
+    if (competitionHistory.length === 0) color = '#000000'
+    else if (rating < 1200) color = '#778899'
+    else if (rating < 1400) color = '#008000'
+    else if (rating < 1600) color = '#03A89E'
+    else if (rating < 1900) color = '#0000FF'
+    else if (rating < 2100) color = '#AA00AA'
+    else if (rating < 2300) color = '#FA8C00'
+    else if (rating < 2400) color = '#FF8C00'
+    else color = '#FF0000'
+    for (let i = 0; i < ret.length; i++) {
+      ret[i] = color
+      if (i === 0 && rating >= 3000) ret[i] = '#000000'
+    }
+    return ret
+  },
+  ratingColor (rating, competitionHistory) {
+    return this.titleColor(rating, competitionHistory)
   }
 }
