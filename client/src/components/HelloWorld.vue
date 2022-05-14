@@ -1,91 +1,27 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li>
-        <a
-          href="https://vuejs.org"
-          target="_blank"
-        >
-          Core Docs
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://forum.vuejs.org"
-          target="_blank"
-        >
-          Forum
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://chat.vuejs.org"
-          target="_blank"
-        >
-          Community Chat
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://twitter.com/vuejs"
-          target="_blank"
-        >
-          Twitter
-        </a>
-      </li>
-      <br>
-      <li>
-        <a
-          href="http://vuejs-templates.github.io/webpack/"
-          target="_blank"
-        >
-          Docs for This Template
-        </a>
-      </li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li>
-        <a
-          href="http://router.vuejs.org/"
-          target="_blank"
-        >
-          vue-router
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vuex.vuejs.org/"
-          target="_blank"
-        >
-          vuex
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vue-loader.vuejs.org/"
-          target="_blank"
-        >
-          vue-loader
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-        >
-          awesome-vue
-        </a>
-      </li>
-    </ul>
-  </div>
+  <v-flex class="d-flex justify-center">
+    <div class="homediv mt-16">
+      <typical
+        :steps="['Hello', 1000, 'Hello world!', 500]"
+        :wrapper="'h1'"
+      ></typical>
+      <typical
+        class="typicalWrapper"
+        :steps="['Have', 1000, 'Have fun', 500, 'Have fun typing! :-) 👋', 1000]"
+        :loop="Infinity"
+        :wrapper="'h2'"
+      ></typical>
+    </div>
+  </v-flex>
 </template>
 
 <script>
+import typical from 'vue-typical'
 export default {
   name: 'HelloWorld',
+  components: {
+    typical
+  },
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
@@ -96,18 +32,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
+.typicalWrapper::after {
+  content: "|";
+  animation: blink 1s infinite step-start;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
 }
 </style>
