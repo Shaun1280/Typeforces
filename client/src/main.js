@@ -10,7 +10,8 @@ import Panel from '@/components/globals/Panel'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
-export default new Vuetify({ })
+
+const vuetify = new Vuetify()
 
 sync(store, router)
 
@@ -21,7 +22,7 @@ new Vue({
   el: '#app',
   router,
   store,
-  vuetify: new Vuetify(),
+  vuetify: vuetify,
   components: { App },
   template: '<App/>'
 })
