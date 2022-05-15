@@ -16,7 +16,7 @@ module.exports = {
       })
     }
   },
-  async show (req, res) {
+  async show (req, res) { // 特定 contest
     try {
       const contest = await Round.findOne({
         where: {
