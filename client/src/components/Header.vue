@@ -45,6 +45,7 @@
           dense
           prepend-icon="mdi-magnify"
           v-model="search"
+          v-if="$store.state.route.name !== `viewContest`"
           @keyup.enter.native="goToSearch"
         >
         </v-text-field>
