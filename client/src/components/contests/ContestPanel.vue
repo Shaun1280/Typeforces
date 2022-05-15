@@ -22,6 +22,7 @@
           <v-btn
           class="md-4"
           rounded
+          :disabled="btnDisabled[index]"
           @click="navigateTo({name: 'viewContest', params: {id: round.round_no}})"
           >
           Enter
@@ -44,7 +45,8 @@ export default {
     'title',
     'width',
     'contests',
-    'pageSize'
+    'pageSize',
+    'serverTime'
   ],
   data () {
     return {
@@ -63,6 +65,14 @@ export default {
     },
     length () {
       return Math.max(1, Math.ceil(this.contests.length / this.pageSize))
+    },
+    btnDisabled () {
+      let ret = []
+      for (let i = 0; i < this.contests.length; i++) {
+        let startTime = this.contests[i].start_time
+        ret.push((new Date(startTime)).getTime() > (this.serverTime))
+      }
+      return ret
     }
   },
   methods: {

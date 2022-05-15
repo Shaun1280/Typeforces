@@ -67,6 +67,33 @@
         </v-flex>
       </panel>
     </v-flex>
+
+    <v-dialog
+      v-model="dialog"
+      persistent
+      max-width="290"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Message
+        </v-card-title>
+
+        <v-card-text v-html="error">
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="dialog = false, $router.push({name: 'contests'})"
+          >
+            OK
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </v-layout>
 </template>
 
@@ -91,7 +118,9 @@ export default {
       typingStatus: 0, // 0 wait for typing, 1 is typing, 2 end typing
       // time management
       typingStartTime: (new Date()).getTime(),
-      timeLeft: (new Date()).getTime()
+      timeLeft: -1,
+      dialog: false,
+      error: 123
     }
   },
   computed: {
@@ -161,38 +190,53 @@ export default {
     }
   },
   async mounted () {
-    const response = await ContestServices.show(this.$store.state.route.params.id)
-    this.contest = response.data.contest
+    try {
+      const response = await ContestServices.show(this.$store.state.route.params.id)
+      this.contest = response.data.contest
 
-    // time management
-    this.timeLeft = (new Date(this.contest.start_time)).getTime() - response.data.serverTime + this.contest.duration * 60000
-    let _this = this
+      // 检查比赛是否开始
+      if ((new Date(this.contest.start_time)).getTime() - response.data.serverTime > 0) {
+        throw new Error('Access denied. <br/> The contest has not started yet.')
+      }
 
-    // used for count down
-    window.setInterval(() => {
-      setTimeout(function () {
-        if (_this.timeLeft > 0) _this.timeLeft = _this.timeLeft - 1000
-      }, 0)
-    }, 1000)
+      // time management
+      this.timeLeft = (new Date(this.contest.start_time)).getTime() - response.data.serverTime + this.contest.duration * 60000
+      let _this = this
 
-    // used for wpm & accuracy
-    window.setInterval(() => {
-      setTimeout(function () {
-        _this.calc()
-      }, 0)
-    }, 80)
+      // used for count down
+      window.setInterval(() => {
+        setTimeout(function () {
+          if (_this.timeLeft > 0) _this.timeLeft = _this.timeLeft - 1000
+        }, 0)
+      }, 1000)
 
-    // typing content related
-    this.content = response.data.content
-    this.color = []
-    this.color.length = this.content.content.length
-    for (let i = 0; i < this.content.content.length; i++) {
-      if (this.content.content[i] === ' ') this.color[i] = '#E0E0E0'
-      else this.color[i] = 'black'
+      // used for wpm & accuracy
+      window.setInterval(() => {
+        setTimeout(function () {
+          _this.calc()
+        }, 0)
+      }, 80)
+
+      // typing content related
+      this.content = response.data.content
+      this.color = []
+      this.color.length = this.content.content.length
+      for (let i = 0; i < this.content.content.length; i++) {
+        if (this.content.content[i] === ' ') this.color[i] = '#E0E0E0'
+        else this.color[i] = 'black'
+      }
+
+      // key press event
+      this.keyDown()
+    } catch (error) {
+      if (error.response !== undefined && error.response.status === 403) {
+        this.error = error.response.data.error + '. <br/> Please login first. '
+        this.dialog = true
+      } else {
+        this.error = error
+        this.dialog = true
+      }
     }
-
-    // key press event
-    this.keyDown()
   }
   // watch: {
   //   email (value) {

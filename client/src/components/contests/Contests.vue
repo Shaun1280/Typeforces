@@ -6,6 +6,7 @@
         width="60%"
         :contests="unclosedContests"
         pageSize="4"
+        :serverTime="serverTime"
       />
     </v-flex>
 
