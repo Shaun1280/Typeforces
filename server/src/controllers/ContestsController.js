@@ -1,4 +1,4 @@
-const { Round, Content } = require('../models')
+const { Round, Content, CompetitionHistory } = require('../models')
 
 module.exports = {
   async index (req, res) {
@@ -75,6 +75,25 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'An error has occured trying to create contest',
+        detail: err
+      })
+    }
+  },
+  async postHistory(req, res) {
+    try {
+      const history = await CompetitionHistory.create({
+        round_no: req.params.id,
+        participant_id: req.user.id,
+        prev_rating: req.user.rating,
+        miss_count: req.body.miss_count,
+        type_progress: req.body.type_progress,
+        wpm: req.body.wpm,
+        score:req.body.score
+      })
+      res.send(history.toJSON())
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occured trying to insert history',
         detail: err
       })
     }

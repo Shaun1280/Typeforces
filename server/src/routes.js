@@ -22,6 +22,9 @@ module.exports = (app) => {
   app.get('/contests/:id',
     isAuthenticated,
     ContestsController.show)
+  app.post('/contests/history/:id',
+    isAuthenticated,
+    ContestsController.postHistory)
   app.post('/manage-contests',
     isAuthenticated,
     ContestsController.post)
