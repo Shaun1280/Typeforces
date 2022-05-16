@@ -123,8 +123,10 @@ export default {
       // time management
       typingStartTime: (new Date()).getTime(),
       timeLeft: -1,
+      // error
       dialog: false,
-      error: 123
+      error: 123,
+      resStatus: 200 // 403 no access & redirect
     }
   },
   computed: {
@@ -175,13 +177,12 @@ export default {
 
         if (_this.cursor === _this.color.length) { // typing end
           _this.typingStatus = 2
-          console.log(_this.score)
+
           _this.score += Math.trunc(_this.wpm * 5)
-          console.log(_this.score)
           _this.score += Math.trunc(_this.contest.duration +
             ((new Date(_this.contest.start_time)).getTime() - _this.typingStartTime) / 60000)
-          console.log(_this.score)
-          // send data...
+          // send data
+          _this.sendData()
         }
 
         // scroll contents
@@ -203,9 +204,25 @@ export default {
     },
     viewContestRedirect () {
       this.dialog = false
-
-      if (this.error !== 'The contest has closed. <br/> You can only view standing or go to practice.') {
+      if (this.resStatus === 403) {
         this.$router.push({name: 'contests'})
+      }
+    },
+    async sendData () {
+      try {
+        await ContestServices.postHistory(this.contest.round_no, {
+          miss_count: this.missCount,
+          type_progress: this.cursor,
+          wpm: this.wpm,
+          score: this.score
+        })
+        this.error = 'Your typing data has been submited.'
+        this.dialog = true
+      } catch (error) {
+        console.log(error.response.data)
+        this.resStatus = 500
+        this.error = error.response.data.error
+        this.dialog = true
       }
     }
   },
@@ -216,6 +233,7 @@ export default {
 
       // 检查比赛是否开始
       if ((new Date(this.contest.start_time)).getTime() - response.data.serverTime > 0) {
+        this.resStatus = 403
         throw String('Access denied. <br/> The contest has not started yet.')
       }
 
@@ -256,9 +274,11 @@ export default {
       if (this.timeLeft > 0) this.keyDown()
     } catch (error) {
       if (error.response !== undefined && error.response.status === 403) {
+        this.resStatus = error.response.status
         this.error = error.response.data.error + '. <br/> Please login first. '
         this.dialog = true
       } else {
+        if (this.resStatus === 200) this.resStatus = 500
         this.error = error
         this.dialog = true
       }
