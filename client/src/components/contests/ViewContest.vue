@@ -21,7 +21,7 @@
         large
         color="cyan"
         title="Standing"
-        @clikc="mode = 1"
+        @click="mode = 1"
       >
         <v-icon dark>
           mdi-seal-variant
@@ -89,7 +89,7 @@
           <v-btn
             color="green darken-1"
             text
-            @click="dialog = false, $router.push({name: 'contests'})"
+            @click="viewContestRedirect"
           >
             OK
           </v-btn>
@@ -119,6 +119,7 @@ export default {
       missCount: 0,
       accuracy: 100.00,
       typingStatus: 0, // 0 wait for typing, 1 is typing, 2 end typing
+      score: 0,
       // time management
       typingStartTime: (new Date()).getTime(),
       timeLeft: -1,
@@ -161,17 +162,25 @@ export default {
         if ((String.fromCharCode(key)[0]) === _this.content.content[_this.cursor]) {
           if (_this.color[_this.cursor] !== 'red') { // don't change missed char color
             _this.$set(_this.color, _this.cursor, '#E0E0E0')
+            _this.score += 100
           }
           _this.cursor = _this.cursor + 1
         } else {
           if (_this.color[_this.cursor] !== 'red') { // first wrong
             _this.$set(_this.color, _this.cursor, 'red')
             _this.missCount++
+            _this.score -= 500
           }
         }
 
         if (_this.cursor === _this.color.length) { // typing end
           _this.typingStatus = 2
+          console.log(_this.score)
+          _this.score += Math.trunc(_this.wpm * 5)
+          console.log(_this.score)
+          _this.score += Math.trunc(_this.contest.duration +
+            ((new Date(_this.contest.start_time)).getTime() - _this.typingStartTime) / 60000)
+          console.log(_this.score)
           // send data...
         }
 
@@ -191,6 +200,13 @@ export default {
       // calc accuracy
       this.accuracy = (this.cursor - this.missCount) / (this.cursor) * 100
       if (isNaN(this.accuracy)) this.accuracy = 100
+    },
+    viewContestRedirect () {
+      this.dialog = false
+
+      if (this.error !== 'The contest has closed. <br/> You can only view standing or go to practice.') {
+        this.$router.push({name: 'contests'})
+      }
     }
   },
   async mounted () {
@@ -200,22 +216,22 @@ export default {
 
       // 检查比赛是否开始
       if ((new Date(this.contest.start_time)).getTime() - response.data.serverTime > 0) {
-        throw new Error('Access denied. <br/> The contest has not started yet.')
+        throw String('Access denied. <br/> The contest has not started yet.')
       }
 
       // time management
       this.timeLeft = (new Date(this.contest.start_time)).getTime() - response.data.serverTime + this.contest.duration * 60000
-      let _this = this
 
+      let _this = this
       // used for count down
-      window.setInterval(() => {
+      _this.IntervalTime1 = setInterval(() => {
         setTimeout(function () {
           if (_this.timeLeft > 0) _this.timeLeft = _this.timeLeft - 1000
         }, 0)
       }, 1000)
 
       // used for wpm & accuracy
-      window.setInterval(() => {
+      _this.IntervalTime2 = setInterval(() => {
         setTimeout(function () {
           _this.calc()
         }, 0)
@@ -226,12 +242,18 @@ export default {
       this.color = []
       this.color.length = this.content.content.length
       for (let i = 0; i < this.content.content.length; i++) {
-        if (this.content.content[i] === ' ') this.color[i] = '#E0E0E0'
+        if (this.timeLeft <= 0 || this.content.content[i] === ' ') this.color[i] = '#E0E0E0'
         else this.color[i] = 'black'
       }
 
+      if (this.timeLeft <= 0) {
+        this.error = 'The contest is closed. <br/> You can only view standing or go to practice.'
+        this.dialog = true
+        this.cursor = this.content.length
+      }
+
       // key press event
-      this.keyDown()
+      if (this.timeLeft > 0) this.keyDown()
     } catch (error) {
       if (error.response !== undefined && error.response.status === 403) {
         this.error = error.response.data.error + '. <br/> Please login first. '
@@ -244,6 +266,8 @@ export default {
   },
   destroyed () {
     window.onkeypress = () => {}
+    clearInterval(this.IntervalTime1)
+    clearInterval(this.IntervalTime2)
   }
   // watch: {
   //   email (value) {
