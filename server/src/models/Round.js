@@ -16,5 +16,11 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     timestamps: false
   })
+
+  // console.log(sequelize.models.Content)
+  Round.belongsTo(sequelize.models.Content, {
+    foreignKey: 'content_id',
+    targetKey: 'content_id'
+  })
   return Round
 }
