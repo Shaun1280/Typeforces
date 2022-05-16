@@ -195,6 +195,7 @@ export default {
       // call api
       try {
         await ContestServices.post(this.contest)
+        this.error = 'success'
         console.log('success')
       } catch (error) {
         console.log(error)
