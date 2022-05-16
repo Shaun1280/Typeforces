@@ -7,6 +7,7 @@
         dark
         color="indigo"
         title="Typing"
+        @click="mode = 0"
       >
         <v-icon dark>
           mdi-typewriter
@@ -20,6 +21,7 @@
         large
         color="cyan"
         title="Standing"
+        @clikc="mode = 1"
       >
         <v-icon dark>
           mdi-seal-variant
@@ -48,6 +50,7 @@
           flex-wrap
           :style="`max-height: ${maxHeight}px`"
           overflow-y-auto
+          ref="contentContainer"
         >
           <v-chip
             v-for="(item, index) in content.content"
@@ -139,15 +142,16 @@ export default {
         }
       }
     },
-    keyDown () {
+    keyDown () { // if mode = 1(view standing), do nothing
       const _this = this
-      document.onkeypress = (event) => {
+      window.onkeypress = (event) => {
         event.preventDefault()
         // console.log(this.$refs)
-        if (_this.typingStatus === 0) {
+        if (_this.mode === 1 || _this.typingStatus === 2) return
+        else if (_this.typingStatus === 0) {
           _this.typingStatus = 1
           _this.typingStartTime = (new Date()).getTime()
-        } else if (_this.typingStatus === 2) return
+        }
 
         // console.log(_this.$refs.vChips[_this.cursor].$el.offsetTop)
 
@@ -237,6 +241,9 @@ export default {
         this.dialog = true
       }
     }
+  },
+  destroyed () {
+    window.onkeypress = () => {}
   }
   // watch: {
   //   email (value) {
