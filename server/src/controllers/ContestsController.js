@@ -79,13 +79,14 @@ module.exports = {
       })
     }
   },
-  async postHistory(req, res) {
+  async postHistory (req, res) {
     try {
-      if (req.body.type_progress === 0) {
+      if (req.body.type_progress === 0 && req.body.miss_count === 0) {
         return res.send({
-          message: `typing_progress = 0, won't save`
+          message: 'typing_progress = 0, won\'t save'
         })
       }
+
       let history = await CompetitionHistory.findOne({
         where: {
           round_no: req.params.id,
@@ -93,7 +94,7 @@ module.exports = {
         }
       })
 
-      let content = (await Round.findOne({
+      const content = (await Round.findOne({
         include: [
           {
             model: Content
@@ -107,14 +108,14 @@ module.exports = {
       // for debug
       console.log('postHistory: content_length', content.length)
 
-      if (history) { // update
+      if (history) { // update, 50 penalty
         if (req.body.type_progress === content.length) { // typing ends
           // higher score or prev attempt didn't finish
           if (history.score < req.body.score || history.type_progress !== content.length) {
             history.setDataValue('miss_count', req.body.miss_count)
             history.setDataValue('wpm', req.body.wpm)
             history.setDataValue('type_progress', req.body.type_progress)
-            history.setDataValue('score', req.body.score)
+            history.setDataValue('score', req.body.score - 50)
             await history.save()
           }
         } else {
@@ -123,7 +124,7 @@ module.exports = {
             history.setDataValue('miss_count', req.body.miss_count)
             history.setDataValue('wpm', req.body.wpm)
             history.setDataValue('type_progress', req.body.type_progress)
-            history.setDataValue('score', req.body.score)
+            history.setDataValue('score', req.body.score - 50)
             await history.save()
           }
         }
@@ -135,7 +136,7 @@ module.exports = {
           miss_count: req.body.miss_count,
           type_progress: req.body.type_progress,
           wpm: req.body.wpm,
-          score:req.body.score
+          score: req.body.score
         })
       }
       res.send(history.toJSON())

@@ -160,6 +160,8 @@ export default {
 
         let e = event || window.event
         let key = e.keyCode || e.which || e.charCode
+        let preMissCount = _this.missCount
+        let preCursor = _this.cursor
 
         if ((String.fromCharCode(key)[0]) === _this.content.content[_this.cursor]) {
           if (_this.color[_this.cursor] !== 'red') { // don't change missed char color
@@ -175,12 +177,21 @@ export default {
           }
         }
 
+        // 只要输入了则记录，防止刷新/推出弃赛
+        if ((_this.cursor === 1 && preCursor === 0) ||
+          (_this.cursor === 0 && _this.missCount === 1 && preMissCount === 0)) {
+          ContestServices.postHistory(this.contest.round_no, {
+            miss_count: this.missCount,
+            type_progress: this.cursor,
+            wpm: this.wpm,
+            score: this.score
+          })
+        }
+
         if (_this.cursor === _this.color.length) { // typing end
           _this.typingStatus = 2
 
-          _this.score += Math.trunc(_this.wpm * 5)
-          _this.score += Math.trunc(_this.contest.duration +
-            ((new Date(_this.contest.start_time)).getTime() - _this.typingStartTime) / 60000)
+          _this.calcScore()
           // send data
           _this.sendData()
         }
@@ -202,6 +213,11 @@ export default {
       this.accuracy = (this.cursor - this.missCount) / (this.cursor) * 100
       if (isNaN(this.accuracy)) this.accuracy = 100
     },
+    calcScore () {
+      this.score += Math.trunc(this.wpm * 5)
+      this.score += Math.trunc(this.contest.duration +
+          ((new Date(this.contest.start_time)).getTime() - this.typingStartTime) / 60000)
+    },
     viewContestRedirect () {
       this.dialog = false
       if (this.resStatus === 403) {
@@ -216,7 +232,8 @@ export default {
           wpm: this.wpm,
           score: this.score
         })
-        this.error = 'Your typing data has been submited.'
+        this.error = 'Your typing data has been submited. <br/> You can choose to participant again,' +
+          ' better performance will be recorded. <br/> Notice that you may get score penalty for follow-up attempts.'
         this.dialog = true
       } catch (error) {
         console.log(error.response.data)
@@ -267,7 +284,7 @@ export default {
       if (this.timeLeft <= 0) {
         this.error = 'The contest is closed. <br/> You can only view standing or go to practice.'
         this.dialog = true
-        this.cursor = this.content.length
+        this.cursor = 0
       }
 
       // key press event
@@ -284,16 +301,18 @@ export default {
       }
     }
   },
-  destroyed () {
+  async destroyed () {
     window.onkeypress = () => {}
     clearInterval(this.IntervalTime1)
     clearInterval(this.IntervalTime2)
+  },
+  watch: {
+    timeLeft (newValue, oldValue) {
+      if (oldValue > 0 && newValue <= 0) { // 比赛结束刷新
+        this.$router.go(0)
+      }
+    }
   }
-  // watch: {
-  //   email (value) {
-  //     console.log('email has changed', value)
-  //   }
-  // }
 }
 </script>
 
