@@ -28,6 +28,12 @@ sequelize.sync({ force: true })
     )
 
     await Promise.all(
+      contents.map(content => {
+        return Content.create(content)
+      })
+    )
+
+    await Promise.all(
       rounds.map(round => {
         return Round.create({
           round_name: round.name,
@@ -36,12 +42,6 @@ sequelize.sync({ force: true })
           content_id: round.content_id,
           division: round.division
         })
-      })
-    )
-
-    await Promise.all(
-      contents.map(content => {
-        return Content.create(content)
       })
     )
   })
