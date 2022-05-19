@@ -8,6 +8,8 @@ const SearchController = require('./controllers/SearchController')
 
 const ProfileController = require('./controllers/ProfileController')
 
+const RatingController = require('./controllers/RatingController')
+
 const isAuthenticated = require('./policies/isAuthenticated')
 
 module.exports = (app) => {
@@ -33,4 +35,6 @@ module.exports = (app) => {
     SearchController.index)
 
   app.get('/profile/:username', ProfileController.index)
+
+  app.get('/rating', RatingController.index)
 }

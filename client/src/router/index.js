@@ -8,6 +8,7 @@ import ViewContest from '@/components/contests/ViewContest'
 import ManageContests from '@/components/contests/ManageContests'
 import Profile from '@/components/Profile'
 import Search from '@/components/Search'
+import Rating from '@/components/rating/Rating'
 
 Vue.use(Router)
 
@@ -62,6 +63,11 @@ export default new Router({
     {
       path: '/*',
       redirect: '/'
+    },
+    {
+      path: '/Rating',
+      name: 'rating',
+      component: Rating
     }
   ]
 })
