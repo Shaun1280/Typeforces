@@ -16,7 +16,7 @@ module.exports = {
            }
         })
         Object.assign(users[index].dataValues, {
-          match: 1
+          match: cnt
         })
         await getUserMatchCnt(index - 1)
       }
