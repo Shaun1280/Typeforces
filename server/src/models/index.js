@@ -24,4 +24,9 @@ fs
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 
+sequelize.models.CompetitionHistory.belongsTo(sequelize.models.User, {
+  foreignKey: 'participant_id',
+  targetKey: 'id'
+})
+
 module.exports = db

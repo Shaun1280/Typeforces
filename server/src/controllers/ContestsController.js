@@ -1,4 +1,4 @@
-const { Round, Content, CompetitionHistory } = require('../models')
+const { User, Round, Content, CompetitionHistory } = require('../models')
 
 module.exports = {
   async index (req, res) {
@@ -144,6 +144,31 @@ module.exports = {
       console.log(err)
       res.status(500).send({
         error: 'An error has occured trying to insert or update competition history',
+        detail: err
+      })
+    }
+  },
+  async getStanding(req, res) {
+    try {
+      //console.log("id: ", req.params.id)
+
+      const record = await CompetitionHistory.findAll({
+        attributes: ['rank', 'miss_count', 'wpm', 'wpm', 'score'],
+        include: [
+          {
+            model: User,
+            attributes: ['rating', 'user_name', 'country'],
+            required: false
+          }
+        ],
+        where:{
+          round_no: req.params.id
+        }
+      })
+      res.send({record: record})
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occured trying to get rating list',
         detail: err
       })
     }

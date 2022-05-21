@@ -12,5 +12,8 @@ export default {
   },
   postHistory (id, data) {
     return Api().post(`contests/history/${id}`, data)
+  },
+  getStanding (id) {
+    return Api().get(`contests/standing/${id}`)
   }
 }
