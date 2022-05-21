@@ -16,7 +16,7 @@ module.exports = {
            }
         })
         Object.assign(users[index].dataValues, {
-          match: cnt
+          match: 1
         })
         await getUserMatchCnt(index - 1)
       }
@@ -26,20 +26,6 @@ module.exports = {
       // 去掉没有参赛的
       let filteredUsers = users.filter(item => {
           return item.dataValues.match > 0
-      })
-
-      // 按 rating 从大到小排序
-     filteredUsers.sort((a, b) => b.rating - a.rating)
-
-      let count = 1
-      filteredUsers.forEach((element, index) => {
-          // rating 相同的排名相同
-          if (index > 0 && filteredUsers[index].rating !== filteredUsers[index - 1].rating) {
-            count = count + 1
-          }
-          Object.assign(element.dataValues, {
-            rank: count
-          })
       })
 
       res.send({users: filteredUsers})

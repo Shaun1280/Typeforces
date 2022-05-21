@@ -83,7 +83,21 @@ export default {
     try {
       const response = await RatingServices.index()
       this.users = response.data.users
-      console.log(this.users)
+
+      // 按 rating 从大到小排序
+      this.users.sort((a, b) => b.rating - a.rating)
+
+      let count = 1
+      this.users.forEach((element, index) => {
+        // rating 相同的排名相同
+        if (index > 0 && this.users[index].rating !== this.users[index - 1].rating) {
+          count = count + 1
+        }
+        Object.assign(element, {
+          rank: count
+        })
+      })
+      // console.log(this.users)
     } catch (error) {
       console.log(error)
     }
