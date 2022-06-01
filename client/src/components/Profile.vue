@@ -55,7 +55,7 @@
                 </v-list-item>
 
                 <v-list-item
-                  @click="() => {}"
+                  @click="navigateTo({name: 'friends'})"
                 >
                   <v-list-item-title>Friends</v-list-item-title>
                 </v-list-item>

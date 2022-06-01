@@ -9,7 +9,8 @@ import ViewStanding from '@/components/contests/ViewStanding'
 import ManageContests from '@/components/contests/ManageContests'
 import Profile from '@/components/Profile'
 import Search from '@/components/Search'
-import Rating from '@/components/rating/Rating'
+import Rating from '@/components/Rating'
+import Friends from '@/components/Friends'
 
 Vue.use(Router)
 
@@ -74,6 +75,11 @@ export default new Router({
       path: '/Rating',
       name: 'rating',
       component: Rating
+    },
+    {
+      path: '/Friends',
+      name: 'friends',
+      component: Friends
     }
   ]
 })
