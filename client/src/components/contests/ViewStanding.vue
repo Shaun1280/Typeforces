@@ -142,10 +142,16 @@ export default {
       })
       // console.log(this.record)
     } catch (error) {
-      if (error.response !== undefined && error.response.status === 403) {
-        this.resStatus = error.response.status
-        this.error = error.response.data.error + '. <br/> Please login first. '
-        this.dialog = true
+      if (error.response !== undefined) {
+        if (error.response.status === 403) {
+          this.resStatus = error.response.status
+          this.error = error.response.data.error + '. <br/> Please login first. '
+          this.dialog = true
+        } else if (error.response.status === 400) {
+          this.resStatus = error.response.status
+          this.error = error.response.data.error
+          this.dialog = true
+        }
       } else {
         if (this.resStatus === 200) this.resStatus = 500
         this.error = error

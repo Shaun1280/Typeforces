@@ -151,6 +151,18 @@ module.exports = {
   async getStanding(req, res) {
     try {
       //console.log("id: ", req.params.id)
+      // 查询比赛是否存在
+      const round = await Round.findOne({
+        where: {
+          round_no : req.params.id
+        }
+      })
+      // 比赛不存在
+      if (!round) {
+        return res.status(400).send({
+          error: 'No such contest!'
+        })
+      }
 
       const record = await CompetitionHistory.findAll({
         attributes: ['rank', 'miss_count', 'wpm', 'wpm', 'score'],
