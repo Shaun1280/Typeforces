@@ -10,7 +10,7 @@ import ManageContests from '@/components/contests/ManageContests'
 import Profile from '@/components/Profile'
 import Search from '@/components/Search'
 import Rating from '@/components/Rating'
-import Friends from '@/components/Friends'
+import Friends from '@/components/friends/Friends'
 
 Vue.use(Router)
 

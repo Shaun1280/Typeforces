@@ -18,6 +18,7 @@
         :search="search"
         light
       >
+      <!-- 用户名 -->
         <template v-slot:item.user_name="{ item }">
            <font
               v-for="(char, index) in item.user_name"
@@ -28,74 +29,77 @@
               {{ char === ' ' ? '&nbsp;' : char }}
            </font>
         </template>
-
+      <!-- 消息 -->
         <template v-slot:item.message="{ item }">
-          <v-icon
-            class="mr-2"
-            color="blue"
-            @click="openSession(item)"
+          <v-badge
+            v-if=1
+            color="pink"
+            dot
+            overlap
           >
-            mdi-message-badge-outline
+            <v-icon
+              class="mr-2"
+              color="blue"
+              @click="openSession(item)"
+            >
+              mdi-message-outline
+            </v-icon>
+          </v-badge>
+          <v-icon
+              v-else
+              class="mr-2"
+              color="blue"
+              @click="openSession(item)"
+            >
+              mdi-message-outline
           </v-icon>
         </template>
+      <!-- 删除 -->
         <template v-slot:item.remove="{ item }">
-          <v-icon
-            class="mr-2"
-            color="grey"
-            @click="deleteFriend(item)"
-          >
-            mdi-delete
-          </v-icon>
-        </template>
-      </v-data-table>
-    </v-card>
-    <!-- <v-card
-      width="400"
-    >
-      <v-toolbar
-        color="blue"
-        dark
-      >
-        <v-toolbar-title>Friends</v-toolbar-title>
-
-        <v-spacer></v-spacer>
-
-        <v-btn icon>
-          <v-icon>mdi-magnify</v-icon>
-        </v-btn>
-      </v-toolbar>
-      <v-list>
-        <template
-          v-for="(item, index) in users"
-          class="d-flex"
-        >
-          <v-list-item
-            :key="index"
-          >
-            <v-title v-html="item.title" class="mr-auto"></v-title>
-            <v-btn
-                icon
-                color="grey"
-              >
-                <v-icon>mdi-message-outline</v-icon>
-            </v-btn>
-            <v-btn
-                icon
-                color="blue"
-              >
-                <v-icon>mdi-message-badge-outline</v-icon>
-            </v-btn>
             <v-btn
               icon
-              color="orange darken-2"
+              @click.stop="dialog = true"
             >
-              <v-icon>mdi-delete</v-icon>
+              <v-icon
+                color="grey"
+              >
+                mdi-delete
+              </v-icon>
             </v-btn>
-          </v-list-item>
-          <v-divider :key="index"></v-divider>
         </template>
-      </v-list>
-    </v-card> -->
+      </v-data-table>
+    <!-- 确认删除对话框 -->
+      <v-dialog
+          v-model="dialog"
+          persistent
+          max-width="290"
+        >
+          <v-card>
+            <v-card-title class="text-h5">
+              Are you sure you want to remove this user
+              <br>
+              from your friend list?
+            </v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="dialog = false"
+              >
+                Yes
+              </v-btn>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="dialog = false"
+              >
+                No
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+    </v-card>
   </v-container>
 </template>
 
@@ -105,6 +109,7 @@ import global from '@/global'
 export default {
   data () {
     return {
+      dialog: false,
       search: '',
       headers: [
         {
