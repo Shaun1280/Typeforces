@@ -111,7 +111,7 @@ module.exports = {
       if (history) { // update, 50 penalty
         if (req.body.type_progress === content.length) { // typing ends
           // higher score or prev attempt didn't finish
-          if (history.score < req.body.score || history.type_progress !== content.length) {
+          if (history.score < req.body.score - 50 || history.type_progress !== content.length) {
             history.setDataValue('miss_count', req.body.miss_count)
             history.setDataValue('wpm', req.body.wpm)
             history.setDataValue('type_progress', req.body.type_progress)
