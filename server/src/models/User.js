@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     rating: {
       type: DataTypes.INTEGER,
-      defaultValue: 1500
+      defaultValue: -1
     },
     status: {
       type: DataTypes.STRING(8),

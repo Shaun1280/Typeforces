@@ -39,7 +39,6 @@ module.exports = {
         password: req.body.password,
         user_name: req.body.user_name,
         status: req.body.status,
-        rating: 1500,
         country: req.body.country,
         register_time: req.body.register_time,
         last_visit: req.body.last_visit
