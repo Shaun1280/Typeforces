@@ -21,7 +21,7 @@
         large
         color="cyan"
         title="Standing"
-        @click="mode = 1"
+        @click="mode = 0, openStanding()"
       >
         <v-icon dark>
           mdi-seal-variant
@@ -241,6 +241,15 @@ export default {
         this.error = error.response.data.error
         this.dialog = true
       }
+    },
+    openStanding (route) {
+      let info = this.$router.resolve({
+        name: 'viewStanding',
+        params: {
+          id: this.$store.state.route.params.id
+        }
+      })
+      window.open(info.href, '_blank')
     }
   },
   async mounted () {
