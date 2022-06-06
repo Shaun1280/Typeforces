@@ -81,6 +81,8 @@ export default {
   },
   async mounted () {
     try {
+      await global.checkLogin()
+
       const response = await RatingServices.index()
       this.users = response.data.users
 

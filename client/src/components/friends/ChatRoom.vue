@@ -54,6 +54,7 @@ export default {
   computed: {
   },
   async mounted () {
+    await global.checkLogin()
   }
   // watch: {
   //   email (value) {

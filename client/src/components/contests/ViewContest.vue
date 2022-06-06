@@ -245,6 +245,8 @@ export default {
   },
   async mounted () {
     try {
+      await global.checkLogin()
+
       const response = await ContestServices.show(this.$store.state.route.params.id)
       this.contest = response.data.contest
 

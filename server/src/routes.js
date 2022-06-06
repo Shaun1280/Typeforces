@@ -18,6 +18,9 @@ module.exports = (app) => {
     AuthenticationController.register)
   app.post('/login', // no need of policy
     AuthenticationController.login)
+  app.post('/checkLogin',
+    isAuthenticated,
+    (req, res) => { return res.send('is logged in') })
 
   app.get('/contests',
     ContestsController.index)

@@ -148,13 +148,13 @@ module.exports = {
       })
     }
   },
-  async getStanding(req, res) {
+  async getStanding (req, res) {
     try {
-      //console.log("id: ", req.params.id)
+      // console.log("id: ", req.params.id)
       // 查询比赛是否存在
       const round = await Round.findOne({
         where: {
-          round_no : req.params.id
+          round_no: req.params.id
         }
       })
       // 比赛不存在
@@ -173,11 +173,11 @@ module.exports = {
             required: false
           }
         ],
-        where:{
+        where: {
           round_no: req.params.id
         }
       })
-      res.send({record: record})
+      res.send({ record: record })
     } catch (err) {
       res.status(500).send({
         error: 'An error has occured trying to get rating list',

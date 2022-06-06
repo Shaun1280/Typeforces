@@ -1,3 +1,6 @@
+import AuthenticationService from '@/services/AuthenticationService'
+import store from '@/store/store'
+
 export default {
   timeDifToString (timeDif) {
     let hours = parseInt(timeDif / (60 * 60 * 1000))
@@ -70,5 +73,16 @@ export default {
   },
   ratingColor (rating, competitionHistory) {
     return this.titleColor(rating, competitionHistory)
+  },
+  async checkLogin () {
+    try {
+      await AuthenticationService.checkLogin()
+      console.log('global, is logged in')
+    } catch (error) {
+      if (error.response !== undefined && error.response.status === 403) {
+        store.dispatch('setToken', null)
+        store.dispatch('setUser', null)
+      }
+    }
   }
 }

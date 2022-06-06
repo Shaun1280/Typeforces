@@ -159,6 +159,7 @@
 
 <script>
 import ContestServices from '@/services/ContestServices'
+import global from '@/global'
 
 export default {
   data () {
@@ -202,6 +203,9 @@ export default {
         this.error = error.response.data.error
       }
     }
+  },
+  async mounted () {
+    await global.checkLogin()
   }
   // watch: {
   //   email (value) {

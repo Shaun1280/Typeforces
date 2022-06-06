@@ -62,6 +62,8 @@ export default {
   },
   async mounted () {
     try {
+      await global.checkLogin()
+
       const response = await ContestServices.index()
       this.contests = response.data.contests
       this.contests.forEach((item) => { // add time tag for each contest (end, close, ongoing...)

@@ -218,6 +218,8 @@ export default {
   },
   async mounted () {
     try {
+      await global.checkLogin()
+
       console.log(this.$store.state.route.params.username)
       const response = await ProfileServices.index(this.$store.state.route.params.username)
       this.user = response.data

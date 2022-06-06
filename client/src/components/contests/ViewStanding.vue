@@ -123,6 +123,8 @@ export default {
   },
   async mounted () {
     try {
+      await global.checkLogin()
+
       const response = await ContestServices.getStanding(this.$store.state.route.params.id)
       this.record = response.data.record
 
