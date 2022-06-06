@@ -36,7 +36,7 @@ sequelize.sync({ force: true })
     await Promise.all(
       rounds.map(round => {
         return Round.create({
-          round_name: round.name,
+          round_name: round.round_name,
           start_time: Date.parse(new Date('2022/05/02 00:00:00')),
           duration: round.duration,
           content_id: round.content_id,

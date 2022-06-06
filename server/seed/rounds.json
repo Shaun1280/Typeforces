@@ -2,7 +2,7 @@
   {
     "round_name": "test1",
     "start_time": "Date.parse(new Date(\"2022/05/02 00:00:00\"))",
-    "duration": "30",
+    "duration": "172800",
     "content_id": "1",
     "division": "Div2"
   }
