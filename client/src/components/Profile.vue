@@ -120,11 +120,11 @@
           </div>
 
           <div class="font-weight-bold ml-8 mb-2">
-            WPM :
+            WPM : {{user.user_wpm ? user.user_wpm : 'Unknown'}}
           </div>
 
           <div class="font-weight-bold ml-8 mb-2">
-            Average accuracy:
+            Average accuracy: {{user.user_accuracy ? user.user_accuracy : 'Unknown'}}
           </div>
 
           <div class="font-weight-bold ml-8 mb-2">
@@ -140,7 +140,9 @@
           </div>
 
           <div class="font-weight-bold ml-8 mb-2">
-            Last Visit : {{user.last_visit}}
+            Last Visit : {{user.last_visit ?
+              (new Date(user.last_visit)).toISOString().substr(0, 10) :
+              'Unknown'}}
           </div>
 
           <div class="font-weight-bold ml-8 mb-2">
@@ -181,6 +183,8 @@ export default {
         rating: 1500,
         register_time: 0,
         user_name: '',
+        user_accuracy: null,
+        user_wpm: null,
         title: 'unrated',
         competitionHistories: []
       }
