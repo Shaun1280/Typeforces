@@ -29,4 +29,9 @@ sequelize.models.CompetitionHistory.belongsTo(sequelize.models.User, {
   targetKey: 'id'
 })
 
+sequelize.models.Round.belongsTo(sequelize.models.Content, {
+  foreignKey: 'content_id',
+  targetKey: 'content_id'
+})
+
 module.exports = db

@@ -79,7 +79,7 @@ module.exports = {
       })
     }
   },
-  async postHistory (req, res) {
+  async postHistory (req, res) { // 增加比赛记录
     try {
       if (req.body.type_progress === 0 && req.body.miss_count === 0) {
         return res.send({
