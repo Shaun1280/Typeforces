@@ -112,7 +112,7 @@ export default {
   computed: {},
   methods: {
     nameColor (item) {
-      return global.nameColor(item.User.user_name, item.User.rating, [{}])
+      return global.nameColor(item.User.user_name, item.User.rating)
     },
     viewContestRedirect () {
       this.dialog = false

@@ -171,7 +171,7 @@ export default {
       this.$router.push(route)
     },
     nameColor (item) {
-      return global.nameColor(item.user_name, item.rating, [{}])
+      return global.nameColor(item.user_name, item.rating)
     }
   },
   computed: {

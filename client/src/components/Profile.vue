@@ -103,10 +103,10 @@
           <div class="font-weight-bold ml-8 mb-2 row justify-center">
             Contest rating: &nbsp;
             <font v-bind:color="ratingColor">
-              {{user.competitionHistories.length ? user.rating: 'Unrated'}}
+              {{user.rating !== -1 ? user.rating: 'Unrated'}}
             </font>
 
-            <div v-if="user.competitionHistories.length">
+            <div v-if="user.rating !== -1">
               &nbsp;(max.
               <font v-bind:color="titleColor">
                 {{calcTitle}}
@@ -193,18 +193,22 @@ export default {
   },
   computed: {
     calcTitle () {
-      return global.calcTitle(this.user.rating, this.user.competitionHistories)
+      return global.calcTitle(this.user.rating)
     },
     titleColor () {
-      return global.titleColor(this.user.rating, this.user.competitionHistories)
+      return global.titleColor(this.user.rating)
     },
     nameColor () {
-      return global.nameColor(this.user.user_name, this.user.rating, this.user.competitionHistories)
+      return global.nameColor(this.user.user_name, this.user.rating)
     },
     ratingColor () {
-      return global.ratingColor(this.user.rating, this.user.competitionHistories)
+      return global.ratingColor(this.user.rating)
     },
     maxRating () {
+      let mx = -1
+      for (let history in this.competitionHistories) {
+        mx = Math.max(mx, history.post_rating, history.post_rating)
+      }
       return this.user.rating
     }
   },

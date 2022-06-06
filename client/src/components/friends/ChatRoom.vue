@@ -48,7 +48,7 @@ export default {
   methods: {
 
     nameColor (item) {
-      return global.nameColor(item.user_name, item.rating, [{}])
+      return global.nameColor(item.user_name, item.rating)
     }
   },
   computed: {

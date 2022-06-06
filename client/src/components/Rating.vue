@@ -76,7 +76,7 @@ export default {
   computed: {},
   methods: {
     nameColor (item) {
-      return global.nameColor(item.user_name, item.rating, [{}])
+      return global.nameColor(item.user_name, item.rating)
     }
   },
   async mounted () {

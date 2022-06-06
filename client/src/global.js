@@ -1,6 +1,6 @@
 export default {
   timeDifToString (timeDif) {
-    let hours = parseInt(timeDif % (86400 * 1000) / (60 * 60 * 1000))
+    let hours = parseInt(timeDif / (60 * 60 * 1000))
     let minutes = parseInt(timeDif % (60 * 60 * 1000) / (60 * 1000))
     let seconds = parseInt(timeDif % (60 * 1000) / 1000)
     let s1 = `${hours < 10 ? `0${hours}` : `${hours}`}`
@@ -25,8 +25,8 @@ export default {
       }
     })
   },
-  calcTitle (rating, competitionHistory) {
-    if (competitionHistory.length === 0) return 'Unrated'
+  calcTitle (rating) {
+    if (rating === -1) return 'Unrated'
     else if (rating < 1200) return 'Newbie'
     else if (rating < 1400) return 'Pupil'
     else if (rating < 1600) return 'Specialist'
@@ -38,8 +38,8 @@ export default {
     else if (rating < 3000) return `International Grandmaster`
     else return `Legendary Grandmaster`
   },
-  titleColor (rating, competitionHistory) {
-    if (competitionHistory.length === 0) return '#000000'
+  titleColor (rating) {
+    if (rating === -1) return '#000000'
     else if (rating < 1200) return '#778899'
     else if (rating < 1400) return '#008000'
     else if (rating < 1600) return '#03A89E'
@@ -49,11 +49,11 @@ export default {
     else if (rating < 2400) return '#FF8C00'
     else return '#FF0000'
   },
-  nameColor (username, rating, competitionHistory) { // ret color array
+  nameColor (username, rating) { // ret color array
     let ret = []
     ret.length = username.length
     let color
-    if (competitionHistory.length === 0) color = '#000000'
+    if (rating === -1) color = '#000000'
     else if (rating < 1200) color = '#778899'
     else if (rating < 1400) color = '#008000'
     else if (rating < 1600) color = '#03A89E'
