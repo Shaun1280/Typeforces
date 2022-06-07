@@ -100,6 +100,7 @@
         <v-divider></v-divider>
 
         <v-card-text>
+          <!-- max rating part -->
           <div class="font-weight-bold ml-8 mb-2 row justify-center">
             Contest rating: &nbsp;
             <font v-bind:color="ratingColor">
@@ -108,16 +109,17 @@
 
             <div v-if="user.rating !== -1">
               &nbsp;(max.
-              <font v-bind:color="titleColor">
-                {{calcTitle}}
+              <font v-bind:color="maxTitleColor">
+                {{calcMaxTitle}}
               </font>
               ,
-              <font v-bind:color="ratingColor">
+              <font v-bind:color="maxRatingColor">
                 {{maxRating}}
               </font>
               )
             </div>
           </div>
+          <!-- end of max rating part -->
 
           <div class="font-weight-bold ml-8 mb-2">
             WPM : {{user.user_wpm ? user.user_wpm : 'Unknown'}}
@@ -208,12 +210,22 @@ export default {
     ratingColor () {
       return global.ratingColor(this.user.rating)
     },
+    calcMaxTitle () {
+      return global.calcTitle(this.maxRating)
+    },
+    maxTitleColor () {
+      return global.titleColor(this.maxRating)
+    },
+    maxRatingColor () {
+      return global.ratingColor(this.maxRating)
+    },
     maxRating () {
       let mx = -1
-      for (let history in this.competitionHistories) {
-        mx = Math.max(mx, history.post_rating, history.post_rating)
+      for (let history of this.user.competitionHistories) {
+        if (history.post_rating === null) continue
+        mx = Math.max(mx, history.prev_rating, history.post_rating)
       }
-      return this.user.rating
+      return mx
     }
   },
   async mounted () {
