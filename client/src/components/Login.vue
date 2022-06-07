@@ -41,7 +41,8 @@ export default {
         this.$store.dispatch('setUser', response.data.user)
         this.$router.push('/')
       } catch (error) {
-        this.error = error.response.data.error
+        if (error.response) this.error = error.response.data.error
+        else this.error = 'Network Error'
       }
     }
   }

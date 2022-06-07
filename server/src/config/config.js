@@ -1,5 +1,8 @@
+const dotenv = require('dotenv')
+dotenv.config('../.env')
+
 module.exports = {
-  port: process.env.PORT || 3306,
+  port: process.env.DB_PORT || 3306,
   db: {
     database: process.env.DB_NAME || 'nodetest',
     user: process.env.DB_USER || 'root',
