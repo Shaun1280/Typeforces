@@ -68,10 +68,6 @@ export default new Router({
       component: Search
     },
     {
-      path: '/*',
-      redirect: '/'
-    },
-    {
       path: '/Rating',
       name: 'rating',
       component: Rating
@@ -80,6 +76,10 @@ export default new Router({
       path: '/Friends',
       name: 'friends',
       component: Friends
+    },
+    {
+      path: '/*',
+      redirect: '/'
     }
   ]
 })
