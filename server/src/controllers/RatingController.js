@@ -1,4 +1,5 @@
 const { User, CompetitionHistory} = require('../models')
+const { Op } = require('sequelize')
 
 module.exports = {
   async index (req, res) {
@@ -12,8 +13,11 @@ module.exports = {
         if (index < 0) return
         const cnt = await CompetitionHistory.count({
           where: {
-               participant_id: users[index].id
-           }
+            participant_id: users[index].id,
+            post_rating: { // 排除正在参赛或未计算 rating 的比赛
+              [Op.not]: null
+            }
+          }
         })
         Object.assign(users[index].dataValues, {
           match: cnt
