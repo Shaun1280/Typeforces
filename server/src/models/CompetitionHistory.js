@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     type_progress: { // 0 unfinished, 1 finished
-      type: DataTypes.FLOAT(4, 3),
+      type: DataTypes.FLOAT(6, 5),
       allowNull: false
     },
     wpm: {

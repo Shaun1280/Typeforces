@@ -1,15 +1,16 @@
 const { User, CompetitionHistory} = require('../models')
+const schedules = require('../schedules')
 const { Op } = require('sequelize')
 
 module.exports = {
   async index (req, res) {
     try {
       const users = await User.findAll({
-        where:{}
+        where: {}
       })
 
       // 获取每个用户参与比赛总数
-      async function getUserMatchCnt(index) {
+      async function getUserMatchCnt (index) {
         if (index < 0) return
         const cnt = await CompetitionHistory.count({
           where: {
@@ -36,6 +37,18 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'An error has occured trying to get rating list',
+        detail: err
+      })
+    }
+  },
+  async forceUpdateRating (req, res) { // 强制刷新比赛排名
+    try {
+      await schedules.updateRating()
+      res.send('successfully updated rating')
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error has occured trying to update rating',
         detail: err
       })
     }
