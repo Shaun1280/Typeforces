@@ -49,6 +49,16 @@
               {{ char === ' ' ? '&nbsp;' : char }}
             </font>
         </template>
+        <template v-slot:item.type_progress="{ item }">
+            <v-progress-linear
+              :color="getProgressColor(item.type_progress)"
+              height="15"
+              :value=item.type_progress
+              striped
+            >
+              <strong>{{ item.type_progress }}%</strong>
+            </v-progress-linear>
+        </template>
       </v-data-table>
     </v-card>
   </v-flex>
@@ -99,6 +109,13 @@ export default {
           filterable: false
         },
         {
+          text: 'Progress',
+          align: 'center',
+          sortable: false,
+          value: 'type_progress',
+          filterable: false
+        },
+        {
           text: 'Score',
           align: 'start',
           sortable: false,
@@ -119,6 +136,13 @@ export default {
       if (this.resStatus === 403) {
         this.$router.push({name: 'contests'})
       }
+    },
+    getProgressColor (value) {
+      if (value >= 80) return 'deep-orange'
+      if (value >= 60) return 'amber darken-1'
+      if (value >= 40) return 'light-blue'
+      if (value >= 20) return 'green accent-4'
+      return 'brown'
     }
   },
   async mounted () {

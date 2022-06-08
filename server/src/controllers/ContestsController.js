@@ -167,7 +167,7 @@ module.exports = {
       }
 
       const record = await CompetitionHistory.findAll({
-        attributes: ['rank', 'miss_count', 'wpm', 'wpm', 'score'],
+        attributes: ['rank', 'miss_count', 'wpm', 'score', 'type_progress'],
         include: [
           {
             model: User,
