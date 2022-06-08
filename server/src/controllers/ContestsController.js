@@ -107,23 +107,25 @@ module.exports = {
 
       // for debug
       console.log('postHistory: content_length', content.length)
+      console.log(req.body)
 
       if (history) { // update, 50 penalty
         if (req.body.type_progress === content.length) { // typing ends
           // higher score or prev attempt didn't finish
-          if (history.score < req.body.score - 50 || history.type_progress !== content.length) {
+          if (history.score < req.body.score - 100 || !(Math.abs(history.type_progress - 1) < 1e-6)) {
             history.setDataValue('miss_count', req.body.miss_count)
             history.setDataValue('wpm', req.body.wpm)
-            history.setDataValue('type_progress', req.body.type_progress)
-            history.setDataValue('score', req.body.score - 50)
+            history.setDataValue('type_progress', 1)
+            history.setDataValue('score', req.body.score - 100)
             await history.save()
           }
         } else {
           // current && prev attempt didn't finish
-          if (history.type_progress !== content.length) {
+          if (!(Math.abs(history.type_progress - 1) < 1e-6) &&
+            history.type_progress < req.body.type_progress / content.length) {
             history.setDataValue('miss_count', req.body.miss_count)
             history.setDataValue('wpm', req.body.wpm)
-            history.setDataValue('type_progress', req.body.type_progress)
+            history.setDataValue('type_progress', req.body.type_progress / content.length)
             history.setDataValue('score', req.body.score - 50)
             await history.save()
           }
@@ -134,7 +136,7 @@ module.exports = {
           participant_id: req.user.id,
           prev_rating: req.user.rating,
           miss_count: req.body.miss_count,
-          type_progress: req.body.type_progress,
+          type_progress: req.body.type_progress / content.length,
           wpm: req.body.wpm,
           score: req.body.score
         })

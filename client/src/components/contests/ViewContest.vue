@@ -190,8 +190,6 @@ export default {
 
         if (_this.cursor === _this.color.length) { // typing end
           _this.typingStatus = 2
-
-          _this.calcScore()
           // send data
           _this.sendData()
         }
@@ -213,10 +211,13 @@ export default {
       this.accuracy = (this.cursor - this.missCount) / (this.cursor) * 100
       if (isNaN(this.accuracy)) this.accuracy = 100
     },
+    // 返回得分
     calcScore () {
-      this.score += Math.trunc(this.wpm * 5)
-      this.score += Math.trunc(this.contest.duration +
-          ((new Date(this.contest.start_time)).getTime() - this.typingStartTime) / 60000)
+      let ret = this.score
+      let penalty = ((new Date(this.contest.start_time)).getTime() - this.typingStartTime) / 60000
+      ret += Math.trunc(this.wpm * 5)
+      ret += Math.trunc(2000 * (this.contest.duration + penalty) / this.contest.duration)
+      return ret
     },
     viewContestRedirect () {
       this.dialog = false
@@ -230,7 +231,7 @@ export default {
           miss_count: this.missCount,
           type_progress: this.cursor,
           wpm: this.wpm,
-          score: this.score
+          score: this.calcScore()
         })
         this.error = 'Your typing data has been submited. <br/> You can choose to participant again,' +
           ' better performance will be recorded. <br/> Notice that you may get score penalty for follow-up attempts.'
@@ -242,6 +243,7 @@ export default {
         this.dialog = true
       }
     },
+    // 打开排名新窗口
     openStanding (route) {
       let info = this.$router.resolve({
         name: 'viewStanding',
@@ -250,6 +252,37 @@ export default {
         }
       })
       window.open(info.href, '_blank')
+    },
+    // 定时事件
+    createIntervals () {
+      let _this = this
+      // used for count down
+      _this.IntervalTime1 = setInterval(() => {
+        setTimeout(function () {
+          if (_this.timeLeft > 0) _this.timeLeft = _this.timeLeft - 1000
+        }, 0)
+      }, 1000)
+
+      // used for wpm & accuracy
+      _this.IntervalTime2 = setInterval(() => {
+        setTimeout(function () {
+          _this.calc()
+        }, 0)
+      }, 80)
+
+      // for typing update
+      _this.IntervalTime3 = setInterval(() => {
+        setTimeout(function () {
+          if (_this.typingStatus === 1) {
+            ContestServices.postHistory(_this.contest.round_no, {
+              miss_count: _this.missCount,
+              type_progress: _this.cursor,
+              wpm: _this.wpm,
+              score: _this.calcScore()
+            })
+          }
+        }, Math.floor(Math.random() * 500))
+      }, 8000)
     }
   },
   async mounted () {
@@ -268,20 +301,8 @@ export default {
       // time management
       this.timeLeft = (new Date(this.contest.start_time)).getTime() - response.data.serverTime + this.contest.duration * 60000
 
-      let _this = this
-      // used for count down
-      _this.IntervalTime1 = setInterval(() => {
-        setTimeout(function () {
-          if (_this.timeLeft > 0) _this.timeLeft = _this.timeLeft - 1000
-        }, 0)
-      }, 1000)
-
-      // used for wpm & accuracy
-      _this.IntervalTime2 = setInterval(() => {
-        setTimeout(function () {
-          _this.calc()
-        }, 0)
-      }, 80)
+      // 定时事件
+      this.createIntervals()
 
       // typing content related
       this.content = response.data.content
@@ -316,6 +337,7 @@ export default {
     window.onkeypress = () => {}
     clearInterval(this.IntervalTime1)
     clearInterval(this.IntervalTime2)
+    clearInterval(this.IntervalTime3)
   },
   watch: {
     timeLeft (newValue, oldValue) {

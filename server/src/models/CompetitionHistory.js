@@ -22,8 +22,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    type_progress: {
-      type: DataTypes.INTEGER,
+    type_progress: { // 0 unfinished, 1 finished
+      type: DataTypes.FLOAT(4, 3),
       allowNull: false
     },
     wpm: {
