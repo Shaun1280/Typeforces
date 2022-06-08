@@ -116,6 +116,7 @@ export default {
       mode: 0, // 0 typing, 1 view standing
       // user data
       wpm: 0,
+      rightCount: 0,
       missCount: 0,
       accuracy: 100.00,
       typingStatus: 0, // 0 wait for typing, 1 is typing, 2 end typing
@@ -147,7 +148,7 @@ export default {
     },
     keyDown () { // if mode = 1(view standing), do nothing
       const _this = this
-      window.onkeypress = (event) => {
+      window.onkeypress = async (event) => {
         event.preventDefault()
         // console.log(this.$refs)
         if (_this.mode === 1 || _this.typingStatus === 2) return
@@ -167,6 +168,7 @@ export default {
           if (_this.color[_this.cursor] !== 'red') { // don't change missed char color
             _this.$set(_this.color, _this.cursor, '#E0E0E0')
             _this.score += 100
+            _this.rightCount++
           }
           _this.cursor = _this.cursor + 1
         } else {
@@ -180,7 +182,8 @@ export default {
         // 只要输入了则记录，防止刷新/推出弃赛
         if ((_this.cursor === 1 && preCursor === 0) ||
           (_this.cursor === 0 && _this.missCount === 1 && preMissCount === 0)) {
-          ContestServices.postHistory(this.contest.round_no, {
+          _this.calc()
+          await ContestServices.postHistory(this.contest.round_no, {
             miss_count: this.missCount,
             type_progress: this.cursor,
             wpm: this.wpm,
@@ -190,8 +193,9 @@ export default {
 
         if (_this.cursor === _this.color.length) { // typing end
           _this.typingStatus = 2
+          _this.calc()
           // send data
-          _this.sendData()
+          await _this.sendData()
         }
 
         // scroll contents
@@ -203,20 +207,24 @@ export default {
       }
     },
     calc () {
-      if (this.typingStatus === 2) return
       // calc wpm
       this.wpm = (this.cursor) / ((new Date()).getTime() - this.typingStartTime) * 200 * 60
       if (isNaN(this.wpm)) this.wpm = 0
       // calc accuracy
-      this.accuracy = (this.cursor - this.missCount) / (this.cursor) * 100
+      this.accuracy = (this.rightCount) / (this.missCount + this.rightCount) * 100
       if (isNaN(this.accuracy)) this.accuracy = 100
     },
     // 返回得分
     calcScore () {
       let ret = this.score
-      let penalty = ((new Date(this.contest.start_time)).getTime() - this.typingStartTime) / 60000
+      let penalty = ((new Date(this.contest.start_time)).getTime() -
+        this.typingStartTime) / 60000
       ret += Math.trunc(this.wpm * 5)
-      ret += Math.trunc(2000 * (this.contest.duration + penalty) / this.contest.duration)
+      // 打完字才有随时间的额外加分
+      if (this.typingStatus === 2) {
+        ret += Math.trunc(2000 * (this.contest.duration + penalty) /
+          this.contest.duration)
+      }
       return ret
     },
     viewContestRedirect () {
@@ -266,23 +274,24 @@ export default {
       // used for wpm & accuracy
       _this.IntervalTime2 = setInterval(() => {
         setTimeout(function () {
+          if (_this.typingStatus === 2) return
           _this.calc()
         }, 0)
       }, 80)
 
       // for typing update
       _this.IntervalTime3 = setInterval(() => {
-        setTimeout(function () {
+        setTimeout(async function () {
           if (_this.typingStatus === 1) {
-            ContestServices.postHistory(_this.contest.round_no, {
+            await ContestServices.postHistory(_this.contest.round_no, {
               miss_count: _this.missCount,
               type_progress: _this.cursor,
               wpm: _this.wpm,
               score: _this.calcScore()
             })
           }
-        }, Math.floor(Math.random() * 500))
-      }, 8000)
+        }, Math.floor(Math.random() * 1000))
+      }, 10000)
     }
   },
   async mounted () {
