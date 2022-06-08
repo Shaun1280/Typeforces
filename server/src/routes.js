@@ -43,4 +43,7 @@ module.exports = (app) => {
   app.get('/profile/:username', ProfileController.index)
 
   app.get('/rating', RatingController.index)
+  app.post('/forceUpdateRating',
+    isAuthenticated,
+    RatingController.forceUpdateRating)
 }

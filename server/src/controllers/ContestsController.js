@@ -126,19 +126,20 @@ module.exports = {
             history.setDataValue('miss_count', req.body.miss_count)
             history.setDataValue('wpm', req.body.wpm)
             history.setDataValue('type_progress', req.body.type_progress / content.length)
-            history.setDataValue('score', req.body.score - 50)
+            history.setDataValue('score', null)
             await history.save()
           }
         }
       } else { // insert
+        let progress = req.body.type_progress / content.length
         history = await CompetitionHistory.create({
           round_no: req.params.id,
           participant_id: req.user.id,
           prev_rating: req.user.rating,
           miss_count: req.body.miss_count,
-          type_progress: req.body.type_progress / content.length,
+          type_progress: progress,
           wpm: req.body.wpm,
-          score: req.body.score
+          score: (Math.abs(progress - 1) < 1e-6) ? req.body.score : null
         })
       }
       res.send(history.toJSON())
