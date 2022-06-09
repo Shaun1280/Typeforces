@@ -158,6 +158,10 @@ export default {
       // 添加排名
       let count = 1
       this.record.forEach((element, index) => {
+        // type_progress -> [0, 100] int
+        if (Math.abs(element.type_progress - 1) < 1e-6) element.type_progress = 100
+        else element.type_progress = Math.floor(element.type_progress * 100)
+
         // score 相同的排名相同
         if (index > 0 && this.record[index].score !== this.record[index - 1].score) {
           count = count + 1
