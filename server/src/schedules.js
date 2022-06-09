@@ -143,6 +143,8 @@ module.exports = {
     await forRoundIds(roundIds.length - 1)
   },
   scheduleUpdateRating () {
-    schedule.scheduleJob(ruleUpdateRating, this.updateRating())
+    schedule.scheduleJob(ruleUpdateRating, async () => {
+      await this.updateRating()
+    })
   }
 }
