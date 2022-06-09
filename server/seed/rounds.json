@@ -1,8 +1,8 @@
 [
   {
-    "round_name": "test1",
+    "round_name": "test_round",
     "start_time": "Date.parse(new Date(\"2022/05/02 00:00:00\"))",
-    "duration": "172800",
+    "duration": "60",
     "content_id": "1",
     "division": "Div2"
   }

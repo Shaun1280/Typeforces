@@ -2,7 +2,8 @@ const {
   sequelize,
   User,
   Round,
-  Content
+  Content,
+  CompetitionHistory
 } = require('../src/models')
 
 const Promise = require('bluebird')
@@ -15,15 +16,28 @@ sequelize.sync({ force: true })
   .then(async function () {
     await Promise.all(
       users.map(user => {
-        return User.create({
-          id: uuid.v4(),
-          email: user.email,
-          password: user.password,
-          user_name: user.user_name,
-          status: user.status,
-          country: user.country,
-          register_time: Date.parse(new Date())
-        })
+        if (user.rating) {
+          return User.create({
+            id: uuid.v4(),
+            email: user.email,
+            password: user.password,
+            user_name: user.user_name,
+            rating: user.rating,
+            status: user.status,
+            country: user.country,
+            register_time: Date.parse(new Date())
+          })
+        } else {
+          return User.create({
+            id: uuid.v4(),
+            email: user.email,
+            password: user.password,
+            user_name: user.user_name,
+            status: user.status,
+            country: user.country,
+            register_time: Date.parse(new Date())
+          })
+        }
       })
     )
 
@@ -44,4 +58,24 @@ sequelize.sync({ force: true })
         })
       })
     )
+
+    // insert test histories
+    const testBots = await User.findAll({
+      where: {
+        status: 'bot'
+      }
+    })
+    for (let bot of testBots) { // 不需要结果，可以用 for
+      const rand1 = Math.floor(Math.random() * 10000)
+      const rand2 = Math.round(Math.random() * 10000)
+      await CompetitionHistory.create({
+        round_no: 1,
+        participant_id: bot.id,
+        prev_rating: bot.rating,
+        miss_count: 0,
+        type_progress: 1,
+        wpm: 70,
+        score: (rand2 % 8) ? rand1 : null
+      })
+    }
   })

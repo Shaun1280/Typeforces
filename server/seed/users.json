@@ -12,5 +12,62 @@
     "user_name": "shaun2",
     "status": "student",
     "country": "China"
+  },
+  {
+    "email": "2498861110bot1@qq.com",
+    "password": "118294191",
+    "user_name": "bot1",
+    "rating": "1600",
+    "status": "bot",
+    "country": "Bot"
+  },
+  {
+    "email": "2498861110bot2@qq.com",
+    "password": "118294191",
+    "user_name": "bot2",
+    "status": "bot",
+    "country": "Bot"
+  },
+  {
+    "email": "2498861110bot3@qq.com",
+    "password": "118294191",
+    "user_name": "bot3",
+    "status": "bot",
+    "country": "Bot"
+  },
+  {
+    "email": "2498861110bot4@qq.com",
+    "password": "118294191",
+    "user_name": "bot4",
+    "status": "bot",
+    "country": "Bot"
+  },
+  {
+    "email": "2498861110bot5@qq.com",
+    "password": "118294191",
+    "user_name": "bot5",
+    "status": "bot",
+    "country": "Bot"
+  },
+  {
+    "email": "2498861110bot6@qq.com",
+    "password": "118294191",
+    "user_name": "bot6",
+    "status": "bot",
+    "country": "Bot"
+  },
+  {
+    "email": "2498861110bot7@qq.com",
+    "password": "118294191",
+    "user_name": "bot7",
+    "status": "bot",
+    "country": "Bot"
+  },
+  {
+    "email": "2498861110bot8@qq.com",
+    "password": "118294191",
+    "user_name": "bot8",
+    "status": "bot",
+    "country": "Bot"
   }
 ]
