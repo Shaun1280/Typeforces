@@ -65,7 +65,7 @@ sequelize.sync({ force: true })
         status: 'bot'
       }
     })
-    for (let bot of testBots) { // 不需要结果，可以用 for
+    for (const bot of testBots) { // 不需要结果，可以用 for
       const rand1 = Math.floor(Math.random() * 10000)
       const rand2 = Math.round(Math.random() * 10000)
       await CompetitionHistory.create({

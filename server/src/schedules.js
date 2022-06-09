@@ -31,9 +31,8 @@ module.exports = {
       if (seedi < mi - 1e-6) r = mid
       else if (Math.abs(seedi - mi) < 1e-6) {
         ans = mid
-        break;
-      }
-      else l = mid
+        break
+      } else l = mid
     }
     return Math.round(ans)
   },
@@ -75,8 +74,13 @@ module.exports = {
     }
     for (let i = 0; i < this.delta.length; i++) {
       if (sumdi === 0) break
-      if (sumdi < 0) this.delta[i] += 1, sumdi += 1
-      else this.delta[i] -= 1, sumdi -= 1
+      if (sumdi < 0) {
+        this.delta[i] += 1
+        sumdi += 1
+      } else {
+        this.delta[i] -= 1
+        sumdi -= 1
+      }
     }
   },
   async updateSingle (roundNo) {
@@ -125,7 +129,7 @@ module.exports = {
     async function forRoundIds (index) {
       if (index < 0) return
       await forRoundIds(index - 1)
-      
+
       const round = await Round.findOne({
         where: {
           round_no: roundIds[index].round_no

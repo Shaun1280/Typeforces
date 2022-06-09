@@ -131,7 +131,7 @@ module.exports = {
           }
         }
       } else { // insert
-        let progress = req.body.type_progress / content.length
+        const progress = req.body.type_progress / content.length
         history = await CompetitionHistory.create({
           round_no: req.params.id,
           participant_id: req.user.id,
@@ -180,7 +180,7 @@ module.exports = {
           round_no: req.params.id
         }
       })
-      
+
       res.send({ record: record })
     } catch (err) {
       res.status(500).send({
