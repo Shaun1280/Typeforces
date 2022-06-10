@@ -30,6 +30,16 @@
       <v-btn
         text
         left
+        class="blue white--text ml-2"
+        @click="navigateTo({name: 'practices'})"
+      >
+        <v-icon small>mdi-dumbbell</v-icon>
+        Practices
+      </v-btn>
+
+      <v-btn
+        text
+        left
         class="blue white--text"
         @click="navigateTo({name: 'rating'})"
       >
