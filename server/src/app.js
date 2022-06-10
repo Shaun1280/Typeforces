@@ -21,5 +21,3 @@ sequelize.sync()
     console.log(`Server started on port ${config.port}`)
     schedules.scheduleUpdateRating()
   })
-
-

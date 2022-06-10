@@ -453,7 +453,6 @@ export default {
       }
       // call api
       try {
-        
         await ContestServices.post(this.contest)
         this.error = 'success'
       } catch (error) {
@@ -494,7 +493,6 @@ export default {
         this.error = 'Please fill in all the required fields'
         return
       }
-      
       try {
         await ContestServices.delete(this.contest.round_no)
         this.error = 'success'

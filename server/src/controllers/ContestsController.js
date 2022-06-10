@@ -168,11 +168,11 @@ module.exports = {
         })
       }
 
-      const content_id = contest.content_id
+      const contentId = contest.content_id
       await contest.destroy()
       await Content.destroy({
         where: {
-          content_id: content_id
+          content_id: contentId
         }
       })
       res.send('delete success')

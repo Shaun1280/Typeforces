@@ -11,6 +11,8 @@ import Profile from '@/components/Profile'
 import Search from '@/components/Search'
 import Rating from '@/components/Rating'
 import Friends from '@/components/friends/Friends'
+import Practices from '@/components/practices/Practices'
+import ManagePractices from '@/components/practices/ManagePractices'
 
 Vue.use(Router)
 
@@ -61,6 +63,16 @@ export default new Router({
       path: '/Contests/Standing/:id',
       name: 'viewStanding',
       component: ViewStanding
+    },
+    {
+      path: '/Practices',
+      name: 'practices',
+      component: Practices
+    },
+    {
+      path: '/ManagePractices',
+      name: 'managePractices',
+      component: ManagePractices
     },
     {
       path: '/Search',

@@ -1,4 +1,4 @@
-const { User, CompetitionHistory} = require('../models')
+const { User, CompetitionHistory } = require('../models')
 const schedules = require('../schedules')
 const { Op } = require('sequelize')
 
@@ -27,13 +27,13 @@ module.exports = {
       }
 
       await getUserMatchCnt(users.length - 1)
-      
+
       // 去掉没有参赛的
-      let filteredUsers = users.filter(item => {
-          return item.dataValues.match > 0
+      const filteredUsers = users.filter(item => {
+        return item.dataValues.match > 0
       })
 
-      res.send({users: filteredUsers})
+      res.send({ users: filteredUsers })
     } catch (err) {
       res.status(500).send({
         error: 'An error has occured trying to get rating list',
