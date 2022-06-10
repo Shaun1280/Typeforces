@@ -30,14 +30,15 @@
 
               <v-list>
                 <v-list-item
-                  v-if="$store.state.isUserLoggedIn && $store.state.user.status==='admin'"
+                  v-if="isSelfAdmin()"
                   @click="navigateTo({name: 'manageContests'})"
                 >
                   <v-list-item-title>Manage contests</v-list-item-title>
                 </v-list-item>
 
                 <v-list-item
-                  @click="() => {}"
+                  v-if="isSelf()"
+                  @click="navigateTo({name: 'managePractices'})"
                 >
                   <v-list-item-title>Manage Practices</v-list-item-title>
                 </v-list-item>
@@ -55,6 +56,7 @@
                 </v-list-item>
 
                 <v-list-item
+                  v-if="isSelf()"
                   @click="navigateTo({name: 'friends'})"
                 >
                   <v-list-item-title>Friends</v-list-item-title>
@@ -195,6 +197,12 @@ export default {
   methods: {
     navigateTo (route) {
       this.$router.push(route)
+    },
+    isSelfAdmin () { // 是否为 admin
+      return this.isSelf() && this.$store.state.user.status === 'admin'
+    },
+    isSelf () { // 是否为本人
+      return this.$store.state.isUserLoggedIn && this.$store.state.route.params.username === this.$store.state.user.user_name
     }
   },
   computed: {
