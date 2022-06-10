@@ -7,8 +7,21 @@ export default {
   show (id) {
     return Api().get(`contests/${id}`)
   },
+  get (search) {
+    return Api().get(`manage-contests`, {
+      params: {
+        search: search
+      }
+    })
+  },
+  put (contest) {
+    return Api().put('manage-contests', contest)
+  },
   post (contest) {
     return Api().post('manage-contests', contest)
+  },
+  delete (id) {
+    return Api().delete(`manage-contests/${id}`)
   },
   postHistory (id, data) {
     return Api().post(`contests/history/${id}`, data)

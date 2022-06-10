@@ -36,6 +36,15 @@ module.exports = (app) => {
   app.post('/manage-contests',
     isAuthenticated,
     ContestsController.post)
+  app.put('/manage-contests',
+    isAuthenticated,
+    ContestsController.put)
+  app.delete('/manage-contests/:id',
+    isAuthenticated,
+    ContestsController.delete)
+  app.get('/manage-contests',
+    isAuthenticated,
+    ContestsController.get)
 
   app.get('/search',
     SearchController.index)

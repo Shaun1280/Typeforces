@@ -35,11 +35,11 @@ module.exports = {
       })
     } catch (err) {
       res.status(500).send({
-        error: `An error has occured trying to get contest${req.params.id}`
+        error: `An error has occured when trying to get contest${req.params.id}`
       })
     }
   },
-  async post (req, res) {
+  async post (req, res) { // for manage Contest
     try {
       if (req.user.status !== 'admin') {
         return res.status(403).send({
@@ -68,6 +68,7 @@ module.exports = {
         duration: req.body.duration,
         content_id: content.content_id
       })
+
       res.send({
         contest: contest,
         content: content
@@ -75,6 +76,140 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'An error has occured trying to create contest',
+        detail: err
+      })
+    }
+  },
+  async put (req, res) { // for manage Contest
+    try {
+      if (req.user.status !== 'admin') {
+        return res.status(403).send({
+          error: 'You do not have access to this resource'
+        })
+      }
+      if ((new Date()).getTime() > (new Date(req.body.start_time)).getTime()) {
+        return res.status(403).send({
+          error: 'You can not modify conteset into ongoing or closed state'
+        })
+      }
+
+      const contest = await Round.findOne({
+        where: {
+          round_no: req.body.round_no
+        }
+      })
+
+      if (!contest) {
+        return res.status(403).send({
+          error: 'Contest not found, you have no access to it'
+        })
+      }
+
+      if ((new Date()).getTime() > (new Date(contest.start_time)).getTime()) {
+        return res.status(403).send({
+          error: 'You can not modify ongoing or closed contest'
+        })
+      }
+
+      // create new content
+      const content = await Content.create({
+        content: req.body.content
+      })
+
+      contest.round_name = req.body.round_name
+      contest.start_time = req.body.start_time
+      contest.division = req.body.division
+      contest.duration = req.body.duration
+      contest.content_id = content.content_id
+
+      await contest.save()
+
+      // delete old content
+      await Content.destroy({
+        where: {
+          content_id: req.body.content_id
+        }
+      })
+      res.send({
+        contest: contest,
+        content: content
+      })
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error has occured trying to modify contest',
+        detail: err
+      })
+    }
+  },
+  async delete (req, res) { // for manage Contest
+    try {
+      if (req.user.status !== 'admin') {
+        return res.status(403).send({
+          error: 'You do not have access to this resource'
+        })
+      }
+
+      const contest = await Round.findOne({
+        where: {
+          round_no: req.params.id
+        }
+      })
+
+      if (!contest) {
+        return res.status(403).send({
+          error: 'Contest not found, you have no access to it'
+        })
+      }
+
+      if ((new Date()).getTime() > (new Date(contest.start_time)).getTime()) {
+        return res.status(403).send({
+          error: 'You can only delte upcoming contest'
+        })
+      }
+
+      const content_id = contest.content_id
+      await contest.destroy()
+      await Content.destroy({
+        where: {
+          content_id: content_id
+        }
+      })
+      res.send('delete success')
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error has occured trying to delete contest',
+        detail: err
+      })
+    }
+  },
+  async get (req, res) { // for manage Contest
+    try {
+      if (req.user.status !== 'admin') {
+        return res.status(403).send({
+          error: 'You do not have access to this resource'
+        })
+      }
+      const contest = await Round.findOne({
+        where: {
+          round_name: req.query.search
+        }
+      })
+      const content = await Content.findOne({
+        where: {
+          content_id: contest.content_id
+        }
+      })
+      Object.assign(contest.dataValues, {
+        content: content.content
+      })
+      res.send({
+        contest: contest
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occured when trying to get contest by name: ' + req.query.search,
         detail: err
       })
     }
