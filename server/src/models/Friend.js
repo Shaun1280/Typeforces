@@ -14,9 +14,13 @@ module.exports = (sequelize, DataTypes) => {
           }
         }
       }
+    },
+    created_time: {
+      type: DataTypes.DATE,
+      allowNull: true
     }
   }, {
-    timestamps: true
+    timestamps: false
   })
   return Friend
 }
