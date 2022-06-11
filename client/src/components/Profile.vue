@@ -184,7 +184,7 @@ export default {
   data () {
     return {
       user: {
-        rating: 1500,
+        rating: -1,
         register_time: 0,
         user_name: '',
         user_accuracy: null,

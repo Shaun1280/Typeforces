@@ -102,7 +102,6 @@ export default {
   text-align: start;
 }
 
-
 /deep/ .v-subheader {
     display: flex;
     height: 24px;

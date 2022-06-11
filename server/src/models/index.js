@@ -34,4 +34,10 @@ sequelize.models.Round.belongsTo(sequelize.models.Content, {
   targetKey: 'content_id'
 })
 
+sequelize.models.Practice.belongsTo(sequelize.models.User, {
+  foreignKey: 'writer_id',
+  targetKey: 'id'
+})
+
+
 module.exports = db

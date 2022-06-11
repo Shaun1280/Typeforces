@@ -1,5 +1,12 @@
 [
   {
+    "email": "1953181@tongji.edu.cn",
+    "password": "118294191",
+    "user_name": "admin",
+    "status": "admin",
+    "country": "Admin"
+  },
+  {
     "email": "2498861110@qq.com",
     "password": "118294191",
     "user_name": "shaun",
@@ -7,7 +14,14 @@
     "country": "Admin"
   },
   {
-    "email": "1953181@tongji.edu.cn",
+    "email": "1624958541@qq.com",
+    "password": "118294191",
+    "user_name": "shane",
+    "status": "admin",
+    "country": "Admin"
+  },
+  {
+    "email": "1953181@tongji.edu.cn2",
     "password": "118294191",
     "user_name": "shaun2",
     "status": "student",

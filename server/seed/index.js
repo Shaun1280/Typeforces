@@ -2,7 +2,9 @@ const {
   sequelize,
   User,
   Round,
+  Practice,
   Content,
+  Friend,
   CompetitionHistory
 } = require('../src/models')
 
@@ -78,4 +80,43 @@ sequelize.sync({ force: true })
         score: (rand2 % 8) ? rand1 : null
       })
     }
+
+    // for inserting practice
+    const admin = await User.findOne({
+      where: {
+        user_name: 'admin'
+      }
+    })
+
+    await Practice.create({
+      practice_name: 'test1',
+      content_id: '1',
+      publish_time: new Date(),
+      writer_id: admin.id
+    })
+    await Practice.create({
+      practice_name: 'test2',
+      content_id: '1',
+      publish_time: new Date(),
+      writer_id: admin.id
+    })
+
+    // friend
+    const shaun = await User.findOne({
+      where: {
+        user_name: 'shaun'
+      }
+    })
+
+    const shane = await User.findOne({
+      where: {
+        user_name: 'shane'
+      }
+    })
+
+    await Friend.create({
+      id1: shaun.id < shane.id ? shaun.id : shane.id,
+      id2: shaun.id < shane.id ? shane.id : shaun.id,
+      created_time: new Date()
+    })
   })

@@ -3,6 +3,7 @@ const AuthenticationController = require('./controllers/AuthenticationController
 const AuthenticationControllerPolicy = require('./policies/AuthenticationControllerPolicy')
 
 const ContestsController = require('./controllers/ContestsController')
+const PracticeController = require('./controllers/PracticeController')
 
 const SearchController = require('./controllers/SearchController')
 
@@ -24,6 +25,7 @@ module.exports = (app) => {
     isAuthenticated,
     (req, res) => { return res.send('is logged in') })
 
+  // contest
   app.get('/contests',
     ContestsController.index)
   app.get('/contests/:id',
@@ -47,6 +49,9 @@ module.exports = (app) => {
   app.get('/manage-contests',
     isAuthenticated,
     ContestsController.get)
+
+  // practice
+  app.get('/practices', PracticeController.index)
 
   app.get('/search',
     SearchController.index)

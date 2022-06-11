@@ -2,12 +2,12 @@
   <panel :title="title" :width="width">
     <v-col>
       <v-card
-        hover
         v-for="(round, index) in visible"
         class="mt-4 md-4"
-        shaped
+        outlined
         :key="index"
        >
+        <br>
         Round: {{round.round_name}}
         <br/>
         StartTime: {{new Date(round.start_time)}}

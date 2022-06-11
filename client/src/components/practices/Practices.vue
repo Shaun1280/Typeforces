@@ -1,61 +1,28 @@
 <template>
   <v-layout class="d-flex flex-column justify-center">
     <v-flex row class="justify-center">
-      <contest-panel
-        title='Current or upcoming contests'
+      <practice-panel
+        title='Practices'
         width="60%"
-        :contests="unclosedContests"
-        pageSize="4"
-        :serverTime="serverTime"
-      />
-    </v-flex>
-
-    <v-flex row class="justify-center mt-15">
-      <contest-panel
-        title='Past contests'
-        width="60%"
-        :contests="closedContests"
-        pageSize="8"
+        :practices="practices"
+        pageSize="12"
       />
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-import ContestServices from '@/services/ContestServices'
-import ContestPanel from '@/components/contests/ContestPanel'
+import PracticeServices from '@/services/PracticeServices'
+import PracticePanel from '@/components/practices/PracticePanel'
 import global from '@/global'
 
 export default {
   components: {
-    ContestPanel
+    PracticePanel
   },
   data () {
     return {
-      contests: [],
-      serverTime: (new Date()).getTime()
-    }
-  },
-  computed: {
-    unclosedContests () {
-      let tmp = this.contests.filter((contest) => {
-        return (new Date(contest.start_time)).getTime() +
-          contest.duration * 60000 >= this.serverTime
-      })
-      tmp.sort(function (a, b) {
-        return (new Date(a.start_time)) - (new Date(b.start_time))
-      })
-      return tmp
-    },
-    closedContests () {
-      let tmp = this.contests.filter((contest) => {
-        return (new Date(contest.start_time)).getTime() +
-          contest.duration * 60000 < this.serverTime
-      })
-      tmp.sort(function (a, b) {
-        return (new Date(b.start_time)) - (new Date(a.start_time))
-      })
-      return tmp
+      practices: []
     }
   },
   methods: {
@@ -64,20 +31,10 @@ export default {
     try {
       await global.checkLogin()
 
-      const response = await ContestServices.index()
-      this.contests = response.data.contests
-      this.contests.forEach((item) => { // add time tag for each contest (end, close, ongoing...)
-        return Object.assign(item, {timeTag: ``})
-      })
+      // get all practices
+      const response = await PracticeServices.index()
 
-      let _this = this
-      this.serverTime = (new Date(response.data.serverTime)).getTime()
-      global.setTimeTag(_this.contests, _this.serverTime)
-
-      _this.IntervalTime = setInterval(() => {
-        _this.serverTime = _this.serverTime + 1000
-        global.setTimeTag(_this.contests, _this.serverTime)
-      }, 1000)
+      this.practices = response.data.practices
     } catch (error) {
       console.log(error)
     }

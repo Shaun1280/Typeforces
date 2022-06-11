@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const PracticeHistory = sequelize.define('PracticeHistory', {
+  const Practice = sequelize.define('Practice', {
     practice_no: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -24,5 +24,5 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     timestamps: false
   })
-  return PracticeHistory
+  return Practice
 }
