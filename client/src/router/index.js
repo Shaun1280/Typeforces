@@ -10,7 +10,7 @@ import ManageContests from '@/components/contests/ManageContests'
 import Profile from '@/components/Profile'
 import Search from '@/components/Search'
 import Rating from '@/components/Rating'
-import Friends from '@/components/friends/Friends'
+import Friend from '@/components/friend/Friend'
 import Practices from '@/components/practices/Practices'
 import ManagePractices from '@/components/practices/ManagePractices'
 
@@ -85,9 +85,9 @@ export default new Router({
       component: Rating
     },
     {
-      path: '/Friends',
-      name: 'friends',
-      component: Friends
+      path: '/Friend',
+      name: 'friend',
+      component: Friend
     },
     {
       path: '/*',

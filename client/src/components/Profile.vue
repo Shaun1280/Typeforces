@@ -57,7 +57,7 @@
 
                 <v-list-item
                   v-if="isSelf()"
-                  @click="navigateTo({name: 'friends'})"
+                  @click="navigateTo({name: 'friend'})"
                 >
                   <v-list-item-title>Friends</v-list-item-title>
                 </v-list-item>
