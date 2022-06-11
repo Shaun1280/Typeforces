@@ -12,6 +12,8 @@ const RatingController = require('./controllers/RatingController')
 
 const isAuthenticated = require('./policies/isAuthenticated')
 
+const FriendController = require('./controllers/FriendController')
+
 module.exports = (app) => {
   app.post('/register',
     AuthenticationControllerPolicy.register,
@@ -55,4 +57,6 @@ module.exports = (app) => {
   app.post('/forceUpdateRating',
     isAuthenticated,
     RatingController.forceUpdateRating)
+  app.get('/friend', isAuthenticated, FriendController.index)
+  app.delete('/friend', isAuthenticated, FriendController.remove)
 }

@@ -1,6 +1,6 @@
 <template>
-  <v-container class="d-flex justify-start">
-    <v-card width="450" color="blue" dark>
+  <v-container class="d-flex justify-space-around" fluid>
+    <v-card width="450" color="blue" dark class="align-self-start">
       <v-card-title>
         My Friends
         <v-spacer></v-spacer>
@@ -14,17 +14,17 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="users"
+        :items="friends"
         :search="search"
         light
       >
       <!-- 用户名 -->
-        <template v-slot:item.user_name="{ item }">
+        <template v-slot:item.User.user_name="{ item }">
            <font
-              v-for="(char, index) in item.user_name"
+              v-for="(char, index) in item.User.user_name"
               :key="index + 'only'"
               class="name_font"
-              v-bind:color="nameColor(item)[index]"
+              v-bind:color="nameColor(item.User)[index]"
            >
               {{ char === ' ' ? '&nbsp;' : char }}
            </font>
@@ -58,7 +58,7 @@
         <template v-slot:item.remove="{ item }">
             <v-btn
               icon
-              @click.stop="dialog = true"
+              @click.stop="removeItem=item; deldialog=true"
             >
               <v-icon
                 color="grey"
@@ -70,29 +70,28 @@
       </v-data-table>
     <!-- 确认删除对话框 -->
       <v-dialog
-          v-model="dialog"
+          v-model="deldialog"
           persistent
           max-width="290"
         >
           <v-card>
             <v-card-title class="text-h5">
-              Are you sure you want to remove this user
-              <br>
-              from your friend list?
             </v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
+            <v-card-text class="text-h5">
+              Are you sure?
+            </v-card-text>
+            <v-card-actions class="justify-center">
               <v-btn
                 color="blue darken-1"
                 text
-                @click="dialog = false"
+                @click="deldialog=false;removeFriend()"
               >
                 Yes
               </v-btn>
               <v-btn
                 color="blue darken-1"
                 text
-                @click="dialog = false"
+                @click="removeItem=null;deldialog=false"
               >
                 No
               </v-btn>
@@ -100,27 +99,34 @@
           </v-card>
         </v-dialog>
     </v-card>
+    <chat-room></chat-room>
   </v-container>
 </template>
 
 <script>
 import global from '@/global'
+import FriendServices from '@/services/FriendServices'
+import ChatRoom from '@/components/friend/ChatRoom'
 
 export default {
+  components: {
+    ChatRoom
+  },
   data () {
     return {
-      dialog: false,
+      removeItem: null,
+      deldialog: false,
       search: '',
       headers: [
         {
           text: 'User Name',
           align: 'start',
           sortable: false,
-          value: 'user_name',
-          width: '80%'
+          value: 'User.user_name',
+          width: '70%'
         },
         {
-          text: 'Message',
+          text: 'Chat',
           align: 'center',
           sortable: false,
           value: 'message',
@@ -134,36 +140,7 @@ export default {
           filterable: false
         }
       ],
-      users: [
-        {
-          user_name: 'Shane',
-          rating: 3000
-        },
-        {
-          user_name: 'Travis Howard',
-          rating: 2400
-        },
-        {
-          user_name: 'Travis Howard',
-          rating: 2100
-        },
-        {
-          user_name: 'Travis Howard',
-          rating: 1900
-        },
-        {
-          user_name: 'Travis Howard',
-          rating: 1600
-        },
-        {
-          user_name: 'Travis Howard',
-          rating: 1400
-        },
-        {
-          user_name: 'Travis Howard',
-          rating: 1200
-        }
-      ]
+      friends: []
     }
   },
   methods: {
@@ -172,12 +149,41 @@ export default {
     },
     nameColor (item) {
       return global.nameColor(item.user_name, item.rating)
+    },
+    async removeFriend () {
+      try {
+        this.friends = this.friends.filter(item => {
+          return item.User.user_name !== this.removeItem.User.user_name
+        })
+        await FriendServices.remove({
+          id1: this.removeItem.id1,
+          id2: this.removeItem.id2
+        })
+      } catch (error) {
+        console.log(error)
+      }
+      this.removeItem = null
+    },
+    openSession (item) {
+      // openChatroom
+      // getmessage
+      console.log('session')
+      return true
     }
   },
   computed: {
   },
   async mounted () {
     await global.checkLogin()
+    try {
+      let res = await FriendServices.index()
+      this.friends = res.data
+      // 按字典序排列
+      this.friends.sort((a, b) => a.User.user_name.localeCompare(b.User.user_name))
+      // console.log(this.friends)
+    } catch (error) {
+      console.log(error)
+    }
   }
   // watch: {
   //   email (value) {
