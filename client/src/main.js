@@ -7,6 +7,7 @@ import Vuetify from 'vuetify'
 import { sync } from 'vuex-router-sync'
 import store from '@/store/store'
 import Panel from '@/components/globals/Panel'
+import MyDialog from '@/components/globals/Dialog'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
@@ -16,6 +17,7 @@ const vuetify = new Vuetify()
 sync(store, router)
 
 Vue.component('panel', Panel)
+Vue.component('mydialog', MyDialog)
 
 /* eslint-disable no-new */
 new Vue({

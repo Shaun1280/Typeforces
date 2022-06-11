@@ -71,32 +71,7 @@
       </panel>
     </v-flex>
 
-    <v-dialog
-      v-model="dialog"
-      persistent
-      max-width="290"
-    >
-      <v-card>
-        <v-card-title class="text-h5">
-          Message
-        </v-card-title>
-
-        <v-card-text v-html="error">
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="viewContestRedirect"
-          >
-            OK
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
+    <!-- <Mydialog :dialog="dialog" :redirectName="'contests'"/> -->
   </v-layout>
 </template>
 
@@ -123,11 +98,7 @@ export default {
       score: 0,
       // time management
       typingStartTime: (new Date()).getTime(),
-      timeLeft: -1,
-      // error
-      dialog: false,
-      error: 123,
-      resStatus: 200 // 403 no access & redirect
+      timeLeft: -1
     }
   },
   computed: {
@@ -227,12 +198,6 @@ export default {
       }
       return ret
     },
-    viewContestRedirect () {
-      this.dialog = false
-      if (this.resStatus === 403) {
-        this.$router.push({name: 'contests'})
-      }
-    },
     async sendData () {
       try {
         await ContestServices.postHistory(this.contest.round_no, {
@@ -241,14 +206,22 @@ export default {
           wpm: this.wpm,
           score: this.calcScore()
         })
-        this.error = 'Your typing data has been submited. <br/> You can choose to participant again,' +
-          ' better performance will be recorded. <br/> Notice that you may get score penalty for follow-up attempts.'
-        this.dialog = true
+
+        this.$store.dispatch('setDialog', {
+          dialog: true,
+          error: 'Your typing data has been submited. <br/> You can choose to participant again,' +
+          ' better performance will be recorded. <br/> Notice that you may get score penalty for follow-up attempts.',
+          redirectName: null
+        })
       } catch (error) {
         console.log(error.response.data)
-        this.resStatus = 500
-        this.error = error.response.data.error
-        this.dialog = true
+        if (error.response) {
+          this.$store.dispatch('setDialog', {
+            dialog: true,
+            error: error.response.data.error,
+            redirectName: null
+          })
+        }
       }
     },
     // 打开排名新窗口
@@ -303,8 +276,12 @@ export default {
 
       // 检查比赛是否开始
       if ((new Date(this.contest.start_time)).getTime() - response.data.serverTime > 0) {
-        this.resStatus = 403
-        throw String('Access denied. <br/> The contest has not started yet.')
+        this.$store.dispatch('setDialog', {
+          dialog: true,
+          error: 'Access denied. <br/> The contest has not started yet.',
+          redirectName: 'contests'
+        })
+        return
       }
 
       // time management
@@ -323,22 +300,30 @@ export default {
       }
 
       if (this.timeLeft <= 0) {
-        this.error = 'The contest is closed. <br/> You can only view standing or go to practice.'
-        this.dialog = true
+        this.$store.dispatch('setDialog', {
+          dialog: true,
+          error: 'The contest is closed. <br/> You can only view standing or go to practice.',
+          redirectName: null
+        })
         this.cursor = 0
+        return
       }
 
       // key press event
       if (this.timeLeft > 0) this.keyDown()
     } catch (error) {
       if (error.response !== undefined && error.response.status === 403) {
-        this.resStatus = error.response.status
-        this.error = error.response.data.error + '. <br/> Please login first. '
-        this.dialog = true
+        this.$store.dispatch('setDialog', {
+          dialog: true,
+          error: error.response.data.error + '. <br/> Please login first. ',
+          redirectName: 'contests'
+        })
       } else {
-        if (this.resStatus === 200) this.resStatus = 500
-        this.error = error
-        this.dialog = true
+        this.$store.dispatch('setDialog', {
+          dialog: true,
+          error: error,
+          redirectName: null
+        })
       }
     }
   },

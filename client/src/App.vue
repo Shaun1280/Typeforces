@@ -6,6 +6,7 @@
         <v-container fluid>
           <router-view></router-view>
         </v-container>
+        <mydialog />
       </v-main>
     </v-app>
   </div>

@@ -12,7 +12,12 @@ export default new Vuex.Store({
   state: {
     token: null,
     user: null,
-    isUserLoggedIn: false
+    isUserLoggedIn: false,
+    dialog: {
+      dialog: false,
+      error: null,
+      redirectName: null
+    }
   },
   mutations: {
     setToken (state, token) {
@@ -25,6 +30,9 @@ export default new Vuex.Store({
     },
     setUser (state, user) {
       state.user = user
+    },
+    setDialog (state, dialog) {
+      state.dialog = dialog
     }
   },
   actions: {
@@ -33,6 +41,9 @@ export default new Vuex.Store({
     },
     setUser ({ commit }, user) {
       commit('setUser', user)
+    },
+    setDialog ({ commit }, dialog) {
+      commit('setDialog', dialog)
     }
   }
 })
