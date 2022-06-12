@@ -27,6 +27,11 @@ module.exports = (sequelize, DataTypes) => {
     send_time: {
       type: DataTypes.DATE,
       allowNull: false
+    },
+    view_tag: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
     }
   }, {
     timestamps: false
