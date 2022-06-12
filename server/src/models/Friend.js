@@ -15,6 +15,17 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    req_id: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      validate: {
+        inId12 (value) {
+          if (value !== this.id1 && value !== this.id2) {
+            throw new Error('req_id shoule be in {id1, id2}')
+          }
+        }
+      }
+    },
     created_time: {
       type: DataTypes.DATE,
       allowNull: true
