@@ -19,13 +19,13 @@
 
         <v-list>
           <v-list-item
-            @click="() => {}"
+            @click="sortMode = 'latest'"
           >
             <v-list-item-title>Latest</v-list-item-title>
           </v-list-item>
 
           <v-list-item
-            @click="() => {}"
+            @click="sortMode = 'most liked'"
           >
             <v-list-item-title>MostLiked</v-list-item-title>
           </v-list-item>
@@ -104,15 +104,28 @@ export default {
   ],
   data () {
     return {
-      page: 1
+      page: 1,
+      sortMode: 'latest'
     }
   },
   computed: {
     visible () {
       let ret = []
-      for (let i = 0; i < this.practices.length; i++) {
+
+      const sorted = this.practices
+      if (this.sortMode === 'latest') {
+        sorted.sort(function (a, b) {
+          return b.practice_no - a.practice_no
+        })
+      } else { // need changes
+        sorted.sort(function (a, b) {
+          return a.practice_no - b.practice_no
+        })
+      }
+
+      for (let i = 0; i < sorted.length; i++) {
         if (Math.trunc(i / this.pageSize) + 1 === this.page) {
-          ret.push(this.practices[i])
+          ret.push(sorted[i])
         }
       }
       return ret
