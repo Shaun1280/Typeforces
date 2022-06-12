@@ -47,6 +47,54 @@ module.exports = {
     }
   },
   async post (req, res) { // for manage Practice
+    try {
+      const userPractices = await Practice.findAll({
+        where: {
+          writer_id: req.user.id
+        },
+        order: [['practice_no', 'DESC']]
+      })
+
+      if (userPractices.length > 0 && (new Date()).getTime() -
+        (new Date(userPractices[0].publish_time)).getTime() <
+        7 * 24 * 3600 * 1000) {
+        return res.status(500).send({
+          error: 'You can create only one practice every 7 days'
+        })
+      }
+
+      const check = await Practice.findOne({
+        where: {
+          practice_name: req.body.practice_name
+        }
+      })
+
+      if (check) {
+        return res.status(500).send({
+          error: 'Practice name has already existed'
+        })
+      }
+
+      const content = await Content.create({
+        content: req.body.content
+      })
+      const practice = await Practice.create({
+        practice_name: req.body.practice_name,
+        writer_id: req.user.id,
+        publish_time: Date.parse(new Date()),
+        content_id: content.content_id
+      })
+
+      res.send({
+        practice: practice,
+        content: content
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occured trying to create contest',
+        detail: err
+      })
+    }
   },
   async put (req, res) { // for manage Practice
   },

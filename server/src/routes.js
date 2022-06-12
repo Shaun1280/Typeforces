@@ -58,6 +58,9 @@ module.exports = (app) => {
   app.post('/practices/history/:id',
     isAuthenticated,
     PracticeController.postHistory)
+  app.post('/manage-practices',
+    isAuthenticated,
+    PracticeController.post)
 
   app.get('/search',
     SearchController.index)

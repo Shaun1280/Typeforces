@@ -157,7 +157,8 @@ export default {
       }
       // call api
       try {
-        await PracticeServices.post(this.practice)
+        const response = await PracticeServices.post(this.practice)
+        console.log(response.data)
         this.error = 'success'
       } catch (error) {
         console.log(error)
@@ -173,19 +174,19 @@ export default {
 
       if (!areAllFilledIn) {
         this.error = 'Please fill in all the required fields'
-        // return
+        return
       }
-      // // call api
-      // try {
-      //   const response = await ContestServices.put(this.contest)
-      //   this.contest = response.data.contest
-      //   this.contest.content = response.data.content.content
-      //   this.searchName = this.contest.round_name
-      //   this.error = 'success'
-      // } catch (error) {
-      //   console.log(error)
-      //   this.error = error.response.data.error
-      // }
+      // call api
+      try {
+        const response = await PracticeServices.put(this.practice)
+        this.practice = response.data.practice
+        this.practice.content = response.data.content.content
+        this.searchName = this.contest.practice_name
+        this.error = 'success'
+      } catch (error) {
+        console.log(error)
+        this.error = error.response.data.error
+      }
     },
     // delete contest
     async deletePractice () {
@@ -227,7 +228,7 @@ export default {
         await PracticeServices.get(value)
       } catch (error) {
         if (error.response && error.response.data) {
-          this.error = error.response.data.error + '<br/>The contest may not exist'
+          this.error = error.response.data.error + '<br/>The practice may not exist'
         }
       }
     }, 1000)
