@@ -76,7 +76,7 @@
         <v-card-actions class="justify-center">
           <v-btn
           rounded
-          @click="navigateTo({name: 'ViewPractice', params: {id: practice.practice_no}})"
+          @click="navigateTo({name: 'viewPractice', params: {id: practice.practice_no}})"
           >
           Enter
           </v-btn>

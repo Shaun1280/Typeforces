@@ -12,6 +12,7 @@ import Search from '@/components/Search'
 import Rating from '@/components/Rating'
 import Friend from '@/components/friend/Friend'
 import Practices from '@/components/practices/Practices'
+import viewPractice from '@/components/practices/ViewPractice'
 import ManagePractices from '@/components/practices/ManagePractices'
 
 Vue.use(Router)
@@ -68,6 +69,11 @@ export default new Router({
       path: '/Practices',
       name: 'practices',
       component: Practices
+    },
+    {
+      path: '/Practices/:id',
+      name: 'viewPractice',
+      component: viewPractice
     },
     {
       path: '/ManagePractices',

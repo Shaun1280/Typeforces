@@ -52,6 +52,12 @@ module.exports = (app) => {
 
   // practice
   app.get('/practices', PracticeController.index)
+  app.get('/practices/:id',
+    isAuthenticated,
+    PracticeController.show)
+  app.post('/practices/history/:id',
+    isAuthenticated,
+    PracticeController.postHistory)
 
   app.get('/search',
     SearchController.index)

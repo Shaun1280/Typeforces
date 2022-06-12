@@ -39,5 +39,4 @@ sequelize.models.Practice.belongsTo(sequelize.models.User, {
   targetKey: 'id'
 })
 
-
 module.exports = db
