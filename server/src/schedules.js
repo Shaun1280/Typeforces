@@ -27,7 +27,6 @@ module.exports = {
     while (l < r - 1e-6) {
       const mid = (l + r) / 2
       const seedi = this.getSeedi(i, mid)
-      console.log(l, r, mid, seedi)
       if (seedi < mi - 1e-6) r = mid
       else if (Math.abs(seedi - mi) < 1e-6) {
         ans = mid
@@ -86,7 +85,14 @@ module.exports = {
   async updateSingle (roundNo) {
     console.log('updating: ', roundNo)
 
+    CompetitionHistory.belongsTo(User, {
+      foreignKey: 'participant_id',
+      targetKey: 'id'
+    })
     this.data = await CompetitionHistory.findAll({
+      include: {
+        model: User
+      },
       where: {
         round_no: roundNo,
         type_progress: {
@@ -104,6 +110,7 @@ module.exports = {
     // https://www.luogu.com.cn/blog/ak-ioi/cf-at-rating
     let sumdi = 0
     for (let i = 0; i < this.data.length; i++) {
+      this.data[i].prev_rating = this.data[i].User.rating
       const ri = this.data[i].prev_rating === -1 ? 1500 : this.data[i].prev_rating
       const mi = Math.sqrt(this.getSeedi(i, ri) * this.data[i].rank)
 
@@ -115,32 +122,40 @@ module.exports = {
     await this.save()
   },
   async updateRating () {
-    const roundIds = await CompetitionHistory.findAll({
-      attributes: ['round_no'],
-      where: {
-        post_rating: { // 找出所有未计分的比赛
-          [Op.is]: null
+    Round.hasMany(CompetitionHistory, {
+      foreignKey: 'round_no',
+      targetKey: 'round_no'
+    })
+    const rounds = await Round.findAll({
+      include: {
+        model: CompetitionHistory,
+        where: {
+          post_rating: { // 找出所有未计分的比赛
+            [Op.is]: null
+          }
         }
       },
-      group: ['round_no']
+      group: ['round_no'],
+    })
+
+    rounds.sort(function (a, b) {
+      return (new Date(a.start_time)).getTime() - (new Date(b.start_time)).getTime()
+        + a.duration * 60000 - b.duration * 60000
     })
 
     const _this = this
-    async function forRoundIds (index) {
+    async function forRounds (index) {
       if (index < 0) return
-      await forRoundIds(index - 1)
+      await forRounds(index - 1)
 
-      const round = await Round.findOne({
-        where: {
-          round_no: roundIds[index].round_no
-        }
-      }) // 比赛结束才计算 rating
+      const round = rounds[index]
+      // 比赛结束才计算 rating
       if ((new Date()).getTime() > (new Date(round.start_time)).getTime() +
           round.duration * 60000) {
-        await _this.updateSingle(roundIds[index].round_no)
+        await _this.updateSingle(round.round_no)
       }
     }
-    await forRoundIds(roundIds.length - 1)
+    await forRounds(rounds.length - 1)
   },
   scheduleUpdateRating () {
     schedule.scheduleJob(ruleUpdateRating, async () => {
