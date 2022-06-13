@@ -42,12 +42,22 @@
         pageSize="3"
       />
     </v-flex>
+
+    <v-flex row class="justify-center mt-15">
+      <search-practice-panel
+        title='Searched Practices'
+        width="60%"
+        :practices="practices"
+        pageSize="3"
+      />
+    </v-flex>
   </v-layout>
 </template>
 
 <script>
 import SearchServices from '@/services/SearchServices'
 import ContestPanel from '@/components/contests/ContestPanel'
+import SearchPracticePanel from '@/components/practices/SearchPracticePanel'
 import global from '@/global'
 
 export default {
@@ -61,7 +71,8 @@ export default {
     }
   },
   components: {
-    ContestPanel
+    ContestPanel,
+    SearchPracticePanel
   },
   watch: {
     '$route.query.search': {

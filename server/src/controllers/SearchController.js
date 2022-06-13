@@ -1,4 +1,4 @@
-const { Round, User } = require('../models')
+const { Round, User, Practice } = require('../models')
 const { Op } = require('sequelize')
 
 module.exports = {
@@ -29,15 +29,30 @@ module.exports = {
             }
           }
         })
+        const practices = await Practice.findAll({
+          include: [
+            {
+              attributes: ['user_name', 'rating'],
+              model: User
+            }
+          ],
+          where: {
+            practice_name: {
+              [Op.like]: `%${search}%`
+            }
+          }
+        })
         res.send({
           contests: contests,
           users: users,
+          practices: practices,
           serverTime: (new Date()).getTime()
         })
       } else {
         res.send({
           contests: null,
           users: null,
+          practices: null,
           serverTime: (new Date()).getTime()
         })
       }
