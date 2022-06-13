@@ -1,37 +1,38 @@
 <template>
   <v-layout class="d-flex flex-column justify-center">
     <v-flex row class="justify-center">
-      <panel title="Searched User" width="60%">
-        <v-col>
-          <v-card
-            hover
-            v-for="(user, index) in visibleUser"
-            class="mt-4 md-4"
-            shaped
-            :key="index"
+      <v-card width="60%">
+        <v-toolbar flat dense class="blue" dark>
+          <v-toolbar-title>Searched User</v-toolbar-title>
+          <slot name="action" />
+        </v-toolbar>
+        <v-data-table
+          :headers="headers"
+          :items="users"
+          :items-per-page="5"
+          loader-height="0"
+        >
+          <template v-slot:item.user_name="{ item }">
+            <div
+              @click="navigateTo({
+                name: 'profile',
+                params: {
+                  username: item.user_name
+                }
+              })"
+              class="mydiv"
             >
-            Round: {{user.user_name}}
-            <br/>
-            Rating: {{user.rating}}
-            <br/>
-
-            <v-card-actions class="justify-center">
-              <v-btn
-              class="md-4"
-              rounded
+              <font
+                v-for="(char, index) in item.user_name"
+                :key="index + 'only'"
+                v-bind:color="nameColor(item)[index]"
               >
-              Visit
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-
-          <v-pagination
-            v-model="pageUser"
-            class="my-4"
-            :length="userLength"
-          ></v-pagination>
-        </v-col>
-      </panel>
+                {{char}}
+              </font>
+            </div>
+          </template>
+        </v-data-table>
+      </v-card>
     </v-flex>
 
     <v-flex row class="justify-center mt-15">
@@ -64,7 +65,6 @@ export default {
   data () {
     return {
       users: [],
-      pageUser: 1,
       contests: [],
       practices: [],
       serverTime: (new Date()).getTime()
@@ -100,6 +100,12 @@ export default {
           }, 1000)
 
           this.users = response.data.users
+          for (const user of this.users) {
+            if (user.rating === -1) user.rating = null
+          }
+          this.users.sort(function (a, b) {
+            return b.rating - a.rating
+          })
           this.practices = response.data.practices
           this.serverTime = response.data.serverTime
         } catch (error) {
@@ -118,17 +124,27 @@ export default {
     }
   },
   computed: {
-    visibleUser () {
-      let ret = []
-      for (let i = 0; i < this.users.length; i++) {
-        if (Math.trunc(i / 3) + 1 === this.pageUser) {
-          ret.push(this.users[i])
+    headers () {
+      return [
+        {
+          text: 'User',
+          align: 'start',
+          value: 'user_name'
+        },
+        { text: 'Country', sortable: false, value: 'country' },
+        {
+          text: 'Rating',
+          value: 'rating'
         }
-      }
-      return ret
+      ]
+    }
+  },
+  methods: {
+    navigateTo (route) {
+      this.$router.push(route)
     },
-    userLength () {
-      return Math.max(1, Math.ceil(this.users.length / 3))
+    nameColor (User) {
+      return global.nameColor(User.user_name, User.rating ? User.rating : -1)
     }
   },
   destroyed () {
@@ -140,4 +156,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.mydiv :hover{
+  cursor: pointer
+}
 </style>

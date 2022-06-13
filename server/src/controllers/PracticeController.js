@@ -122,7 +122,7 @@ module.exports = {
       })
     } catch (err) {
       res.status(500).send({
-        error: 'An error has occured trying to create contest',
+        error: 'An error has occured trying to create practice',
         detail: err
       })
     }
@@ -258,6 +258,25 @@ module.exports = {
       console.log(err)
       res.status(500).send({
         error: 'An error has occured trying to insert or update competition history',
+        detail: err
+      })
+    }
+  },
+  async getByContest (req, res) { // 根据比赛信息获取对应练习
+    try {
+      const practice = await Practice.findOne({
+        where: {
+          content_id: req.params.content_id,
+          practice_name: `${req.params.contest_name}(practice)`
+        }
+      })
+      res.send({
+        practice_no: practice ? practice.practice_no : null
+      })
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: `An error has occured when trying to get practice by contest`,
         detail: err
       })
     }

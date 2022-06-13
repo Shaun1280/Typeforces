@@ -14,6 +14,9 @@ export default {
       }
     })
   },
+  getPracticeByContest (contest) {
+    return Api().get(`practice-contest/${contest.content_id}/${contest.round_name}`)
+  },
   put (contest) {
     return Api().put('manage-contests', contest)
   },

@@ -16,7 +16,16 @@
         <br/>
         Divison: {{round.division}}
         <br/>
-        <div v-html="round.timeTag"></div>
+        <a
+          class="md-4"
+          v-html="round.timeTag"
+          @click="navigateTo({
+            name: 'viewStanding',
+            params: {
+              id: round.round_no
+            }
+          })"
+        ></a>
 
         <v-card-actions class="justify-center">
           <v-btn

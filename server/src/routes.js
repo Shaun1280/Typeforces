@@ -49,6 +49,9 @@ module.exports = (app) => {
   app.get('/manage-contests',
     isAuthenticated,
     ContestsController.get)
+  app.get('/practice-contest/:content_id/:contest_name',
+    isAuthenticated,
+    PracticeController.getByContest)
 
   // practice
   app.get('/practices', PracticeController.index)

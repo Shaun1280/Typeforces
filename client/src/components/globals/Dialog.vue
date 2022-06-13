@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="$store.state.dialog.dialog"
+    v-model="data"
     persistent
     max-width="290"
   >
@@ -29,6 +29,11 @@
 <script>
 
 export default {
+  data () {
+    return {
+      data: false
+    }
+  },
   methods: {
     redirect () {
       const name = this.$store.state.dialog.redirectName
@@ -45,11 +50,17 @@ export default {
     }
   },
   mounted () {
+    this.data = false
     this.$store.dispatch('setDialog', {
       dialog: false,
       error: null,
       redirectName: null
     })
+  },
+  watch: {
+    '$store.state.dialog.dialog' (value) {
+      this.data = value
+    }
   }
 }
 </script>

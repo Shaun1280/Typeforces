@@ -72,7 +72,7 @@ export default new Router({
       component: Practices
     },
     {
-      path: '/Practices/:username',
+      path: '/UserPractices/:username',
       name: 'userPractices',
       component: UserPractices
     },

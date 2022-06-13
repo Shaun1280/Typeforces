@@ -69,7 +69,7 @@
             v-for="(char, index2) in practice.User.user_name"
             :key="index2 + 'only'"
             class="name_font"
-            v-bind:color="nameColor(practice.User)"
+            v-bind:color="nameColor(practice.User)[index2]"
           >
             {{char}}
           </font>

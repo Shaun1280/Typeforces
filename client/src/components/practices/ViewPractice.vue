@@ -197,7 +197,7 @@ export default {
       } else {
         this.$store.dispatch('setDialog', {
           dialog: true,
-          error: error,
+          error: error + '<br/> The practice may not exist.',
           redirectName: null
         })
       }

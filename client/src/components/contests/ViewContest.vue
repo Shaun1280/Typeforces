@@ -5,19 +5,6 @@
         class="mx-2"
         fab
         dark
-        color="indigo"
-        title="Typing"
-        @click="mode = 0"
-      >
-        <v-icon dark>
-          mdi-typewriter
-        </v-icon>
-      </v-btn>
-
-      <v-btn
-        class="mx-2"
-        fab
-        dark
         large
         color="cyan"
         title="Standing"
@@ -27,11 +14,25 @@
           mdi-seal-variant
         </v-icon>
       </v-btn>
+
+      <v-btn
+        class="mx-2"
+        fab
+        dark
+        color="indigo"
+        title="Go to Practice"
+        @click="mode = 0, gotoPractice()"
+        v-if="practice_no"
+      >
+        <v-icon dark>
+          mdi-dumbbell
+        </v-icon>
+      </v-btn>
     </v-flex>
 
     <v-flex row class="justify-center mt-10">
       <panel
-        v-bind:title="`Round ${contest.round_name}`"
+        v-bind:title="`Round: ${contest.round_name}`"
         width="60%"
       >
         <template v-slot:action>
@@ -98,7 +99,9 @@ export default {
       score: 0,
       // time management
       typingStartTime: (new Date()).getTime(),
-      timeLeft: -1
+      timeLeft: -1,
+      // practice id
+      practice_no: null
     }
   },
   computed: {
@@ -224,6 +227,19 @@ export default {
         }
       }
     },
+    async getPractice () {
+      try {
+        const response = await ContestServices.getPracticeByContest(this.contest)
+        this.practice_no = response.data.practice_no
+      } catch (error) {
+        this.practice_no = null
+        this.$store.dispatch('setDialog', {
+          dialog: true,
+          error: error,
+          redirectName: null
+        })
+      }
+    },
     // 打开排名新窗口
     openStanding (route) {
       let info = this.$router.resolve({
@@ -233,6 +249,15 @@ export default {
         }
       })
       window.open(info.href, '_blank')
+    },
+    // 跳转到练习
+    gotoPractice () {
+      this.$router.push({
+        name: 'viewPractice',
+        params: {
+          id: this.practice_no
+        }
+      })
     },
     // 定时事件
     createIntervals () {
@@ -306,6 +331,7 @@ export default {
           redirectName: null
         })
         this.cursor = 0
+        await this.getPractice()
         return
       }
 
