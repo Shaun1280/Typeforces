@@ -19,6 +19,7 @@
         <a
           class="md-4"
           v-html="round.timeTag"
+          v-if="round.timeTag === '<br/> Final Standing <br/>'"
           @click="navigateTo({
             name: 'viewStanding',
             params: {
@@ -26,6 +27,12 @@
             }
           })"
         ></a>
+
+        <div
+          class="md-4"
+          v-html="round.timeTag"
+          v-if="round.timeTag !== '<br/> Final Standing <br/>'"
+        ></div>
 
         <v-card-actions class="justify-center">
           <v-btn

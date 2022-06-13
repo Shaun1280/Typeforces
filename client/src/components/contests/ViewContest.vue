@@ -20,6 +20,20 @@
         fab
         dark
         color="indigo"
+        title="Refresh"
+        @click="mode = 0, refresh = true"
+        v-if="timeLeft > 0"
+      >
+        <v-icon dark>
+          mdi-refresh
+        </v-icon>
+      </v-btn>
+
+      <v-btn
+        class="mx-2"
+        fab
+        dark
+        color="indigo"
         title="Go to Practice"
         @click="mode = 0, gotoPractice()"
         v-if="practice_no"
@@ -72,7 +86,45 @@
       </panel>
     </v-flex>
 
-    <!-- <Mydialog :dialog="dialog" :redirectName="'contests'"/> -->
+    <!-- refresh hint -->
+    <v-dialog
+      v-model="refresh"
+      max-width="290"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Message
+        </v-card-title>
+
+        <v-card-text>
+          Are you sure to refresh?
+          <br/>
+          Your typing data won't be saved.
+          <br/>
+          Make sure you wanna do that.
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="refresh = false, $router.go(0)"
+          >
+            Do it anyway
+          </v-btn>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="refresh = false"
+          >
+            Cancle
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
@@ -101,7 +153,8 @@ export default {
       typingStartTime: (new Date()).getTime(),
       timeLeft: -1,
       // practice id
-      practice_no: null
+      practice_no: null,
+      refresh: false
     }
   },
   computed: {

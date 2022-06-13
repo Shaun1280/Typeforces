@@ -1,5 +1,20 @@
 <template>
   <v-layout class="d-flex flex-column justify-center">
+    <v-flex class="text-center">
+      <v-btn
+        class="mx-2"
+        fab
+        dark
+        color="indigo"
+        title="Refresh"
+        @click="mode = 0, refresh = true"
+      >
+        <v-icon dark>
+          mdi-refresh
+        </v-icon>
+      </v-btn>
+    </v-flex>
+
     <v-flex row class="justify-center mt-10">
       <panel
         v-bind:title="`Practice： ${practice.practice_name}`"
@@ -39,6 +54,46 @@
         </v-flex>
       </panel>
     </v-flex>
+
+    <!-- refresh hint -->
+    <v-dialog
+      v-model="refresh"
+      max-width="290"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Message
+        </v-card-title>
+
+        <v-card-text>
+          Are you sure to refresh?
+          <br/>
+          Your typing data won't be saved.
+          <br/>
+          Make sure you wanna do that.
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="refresh = false, $router.go(0)"
+          >
+            Do it anyway
+          </v-btn>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="refresh = false"
+          >
+            Cancle
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
@@ -63,7 +118,8 @@ export default {
       accuracy: 100.00,
       typingStatus: 0, // 0 wait for typing, 1 is typing, 2 end typing
       // time management
-      typingStartTime: (new Date()).getTime()
+      typingStartTime: (new Date()).getTime(),
+      refresh: false
     }
   },
   methods: {
