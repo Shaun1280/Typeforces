@@ -23,6 +23,31 @@ module.exports = {
       })
     }
   },
+  async indexUser (req, res) {
+    try {
+      const practices = await Practice.findAll({
+        include: [
+          {
+            attributes: ['user_name', 'rating'],
+            model: User,
+            where: {
+              user_name: req.params.username
+            }
+          }
+        ],
+        where: {}
+      })
+      res.send({
+        practices: practices
+      })
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error has occured trying to get contests',
+        detail: err
+      })
+    }
+  },
   async show (req, res) { // specific practice
     try {
       const practice = await Practice.findOne({
@@ -48,6 +73,12 @@ module.exports = {
   },
   async post (req, res) { // for manage Practice
     try {
+      if (!req.body.content || req.body.content.length < 40) {
+        return res.status(500).send({
+          error: 'practice length should be at least 40'
+        })
+      }
+
       const userPractices = await Practice.findAll({
         where: {
           writer_id: req.user.id
@@ -148,7 +179,45 @@ module.exports = {
     }
   },
   async delete (req, res) { // for manage Practice
+    try {
+      const practice = await Practice.findOne({
+        where: {
+          practice_no: req.params.id,
+          writer_id: req.user.id
+        }
+      })
 
+      if (!practice) {
+        return res.status(403).send({
+          error: 'Practice not found, you have no access to it'
+        })
+      }
+
+      const contentId = practice.content_id
+      await practice.destroy()
+
+      // delete content if no contest is using it
+      const contest_contentid = await Round.findOne({
+        where: {
+          content_id: contentId
+        }
+      })
+      if (!contest_contentid) {
+        await Content.destroy({
+          where: {
+            content_id: contentId
+          }
+        })
+      }
+
+      res.send('delete success')
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error has occured trying to delete practice',
+        detail: err
+      })
+    }
   },
   async get (req, res) { // for manage Practice
     try {

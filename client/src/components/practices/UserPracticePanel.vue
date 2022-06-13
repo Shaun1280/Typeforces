@@ -30,15 +30,10 @@
             <v-list-item-title>MostLiked</v-list-item-title>
           </v-list-item>
 
-           <v-list-item
-            @click="navigateTo({
-              name: 'userPractices',
-              params: {
-                username: $store.state.user.user_name
-              }
-            })"
+          <v-list-item
+            @click="navigateTo({ name: 'practices' })"
           >
-            <v-list-item-title>My Practices</v-list-item-title>
+            <v-list-item-title>All practices</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>

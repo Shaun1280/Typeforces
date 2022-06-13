@@ -52,6 +52,7 @@ module.exports = (app) => {
 
   // practice
   app.get('/practices', PracticeController.index)
+  app.get('/practicesUser/:username', PracticeController.indexUser)
   app.get('/practices/:id',
     isAuthenticated,
     PracticeController.show)
@@ -70,6 +71,9 @@ module.exports = (app) => {
   app.put('/manage-practices',
     isAuthenticated,
     PracticeController.put)
+  app.delete('/manage-practices/:id',
+    isAuthenticated,
+    PracticeController.delete)
 
   app.get('/search',
     SearchController.index)

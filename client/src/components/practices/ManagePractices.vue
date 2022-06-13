@@ -188,23 +188,23 @@ export default {
         this.error = error.response.data.error
       }
     },
-    // delete contest
+    // delete practice
     async deletePractice () {
       this.error = null
       const areAllFilledIn = !!this.searchName
 
       if (!areAllFilledIn) {
         this.error = 'Please fill in all the required fields'
-        // return
+        return
       }
 
-      // try {
-      //   await ContestServices.delete(this.contest.round_no)
-      //   this.error = 'success'
-      // } catch (error) {
-      //   console.log(error)
-      //   this.error = error.response.data.error
-      // }
+      try {
+        await PracticeServices.delete(this.practice.practice_no)
+        this.error = 'success'
+      } catch (error) {
+        console.log(error)
+        this.error = error.response.data.error
+      }
     },
     async changeMode (mode) {
       this.mode = mode

@@ -44,6 +44,17 @@
                 </v-list-item>
 
                 <v-list-item
+                  @click="navigateTo({
+                    name: 'userPractices',
+                    params: {
+                      username: $store.state.route.params.username
+                    }
+                  })"
+                >
+                  <v-list-item-title>{{isSelf() ? 'My practices' : 'User practices'}}</v-list-item-title>
+                </v-list-item>
+
+                <v-list-item
                   @click="() => {}"
                 >
                   <v-list-item-title>Competition history</v-list-item-title>
