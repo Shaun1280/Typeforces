@@ -41,6 +41,19 @@
           mdi-pencil
         </v-icon>
       </v-btn>
+
+      <v-btn
+        class="mx-2"
+        fab
+        dark
+        color="purple"
+        title="Update Rating"
+        @click="updateRating = true"
+      >
+        <v-icon dark>
+          mdi-update
+        </v-icon>
+      </v-btn>
     </v-flex>
 
     <!-- create contest -->
@@ -409,11 +422,49 @@
       </v-flex>
     </v-flex>
     <!-- end of delete contest -->
+
+    <v-dialog
+      v-model="updateRating"
+      max-width="290"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Message
+        </v-card-title>
+
+        <v-card-text>
+          This will forcibly update all closed contests' rating.
+          <br/>
+          Make sure you want to do this.
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="updateRating = false, updateContestRating()"
+          >
+            Do it anyway
+          </v-btn>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="updateRating = false"
+          >
+            Cancle
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
 <script>
 import ContestServices from '@/services/ContestServices'
+import RatingServices from '@/services/RatingServices'
 import _ from 'lodash'
 import global from '@/global'
 
@@ -435,7 +486,8 @@ export default {
       searchName: null,
       error: null,
       required: (value) => !!value || 'Required.',
-      mode: 1 // 1 add, 3 delete, 2 update
+      mode: 1, // 1 add, 3 delete, 2 update,
+      updateRating: false
     }
   },
   methods: {
@@ -499,6 +551,31 @@ export default {
       } catch (error) {
         console.log(error)
         this.error = error.response.data.error
+      }
+    },
+    // update contest rating
+    async updateContestRating () {
+      try {
+        await RatingServices.forceUpdateRating()
+        this.$store.dispatch('setDialog', {
+          dialog: true,
+          error: 'success',
+          redirectName: null
+        })
+      } catch (error) {
+        if (error.response && error.response.data) {
+          this.$store.dispatch('setDialog', {
+            dialog: true,
+            error: error.response.data.error,
+            redirectName: null
+          })
+        } else {
+          this.$store.dispatch('setDialog', {
+            dialog: true,
+            error: error,
+            redirectName: null
+          })
+        }
       }
     },
     async changeMode (mode) {

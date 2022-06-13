@@ -43,6 +43,11 @@ module.exports = {
   },
   async forceUpdateRating (req, res) { // 强制刷新比赛排名
     try {
+      if (req.user.status !== 'admin') {
+        return res.status(403).send({
+          error: 'You do not have access to this resource'
+        })
+      }
       await schedules.updateRating()
       res.send('successfully updated rating')
     } catch (err) {
