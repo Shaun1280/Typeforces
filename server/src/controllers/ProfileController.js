@@ -1,4 +1,4 @@
-const { User, CompetitionHistory, PracticeHistory } = require('../models')
+const { User, CompetitionHistory, PracticeHistory, Practice, Round } = require('../models')
 
 module.exports = {
   async index (req, res) {
@@ -14,13 +14,30 @@ module.exports = {
           error: 'User doesn\'t exist'
         })
       }
+
+      CompetitionHistory.belongsTo(Round, {
+        foreignKey: 'round_no',
+        targetKey: 'round_no'
+      })
       const competitionHistories = await CompetitionHistory.findAll({
+        include: {
+          attributes: ['round_name'],
+          model: Round
+        },
         where: {
           participant_id: user.id
         }
       })
 
+      PracticeHistory.belongsTo(Practice, {
+        foreignKey: 'practice_no',
+        targetKey: 'practice_no'
+      })
       const practiceHistories = await PracticeHistory.findAll({
+        include: {
+          attributes: ['practice_name'],
+          model: Practice
+        },
         where: {
           practicer_id: user.id
         }
@@ -39,6 +56,7 @@ module.exports = {
         friends: 0
       })
     } catch (err) {
+      console.log(err)
       res.status(500).send({
         error: 'An error has occured trying to get user profile',
         detail: err
