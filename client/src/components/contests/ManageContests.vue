@@ -535,6 +535,13 @@ export default {
         this.date = date.toISOString().substr(0, 10)
         this.time = date.toISOString().substr(11, 2) + ':' + date.toISOString().substr(14, 2)
       } catch (error) {
+        this.contest = {
+          round_name: null,
+          start_time: null,
+          content: null,
+          duration: null,
+          division: null
+        }
         if (error.response && error.response.data) {
           this.error = error.response.data.error + '<br/>The contest may not exist'
         }

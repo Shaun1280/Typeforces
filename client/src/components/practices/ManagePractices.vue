@@ -67,7 +67,7 @@
 
     <!-- modify contest -->
     <v-flex v-if="mode===2" row class="justify-center mt-10">
-      <panel title="Modify Practice" width="60%">
+      <panel title="Modify User Practice" width="60%">
         <v-text-field
           label="SearchName*"
           :rules="[required]"
@@ -99,7 +99,7 @@
 
     <!-- delete contest -->
     <v-flex v-if="mode===3" row class="justify-center mt-10">
-      <panel title="Delete Contest" width="60%">
+      <panel title="Delete User Practice" width="60%">
         <v-text-field
           label="SearchName*"
           :rules="[required]"
@@ -181,7 +181,7 @@ export default {
         const response = await PracticeServices.put(this.practice)
         this.practice = response.data.practice
         this.practice.content = response.data.content.content
-        this.searchName = this.contest.practice_name
+        this.searchName = this.practice.practice_name
         this.error = 'success'
       } catch (error) {
         console.log(error)
@@ -225,10 +225,15 @@ export default {
       try {
         this.error = null
         if (this.mode === 1 || value === null || value === undefined) return
-        await PracticeServices.get(value)
+        const response = await PracticeServices.get(value)
+        this.practice = response.data.practice
       } catch (error) {
+        this.practice = {
+          practice_name: null,
+          content: null
+        }
         if (error.response && error.response.data) {
-          this.error = error.response.data.error + '<br/>The practice may not exist'
+          this.error = error.response.data.error + '<br/>The practice of this user may not exist'
         }
       }
     }, 1000)
