@@ -14,7 +14,15 @@
       </v-card-title>
       <v-data-table :headers="headers" :items="users" :search="search">
         <template v-slot:item.user_name="{ item }">
-           <font
+          <a
+            @click="$router.push({
+              name: 'profile',
+              params: {
+                username: item.user_name
+              }
+            })"
+          >
+            <font
                 v-for="(char, index) in item.user_name"
                 :key="index + 'only'"
                 class="name_font"
@@ -22,6 +30,8 @@
               >
               {{ char === ' ' ? '&nbsp;' : char }}
             </font>
+          </a>
+           
         </template>
       </v-data-table>
     </v-card>

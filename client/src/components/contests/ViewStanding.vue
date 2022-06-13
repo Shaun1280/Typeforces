@@ -40,6 +40,14 @@
       </v-card-title>
       <v-data-table :headers="headers" :items="record" :search="search">
         <template v-slot:item.User.user_name="{ item }">
+          <a
+            @click="$router.push({
+              name: 'profile',
+              params: {
+                username: item.User.user_name
+              }
+            })"
+          >
            <font
                 v-for="(char, index) in item.User.user_name"
                 :key="index + 'only'"
@@ -48,6 +56,7 @@
               >
               {{ char === ' ' ? '&nbsp;' : char }}
             </font>
+          </a>
         </template>
         <template v-slot:item.type_progress="{ item }">
             <v-progress-linear
