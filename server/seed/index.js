@@ -27,7 +27,8 @@ sequelize.sync({ force: true })
             rating: user.rating,
             status: user.status,
             country: user.country,
-            register_time: Date.parse(new Date())
+            register_time: Date.parse(new Date()),
+            last_visit: Date.parse(new Date())
           })
         } else {
           return User.create({
@@ -37,7 +38,8 @@ sequelize.sync({ force: true })
             user_name: user.user_name,
             status: user.status,
             country: user.country,
-            register_time: Date.parse(new Date())
+            register_time: Date.parse(new Date()),
+            last_visit: Date.parse(new Date())
           })
         }
       })

@@ -41,7 +41,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     country: DataTypes.STRING(32),
     register_time: DataTypes.DATE,
-    last_visit: DataTypes.DATE
+    last_visit: DataTypes.DATE,
+    is_online: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    }
   }, {
     hooks: {
       beforeCreate: hashPassword,

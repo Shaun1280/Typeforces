@@ -118,7 +118,8 @@ export default {
         title: 'unrated',
         competitionHistories: [],
         practiceHistories: [],
-        friendCount: 0
+        friendCount: 0,
+        is_online: false
       }
     }
   },

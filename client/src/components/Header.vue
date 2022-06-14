@@ -138,7 +138,32 @@ export default {
           search: this.search
         }
       })
-    }, 500)
+    }, 500),
+    initWebSocket () {
+      this.websock = new WebSocket('ws://localhost:8000')
+      this.websock.onmessage = this.websocketonmessage
+      this.websock.onerror = this.websocketonerror
+      this.websock.onopen = this.websocketonopen
+      this.websock.onclose = this.websocketclose
+    },
+    websocketonerror () {
+      console.log('WebSocket in header, connection failed')
+    },
+    websocketonmessage (e) {
+      // 数据接收
+      console.log(JSON.parse(e.data))
+    },
+    websocketonopen () {
+      this.websock.send(JSON.stringify({
+        type: 'LOGIN',
+        data: { user: this.$store.state.user }
+      }))
+      console.log('websocket in header, opened')
+    },
+    websocketclose (e) {
+      // 关闭连接
+      console.log('WebSocket in header, closed', e)
+    }
   },
   watch: {
     search: _.debounce(async function (value) {
@@ -157,7 +182,20 @@ export default {
       handler (value) {
         this.search = value
       }
+    },
+    '$store.state.user': function (newValue, oldValue) {
+      this.websock.send(JSON.stringify({
+        type: 'LOGIN',
+        data: { user: newValue }
+      }))
+      this.websock.send(JSON.stringify({
+        type: 'LOGOUT',
+        data: { user: oldValue }
+      }))
     }
+  },
+  mounted () {
+    this.initWebSocket()
   }
 }
 

@@ -74,9 +74,9 @@
         </div>
 
         <div class="font-weight-bold ml-8 mb-2">
-        Last Visit : {{user.last_visit ?
-            (new Date(user.last_visit)).toISOString().substr(0, 10) :
-            'Unknown'}}
+        Last Visit : {{!user.is_online ?
+            (new Date(user.last_visit)) :
+            'Online now'}}
         </div>
 
         <div class="font-weight-bold ml-8 mb-2">

@@ -40,8 +40,8 @@ module.exports = {
         user_name: req.body.user_name,
         status: req.body.status,
         country: req.body.country,
-        register_time: req.body.register_time,
-        last_visit: req.body.last_visit
+        register_time: Date.parse(new Date()),
+        last_visit: Date.parse(new Date())
       })
       const userJson = user.toJSON()
       res.send({

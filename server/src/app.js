@@ -15,6 +15,8 @@ require('./passport')
 
 require('./routes')(app)
 
+require('./socket')
+
 sequelize.sync()
   .then(() => {
     app.listen(process.env.PORT || 8081)
