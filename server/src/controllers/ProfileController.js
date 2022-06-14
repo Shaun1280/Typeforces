@@ -1,4 +1,6 @@
-const { User, CompetitionHistory, PracticeHistory, Practice, Round } = require('../models')
+const { User, CompetitionHistory, PracticeHistory, Practice, Round, Friend } = require('../models')
+
+const { Op } = require('sequelize')
 
 module.exports = {
   async index (req, res) {
@@ -43,6 +45,18 @@ module.exports = {
         }
       })
 
+      const { count } = await Friend.findAndCountAll({
+        where: {
+          [Op.or]: [
+            { id1: user.id },
+            { id2: user.id }
+          ],
+          created_time: {
+            [Op.not]: null
+          }
+        }
+      })
+
       res.send({
         email: user.email,
         user_name: user.user_name,
@@ -53,7 +67,7 @@ module.exports = {
         last_visit: user.last_visit,
         competitionHistories: competitionHistories,
         practiceHistories: practiceHistories,
-        friends: 0
+        friendCount: count
       })
     } catch (err) {
       console.log(err)

@@ -31,7 +31,6 @@
               {{ char === ' ' ? '&nbsp;' : char }}
             </font>
           </a>
-           
         </template>
       </v-data-table>
     </v-card>

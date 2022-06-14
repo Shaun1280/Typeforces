@@ -62,10 +62,6 @@
         </div>
 
         <div class="font-weight-bold ml-8 mb-2">
-        Average accuracy: {{user.user_accuracy ? user.user_accuracy : 'Unknown'}}
-        </div>
-
-        <div class="font-weight-bold ml-8 mb-2">
         Email: {{user.email}}
         </div>
 
@@ -74,7 +70,7 @@
         </div>
 
         <div class="font-weight-bold ml-8 mb-2">
-        Friend of : 0 users
+        Friend of : {{user.friendCount}} users
         </div>
 
         <div class="font-weight-bold ml-8 mb-2">
@@ -95,6 +91,11 @@ import global from '@/global'
 
 export default {
   props: ['user'],
+  data () {
+    return {
+      userWpm: null
+    }
+  },
   methods: {
     navigateTo (route) {
       this.$router.push(route)

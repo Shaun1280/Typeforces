@@ -56,7 +56,7 @@
                 v-if="isSelf()"
                 @click="navigateTo({name: 'friend'})"
               >
-                <v-list-item-title>Friends</v-list-item-title>
+                <v-list-item-title>My Friends</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -117,7 +117,8 @@ export default {
         user_wpm: null,
         title: 'unrated',
         competitionHistories: [],
-        practiceHistories: []
+        practiceHistories: [],
+        friendCount: 0
       }
     }
   },
@@ -130,56 +131,47 @@ export default {
     },
     isSelf () { // 是否为本人
       return this.$store.state.isUserLoggedIn && this.$store.state.route.params.username === this.$store.state.user.user_name
-    }
-  },
-  computed: {
-    calcTitle () {
-      return global.calcTitle(this.user.rating)
     },
-    titleColor () {
-      return global.titleColor(this.user.rating)
-    },
-    nameColor () {
-      return global.nameColor(this.user.user_name, this.user.rating)
-    },
-    ratingColor () {
-      return global.ratingColor(this.user.rating)
-    },
-    calcMaxTitle () {
-      return global.calcTitle(this.maxRating)
-    },
-    maxTitleColor () {
-      return global.titleColor(this.maxRating)
-    },
-    maxRatingColor () {
-      return global.ratingColor(this.maxRating)
-    },
-    maxRating () {
-      let mx = -1
+    calc () {
+      let wpm = 0
+      let count = 0
       for (let history of this.user.competitionHistories) {
         if (history.post_rating === null) continue
-        mx = Math.max(mx, history.prev_rating, history.post_rating)
+        count++
+        wpm += history.wpm
       }
-      return mx
+      for (let history of this.user.practiceHistories) {
+        count++
+        wpm += history.wpm
+      }
+      if (!count) {
+        this.user.user_wpm = null
+      } else {
+        this.user.user_wpm = wpm / count
+      }
+    },
+    async getUser () {
+      try {
+        await global.checkLogin()
+
+        console.log(this.$store.state.route.params.username)
+        const response = await ProfileServices.index(this.$store.state.route.params.username)
+        this.user = response.data
+        this.calc()
+        console.log(this.user)
+      } catch (error) {
+        console.log(error)
+      }
     }
   },
   async mounted () {
-    try {
-      await global.checkLogin()
-
-      console.log(this.$store.state.route.params.username)
-      const response = await ProfileServices.index(this.$store.state.route.params.username)
-      this.user = response.data
-      console.log(this.user)
-    } catch (error) {
-      console.log(error)
+    await this.getUser()
+  },
+  watch: {
+    '$store.state.route.params.username': async function (value) {
+      await this.getUser()
     }
   }
-  // watch: {
-  //   email (value) {
-  //     console.log('email has changed', value)
-  //   }
-  // }
 }
 </script>
 
