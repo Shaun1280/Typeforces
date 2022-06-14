@@ -15,6 +15,8 @@ const isAuthenticated = require('./policies/isAuthenticated')
 
 const FriendController = require('./controllers/FriendController')
 
+const MessageController = require('./controllers/MessageController')
+
 module.exports = (app) => {
   app.post('/register',
     AuthenticationControllerPolicy.register,
@@ -89,4 +91,5 @@ module.exports = (app) => {
     RatingController.forceUpdateRating)
   app.get('/friend', isAuthenticated, FriendController.index)
   app.delete('/friend', isAuthenticated, FriendController.remove)
+  app.get('/message/check', isAuthenticated, MessageController.checkNew)
 }

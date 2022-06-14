@@ -8,11 +8,11 @@
     >
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Chat with {{targetName}}</v-toolbar-title>
+      <v-toolbar-title>Chat {{target === null ? `` : `with ` + target.User.user_name}}</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
-      <v-btn icon>
+      <v-btn v-if="target!==null" icon @click="close">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-app-bar>
@@ -21,26 +21,39 @@
       class="overflow-y-auto"
       height="470"
     >
-      <v-container>
+      <v-container v-if="target!==null">
         <v-row v-for="i in 10" :key=i dense>
           <v-col cols="12" :class="[i % 2 === 0 && `d-flex justify-end`]">
             <div>
               <v-subheader :class="[i % 2 === 0 && `justify-end`]">
-                {{i % 2 === 1 ? 'Shane':'Me'}}
+                {{i % 2 === 1 ? target.User.user_name: 'Me'}}
               </v-subheader>
               <v-alert
                 color="rgb(227 237 241)"
                 max-width=450
+                class="mb-0"
               >
                 wAutoOverflOverflOverflOverflOverfllOverflOverflOverflOverfrflrflrfl你好
               </v-alert>
+              <v-subheader :class="[i % 2 === 0 && `justify-end`]">
+                2022-6-13
+              </v-subheader>
             </div>
           </v-col>
         </v-row>
       </v-container>
+      <v-container v-else>
+        <v-img
+          src="static/chat.png"
+          contain
+          aspect-ratio="2.2"
+        ></v-img>
+        <h2 class="pt-2">Choose a friend and start chatting!</h2>
+      </v-container>
     </v-sheet>
 
     <v-text-field
+      v-if="target!==null"
       v-model="text"
       outlined
       placeholder="Type your message here"
@@ -59,29 +72,42 @@
 import global from '@/global'
 
 export default {
+  props: [
+    'target'
+  ],
   data () {
     return {
       user: 1,
       text: '',
-      targetName: 'Shane'
+      closed: true,
+      readedMessage: [],
+      unreadedMessage: []
     }
   },
   methods: {
     sendMessage () {
       this.text = ''
       this.resetIcon()
+    },
+    close () {
+      this.$emit('close')
     }
   },
   computed: {
   },
   async mounted () {
     await global.checkLogin()
+  },
+  watch: {
+    target (value) {
+      // console.log('target has changed', value)
+      this.target = value
+
+      if (this.target !== null) {
+
+      }
+    }
   }
-  // watch: {
-  //   email (value) {
-  //     console.log('email has changed', value)
-  //   }
-  // }
 }
 </script>
 

@@ -5,7 +5,6 @@ export default {
     return Api().get('friend')
   },
   remove (data) {
-    console.log(data)
     return Api().delete(`friend`, {data: data})
   }
 }
