@@ -67,8 +67,7 @@ module.exports = {
         last_visit: user.last_visit,
         competitionHistories: competitionHistories,
         practiceHistories: practiceHistories,
-        friendCount: count,
-        is_online: user.is_online
+        friendCount: count
       })
     } catch (err) {
       console.log(err)

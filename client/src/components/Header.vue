@@ -188,14 +188,16 @@ export default {
         type: 'LOGIN',
         data: { user: newValue }
       }))
-      this.websock.send(JSON.stringify({
-        type: 'LOGOUT',
-        data: { user: oldValue }
-      }))
     }
   },
   mounted () {
     this.initWebSocket()
+  },
+  beforeDestroy () {
+    this.websock.send(JSON.stringify({
+      type: 'LOGOUT',
+      data: { user: this.$store.state.user }
+    }))
   }
 }
 
