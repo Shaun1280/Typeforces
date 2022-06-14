@@ -1,4 +1,5 @@
 const { User, Friend } = require('../models')
+const { Op } = require('sequelize')
 
 module.exports = {
     async index(req, res) {
@@ -9,11 +10,14 @@ module.exports = {
                 foreignKey: 'id2',
                 targetKey: 'id'
             })
-
+           
             let users1 = await Friend.findAll({
                 attributes: ['id1', 'id2'],
                 where: {
-                    id1: req.user.id
+                    id1: req.user.id,
+                    created_time: {
+                      [Op.not]: null
+                    } 
                 },
                 include: [
                     {
@@ -32,7 +36,10 @@ module.exports = {
             let users2 = await Friend.findAll({
                 attributes: ['id1', 'id2'],
                 where: {
-                    id2: req.user.id
+                    id2: req.user.id,
+                    created_time: {
+                        [Op.not]: null
+                    } 
                 },
                 include: [
                     {

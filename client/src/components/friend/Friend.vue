@@ -30,12 +30,12 @@
            </font>
         </template>
       <!-- 消息 -->
-        <template v-slot:item.message="{ item }">
+        <template v-slot:item.hasUnviewed="{ item }">
           <v-badge
-            v-if=1
             color="pink"
             dot
             overlap
+            :value="item.hasUnviewed==true"
           >
             <v-icon
               class="mr-2"
@@ -45,14 +45,6 @@
               mdi-message-outline
             </v-icon>
           </v-badge>
-          <v-icon
-              v-else
-              class="mr-2"
-              color="blue"
-              @click="openSession(item)"
-            >
-              mdi-message-outline
-          </v-icon>
         </template>
       <!-- 删除 -->
         <template v-slot:item.remove="{ item }">
@@ -99,13 +91,14 @@
           </v-card>
         </v-dialog>
     </v-card>
-    <chat-room></chat-room>
+    <chat-room :target="chatItem" @close="closeSession"></chat-room>
   </v-container>
 </template>
 
 <script>
 import global from '@/global'
 import FriendServices from '@/services/FriendServices'
+import MessageServices from '@/services/MessageServices'
 import ChatRoom from '@/components/friend/ChatRoom'
 
 export default {
@@ -115,6 +108,7 @@ export default {
   data () {
     return {
       removeItem: null,
+      chatItem: null,
       deldialog: false,
       search: '',
       headers: [
@@ -129,7 +123,7 @@ export default {
           text: 'Chat',
           align: 'center',
           sortable: false,
-          value: 'message',
+          value: 'hasUnviewed',
           filterable: false
         },
         {
@@ -162,13 +156,37 @@ export default {
       } catch (error) {
         console.log(error)
       }
+      if (this.removeItem === this.chatItem) this.chatItem = null
       this.removeItem = null
     },
     openSession (item) {
-      // openChatroom
-      // getmessage
-      console.log('session')
-      return true
+      this.chatItem = item
+    },
+    closeSession () {
+      this.chatItem = null
+    },
+    // 定时事件
+    createIntervals () {
+      let _this = this
+      _this.IntervalTime = new Array(this.friends.length)
+      // 为每个好友添加新消息监控
+      _this.friends.forEach(async (element, index) => {
+        // console.log(JSON.stringify(element))
+        _this.IntervalTime[index] = setInterval(() => {
+          setTimeout(async function () {
+            const promises = _this.friends.map(_this.checkUnviewed)
+            await Promise.all(promises)
+          }, Math.floor(Math.random() * 1000))
+        }, 5000)
+      })
+    },
+    async checkUnviewed (element, index) {
+      const ret = await MessageServices.checkNew(
+        element.id1 === this.$store.state.user.id
+          ? {sender_id: element.id2, receiver_id: element.id1}
+          : {sender_id: element.id1, receiver_id: element.id2}
+      )
+      this.friends[index]['hasUnviewed'] = ret.data.hasUnviewed
     }
   },
   computed: {
@@ -178,18 +196,27 @@ export default {
     try {
       let res = await FriendServices.index()
       this.friends = res.data
+
+      const promises = this.friends.map(this.checkUnviewed)
+      await Promise.all(promises)
+
       // 按字典序排列
       this.friends.sort((a, b) => a.User.user_name.localeCompare(b.User.user_name))
-      // console.log(this.friends)
+      this.createIntervals()
     } catch (error) {
       console.log(error)
     }
+  },
+  async destroyed () {
+    this.IntervalTime.forEach(async (element, index) => {
+      clearInterval(this.IntervalTime[index])
+    })
+  },
+  watch: {
+    friends (value) {
+      this.friends = value
+    }
   }
-  // watch: {
-  //   email (value) {
-  //     console.log('email has changed', value)
-  //   }
-  // }
 }
 </script>
 
