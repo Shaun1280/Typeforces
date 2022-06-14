@@ -39,6 +39,7 @@
         class="mt-4 md-4"
         :key="index"
         outlined
+        elevation="1"
        >
         <br/>
         Practice: {{practice.practice_name}}

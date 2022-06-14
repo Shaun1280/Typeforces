@@ -6,6 +6,7 @@
         class="mt-4 md-4"
         outlined
         :key="index"
+        elevation="1"
        >
         <br>
         Round: {{round.round_name}}
