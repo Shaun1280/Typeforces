@@ -8,11 +8,9 @@ import { sync } from 'vuex-router-sync'
 import store from '@/store/store'
 import Panel from '@/components/globals/Panel'
 import MyDialog from '@/components/globals/Dialog'
-import VueCountryCode from 'vue-country-code-select'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
-Vue.use(VueCountryCode)
 
 const vuetify = new Vuetify()
 
