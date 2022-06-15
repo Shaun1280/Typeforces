@@ -13,6 +13,11 @@ function jwtSignUser (user) {
 module.exports = {
   async register (req, res) {
     try {
+      if (req.body.status === 'admin' || req.body.status === 'bot') {
+        return res.status(400).send({
+          error: 'You can not register as an admin or bot'
+        })
+      }
       let result = await User.findOne({
         where: {
           email: req.body.email
