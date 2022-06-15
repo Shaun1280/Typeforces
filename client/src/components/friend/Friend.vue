@@ -1,6 +1,6 @@
 <template>
   <v-container class="d-flex justify-space-around" fluid>
-    <v-card width="450" color="blue" dark class="align-self-start">
+    <v-card width="470" color="blue" dark class="align-self-start">
       <v-card-title>
         My Friends
         <v-spacer></v-spacer>
@@ -35,7 +35,7 @@
             color="pink"
             dot
             overlap
-            :value="item.hasUnviewed==true"
+            :value="item.hasUnviewed===true"
           >
             <v-icon
               class="mr-2"
@@ -91,7 +91,7 @@
           </v-card>
         </v-dialog>
     </v-card>
-    <chat-room :target="chatItem" @close="closeSession"></chat-room>
+    <chat-room :session="chatItem" @close="closeSession"></chat-room>
   </v-container>
 </template>
 
@@ -99,7 +99,7 @@
 import global from '@/global'
 import FriendServices from '@/services/FriendServices'
 import MessageServices from '@/services/MessageServices'
-import ChatRoom from '@/components/friend/ChatRoom'
+const ChatRoom = () => import('@/components/friend/ChatRoom')
 
 export default {
   components: {
@@ -186,7 +186,17 @@ export default {
           ? {sender_id: element.id2, receiver_id: element.id1}
           : {sender_id: element.id1, receiver_id: element.id2}
       )
-      this.friends[index]['hasUnviewed'] = ret.data.hasUnviewed
+      let tmp = element
+      if (tmp === this.chatItem) {
+        if (this.chatItem.hasUnviewed !== undefined && this.chatItem.hasUnviewed !== ret.data.hasUnviewed) {
+          let pre = this.chatItem
+          pre.hasUnviewed = ret.data.hasUnviewed
+          this.chatItem.hasUnviewed = ret.data.hasUnviewed
+          console.log(this.chatItem)
+        }
+      }
+      tmp['hasUnviewed'] = ret.data.hasUnviewed
+      this.$set(this.friends, index, tmp)
     }
   },
   computed: {
@@ -213,9 +223,9 @@ export default {
     })
   },
   watch: {
-    friends (value) {
-      this.friends = value
-    }
+    // friends (value) {
+    //   this.friends = value
+    // }
   }
 }
 </script>

@@ -9,5 +9,21 @@ export default {
         receiver_id: data.receiver_id
       }
     })
+  },
+  getUnviewed (data) {
+    return Api().get(`message/unviewed`, {
+      params: {
+        id1: data.id1,
+        id2: data.id2
+      }
+    })
+  },
+  getViewed (data) {
+    return Api().get(`message/viewed`, {
+      params: {
+        id1: data.id1,
+        id2: data.id2
+      }
+    })
   }
 }

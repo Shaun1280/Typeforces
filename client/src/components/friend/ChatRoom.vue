@@ -8,11 +8,11 @@
     >
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Chat {{target === null ? `` : `with ` + target.User.user_name}}</v-toolbar-title>
+      <v-toolbar-title>Chat {{session === null ? `` : `with ` + session.User.user_name}}</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
-      <v-btn v-if="target!==null" icon @click="close">
+      <v-btn v-if="session!==null" icon @click="close">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-app-bar>
@@ -21,22 +21,22 @@
       class="overflow-y-auto"
       height="470"
     >
-      <v-container v-if="target!==null">
-        <v-row v-for="i in 10" :key=i dense>
-          <v-col cols="12" :class="[i % 2 === 0 && `d-flex justify-end`]">
+      <v-container v-if="session!==null">
+        <v-row v-for="(element, index) in viewed" :key="index + 'msg'" dense>
+          <v-col cols="12" :class="[element.sender_id === $store.state.user.id && `d-flex justify-end`]">
             <div>
-              <v-subheader :class="[i % 2 === 0 && `justify-end`]">
-                {{i % 2 === 1 ? target.User.user_name: 'Me'}}
+              <v-subheader :class="[element.sender_id === $store.state.user.id && `justify-end`]">
+                {{element.sender_id !== $store.state.user.id ? session.User.user_name: 'Me'}}
               </v-subheader>
               <v-alert
                 color="rgb(227 237 241)"
                 max-width=450
                 class="mb-0"
               >
-                wAutoOverflOverflOverflOverflOverfllOverflOverflOverflOverfrflrflrfl你好
+                {{element.content}}
               </v-alert>
-              <v-subheader :class="[i % 2 === 0 && `justify-end`]">
-                2022-6-13
+              <v-subheader :class="[element.sender_id === $store.state.user.id && `justify-end`]">
+                {{element.send_time}}
               </v-subheader>
             </div>
           </v-col>
@@ -53,7 +53,7 @@
     </v-sheet>
 
     <v-text-field
-      v-if="target!==null"
+      v-if="session!==null"
       v-model="text"
       outlined
       placeholder="Type your message here"
@@ -70,27 +70,51 @@
 
 <script>
 import global from '@/global'
+import MessageServices from '@/services/MessageServices'
 
 export default {
   props: [
-    'target'
+    'session'
   ],
   data () {
     return {
-      user: 1,
       text: '',
       closed: true,
-      readedMessage: [],
-      unreadedMessage: []
+      viewed: []
     }
   },
   methods: {
     sendMessage () {
+      let msg = {
+        sender_id: this.$store.state.user.id,
+        receiver_id: this.$store.state.user.id === this.session.id2 ? this.session.id1 : this.session.id2,
+        content: this.text,
+        send_time: (new Date()).getTime()
+      }
+      this.viewed = this.viewed.concat(msg)
       this.text = ''
-      this.resetIcon()
     },
     close () {
       this.$emit('close')
+    },
+    async getUnviewed () {
+      if (!this.session || !this.session.hasUnviewed) return
+      const msg = await MessageServices.getUnviewed({id1: this.session.id1, id2: this.session.id2})
+      msg.data.sort((a, b) => a.send_time.localeCompare(b.send_time))
+      this.viewed.concat(msg.data)
+      // post->vieded
+    },
+    async getViewed () {
+      if (!this.session) return
+      const msg = await MessageServices.getViewed({id1: this.session.id1, id2: this.session.id2})
+      msg.data.sort((a, b) => a.send_time.localeCompare(b.send_time))
+      console.log(msg)
+      this.viewed = msg.data
+    },
+    checkTimePass (t) {
+      var diff = (new Date()).getTime() - t
+      console.log(diff)
+      return diff / (60 * 1000) >= 1
     }
   },
   computed: {
@@ -99,13 +123,23 @@ export default {
     await global.checkLogin()
   },
   watch: {
-    target (value) {
-      // console.log('target has changed', value)
-      this.target = value
-
-      if (this.target !== null) {
-
-      }
+    session: {
+      handler (newValue, oldValue) {
+        // console.log('old', oldValue)
+        // console.log('new', newValue)
+        this.session = newValue
+        if (newValue !== null && oldValue === null) {
+          this.getViewed()
+          // console.log(this.viewed)
+        }
+        // this.getUnviewed()
+        // if (this.session === null) {
+        //   this.viewed = []
+        //   this.text = ''
+        // }
+      },
+      deep: true,
+      immediate: true
     }
   }
 }

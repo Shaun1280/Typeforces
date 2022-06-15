@@ -92,4 +92,6 @@ module.exports = (app) => {
   app.get('/friend', isAuthenticated, FriendController.index)
   app.delete('/friend', isAuthenticated, FriendController.remove)
   app.get('/message/check', isAuthenticated, MessageController.checkNew)
+  app.get('/message/viewed', isAuthenticated, MessageController.getViewed)
+  app.get('/message/unviewed', isAuthenticated, MessageController.getUnviewed)
 }
