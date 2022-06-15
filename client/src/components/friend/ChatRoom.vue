@@ -30,13 +30,15 @@
               </v-subheader>
               <v-alert
                 color="rgb(227 237 241)"
-                max-width=450
+                :style="element.sender_id === $store.state.user.id
+                  ? `width:fit-content;word-break:break-all;display:flex;justify-content:end;margin-left:auto;`
+                  : `width:fit-content;word-break:break-all;display:flex;justify-content:end;margin-right:auto;`"
                 class="mb-0"
               >
                 {{element.content}}
               </v-alert>
               <v-subheader :class="[element.sender_id === $store.state.user.id && `justify-end`]">
-                {{element.send_time}}
+                {{getTime(element.send_time)}}
               </v-subheader>
             </div>
           </v-col>
@@ -63,6 +65,7 @@
       class="ma-2"
       clearable
       @click:append-outer="sendMessage"
+      @keyup.enter="sendMessage"
     >
     </v-text-field>
   </v-card>
@@ -85,14 +88,22 @@ export default {
   },
   methods: {
     sendMessage () {
+      if (this.text === '') return
       let msg = {
         sender_id: this.$store.state.user.id,
         receiver_id: this.$store.state.user.id === this.session.id2 ? this.session.id1 : this.session.id2,
         content: this.text,
-        send_time: (new Date()).getTime()
+        send_time: new Date()
       }
       this.viewed = this.viewed.concat(msg)
       this.text = ''
+      // async
+    },
+    getTime (timestamp) {
+      let date = new Date(timestamp)
+      let time = date.toISOString().substr(11, 2) + ':' + date.toISOString().substr(14, 2)
+      date = date.toISOString().substr(0, 10)
+      return date + ' ' + time
     },
     close () {
       this.$emit('close')
@@ -110,11 +121,6 @@ export default {
       msg.data.sort((a, b) => a.send_time.localeCompare(b.send_time))
       console.log(msg)
       this.viewed = msg.data
-    },
-    checkTimePass (t) {
-      var diff = (new Date()).getTime() - t
-      console.log(diff)
-      return diff / (60 * 1000) >= 1
     }
   },
   computed: {
@@ -158,8 +164,8 @@ export default {
 /deep/ .v-alert__wrapper {
   align-items: start;
   border-radius: inherit;
-  display: inherit;
   text-align: start;
+  display: inherit;
 }
 
 /deep/ .v-subheader {
