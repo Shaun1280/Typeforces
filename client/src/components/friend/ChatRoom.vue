@@ -119,7 +119,6 @@ export default {
       if (!this.session) return
       const msg = await MessageServices.getViewed({id1: this.session.id1, id2: this.session.id2})
       msg.data.sort((a, b) => a.send_time.localeCompare(b.send_time))
-      console.log(msg)
       this.viewed = msg.data
     }
   },
@@ -131,8 +130,8 @@ export default {
   watch: {
     session: {
       handler (newValue, oldValue) {
-        // console.log('old', oldValue)
-        // console.log('new', newValue)
+        console.log('old', oldValue)
+        console.log('new', newValue)
         this.session = newValue
         if (newValue !== null && oldValue === null) {
           this.getViewed()

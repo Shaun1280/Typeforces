@@ -191,7 +191,7 @@ export default {
         if (this.chatItem.hasUnviewed !== undefined && this.chatItem.hasUnviewed !== ret.data.hasUnviewed) {
           let pre = this.chatItem
           pre.hasUnviewed = ret.data.hasUnviewed
-          this.chatItem.hasUnviewed = ret.data.hasUnviewed
+          this.chatItem = pre
           console.log(this.chatItem)
         }
       }
