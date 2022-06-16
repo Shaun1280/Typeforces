@@ -30,7 +30,7 @@
 
       <template v-slot:item.prev_rating="{ item }">
         <font v-bind:color="item.post_rating - item.prev_rating > 0 ? '#00B400' : '#778899'">
-          {{item.post_rating - item.prev_rating}}
+          {{item.post_rating - (item.prev_rating === -1 ? 0 : item.prev_rating)}}
         </font>
       </template>
     </v-data-table>
