@@ -145,7 +145,7 @@ export default {
         })
       } else { // need changes
         sorted.sort(function (a, b) {
-          return a.practice_no - b.practice_no
+          return a.vote_count - b.vote_count
         })
       }
 
