@@ -214,8 +214,6 @@ export default {
       const promises = this.friends.map(this.checkUnviewed)
       await Promise.all(promises)
 
-      // 按字典序排列
-      this.friends.sort((a, b) => a.User.user_name.localeCompare(b.User.user_name))
       this.createIntervals()
     } catch (error) {
       console.log(error)
