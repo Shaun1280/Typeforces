@@ -54,13 +54,6 @@
 
               <v-list-item
                 v-if="isSelf()"
-                @click="navigateTo({name: 'friendRequests'})"
-              >
-                <v-list-item-title>Friend Requests</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item
-                v-if="isSelf()"
                 @click="navigateTo({name: 'friend'})"
               >
                 <v-list-item-title>My Friends</v-list-item-title>

@@ -60,5 +60,41 @@ module.exports = {
         error: 'An error has occured in getting unviewed messages'
       })
     }
+  },
+  async postNew(req, res) {
+    try {
+      console.log(req.body)
+      await Message.create({
+        sender_id: req.body.sender_id,
+        receiver_id: req.body.receiver_id,
+        content: req.body.content,
+        send_time: req.body.send_time,
+        view_tag: false
+      })
+      return res.end()
+    } catch (err) {
+      // console.log(err)
+      res.status(500).send({
+        error: 'An error has occured in posting  message'
+      })
+    }
+  },
+  async setViewed(req, res) {
+    try {
+      // console.log(req.body)
+      req.body.forEach(async (element, index) => {
+        await Message.update({ view_tag: true }, {
+          where: {
+            message_id: element.message_id
+          }
+        })
+      });
+      return res.end()
+    } catch (err) {
+      // console.log(err)
+      res.status(500).send({
+        error: 'An error has occured in posting  message'
+      })
+    }
   }
 }

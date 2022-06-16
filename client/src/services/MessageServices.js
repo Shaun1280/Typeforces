@@ -25,5 +25,11 @@ export default {
         id2: data.id2
       }
     })
+  },
+  postNew (data) {
+    return Api().post(`message/new`, data)
+  },
+  setViewed (data) {
+    return Api().post(`message/set`, data)
   }
 }

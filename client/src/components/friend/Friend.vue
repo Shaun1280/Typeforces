@@ -1,96 +1,108 @@
 <template>
   <v-container class="d-flex justify-space-around" fluid>
-    <v-card width="470" color="blue" dark class="align-self-start">
-      <v-card-title>
-        My Friends
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card-title>
-      <v-data-table
-        :headers="headers"
-        :items="friends"
-        :search="search"
-        light
-      >
-      <!-- 用户名 -->
-        <template v-slot:item.User.user_name="{ item }">
-           <font
-              v-for="(char, index) in item.User.user_name"
-              :key="index + 'only'"
-              class="name_font"
-              v-bind:color="nameColor(item.User)[index]"
-           >
-              {{ char === ' ' ? '&nbsp;' : char }}
-           </font>
-        </template>
-      <!-- 消息 -->
-        <template v-slot:item.hasUnviewed="{ item }">
-          <v-badge
-            color="pink"
-            dot
-            overlap
-            :value="item.hasUnviewed===true"
-          >
-            <v-icon
-              class="mr-2"
-              color="blue"
-              @click="openSession(item)"
+    <div>
+      <v-card width="470" color="blue" dark class="mb-12">
+        <v-card-title>
+          My Friends
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-title>
+        <v-data-table
+          :headers="headers"
+          :items="friends"
+          :search="search"
+          light
+        >
+        <!-- 用户名 -->
+          <template v-slot:item.User.user_name="{ item }">
+            <a
+              @click="$router.push({
+                name: 'profile',
+                params: {
+                  username: item.User.user_name
+                }
+              })"
             >
-              mdi-message-outline
-            </v-icon>
-          </v-badge>
-        </template>
-      <!-- 删除 -->
-        <template v-slot:item.remove="{ item }">
-            <v-btn
-              icon
-              @click.stop="removeItem=item; deldialog=true"
+              <font
+                v-for="(char, index) in item.User.user_name"
+                :key="index + 'only'"
+                class="name_font"
+                v-bind:color="nameColor(item.User)[index]"
+               >
+                {{ char === ' ' ? '&nbsp;' : char }}
+              </font>
+            </a>
+          </template>
+        <!-- 消息 -->
+          <template v-slot:item.hasUnviewed="{ item }">
+            <v-badge
+              color="pink"
+              dot
+              overlap
+              :value="item.hasUnviewed===true"
             >
               <v-icon
-                color="grey"
+                class="mr-2"
+                color="blue"
+                @click="openSession(item)"
               >
-                mdi-delete
+                mdi-message-outline
               </v-icon>
-            </v-btn>
-        </template>
-      </v-data-table>
-    <!-- 确认删除对话框 -->
-      <v-dialog
-          v-model="deldialog"
-          persistent
-          max-width="290"
-        >
-          <v-card>
-            <v-card-title class="text-h5">
-            </v-card-title>
-            <v-card-text class="text-h5">
-              Are you sure?
-            </v-card-text>
-            <v-card-actions class="justify-center">
+            </v-badge>
+          </template>
+        <!-- 删除 -->
+          <template v-slot:item.remove="{ item }">
               <v-btn
-                color="blue darken-1"
-                text
-                @click="deldialog=false;removeFriend()"
+                icon
+                @click.stop="removeItem=item; deldialog=true"
               >
-                Yes
+                <v-icon
+                  color="grey"
+                >
+                  mdi-delete
+                </v-icon>
               </v-btn>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="removeItem=null;deldialog=false"
-              >
-                No
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-    </v-card>
+          </template>
+        </v-data-table>
+      <!-- 确认删除对话框 -->
+        <v-dialog
+            v-model="deldialog"
+            persistent
+            max-width="290"
+          >
+            <v-card>
+              <v-card-title class="text-h5">
+              </v-card-title>
+              <v-card-text class="text-h5">
+                Are you sure?
+              </v-card-text>
+              <v-card-actions class="justify-center">
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="deldialog=false;removeFriend()"
+                >
+                  Yes
+                </v-btn>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="removeItem=null;deldialog=false"
+                >
+                  No
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+      </v-card>
+      <friend-requests></friend-requests>
+    </div>
     <chat-room :session="chatItem" @close="closeSession"></chat-room>
   </v-container>
 </template>
@@ -100,10 +112,12 @@ import global from '@/global'
 import FriendServices from '@/services/FriendServices'
 import MessageServices from '@/services/MessageServices'
 const ChatRoom = () => import('@/components/friend/ChatRoom')
+const FriendRequests = () => import('@/components/friend/FriendRequests')
 
 export default {
   components: {
-    ChatRoom
+    ChatRoom,
+    FriendRequests
   },
   data () {
     return {
@@ -174,7 +188,7 @@ export default {
         // console.log(JSON.stringify(element))
         _this.IntervalTime[index] = setInterval(() => {
           setTimeout(async function () {
-            const promises = _this.friends.map(_this.checkUnviewed)
+            const promises = [_this.checkUnviewed(element, index)]
             await Promise.all(promises)
           }, Math.floor(Math.random() * 1000))
         }, 5000)
@@ -186,17 +200,7 @@ export default {
           ? {sender_id: element.id2, receiver_id: element.id1}
           : {sender_id: element.id1, receiver_id: element.id2}
       )
-      let tmp = element
-      if (tmp === this.chatItem) {
-        if (this.chatItem.hasUnviewed !== undefined && this.chatItem.hasUnviewed !== ret.data.hasUnviewed) {
-          let pre = this.chatItem
-          pre.hasUnviewed = ret.data.hasUnviewed
-          this.chatItem = pre
-          console.log(this.chatItem)
-        }
-      }
-      tmp['hasUnviewed'] = ret.data.hasUnviewed
-      this.$set(this.friends, index, tmp)
+      this.$set(element, 'hasUnviewed', ret.data.hasUnviewed)
     }
   },
   computed: {
@@ -223,8 +227,13 @@ export default {
     })
   },
   watch: {
-    // friends (value) {
-    //   this.friends = value
+    // chatItem: {
+    //   handler (newValue, oldValue) {
+    //     console.log(1)
+    //     this.chatItem = newValue
+    //   },
+    //   deep: true,
+    //   immediate: true
     // }
   }
 }

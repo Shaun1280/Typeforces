@@ -83,6 +83,7 @@ export default {
     return {
       text: '',
       closed: true,
+      hasUnviewed: null,
       viewed: []
     }
   },
@@ -93,11 +94,11 @@ export default {
         sender_id: this.$store.state.user.id,
         receiver_id: this.$store.state.user.id === this.session.id2 ? this.session.id1 : this.session.id2,
         content: this.text,
-        send_time: new Date()
+        send_time: new Date() - (new Date()).getTimezoneOffset() * 60000
       }
       this.viewed = this.viewed.concat(msg)
       this.text = ''
-      // async
+      MessageServices.postNew(msg)
     },
     getTime (timestamp) {
       let date = new Date(timestamp)
@@ -112,40 +113,70 @@ export default {
       if (!this.session || !this.session.hasUnviewed) return
       const msg = await MessageServices.getUnviewed({id1: this.session.id1, id2: this.session.id2})
       msg.data.sort((a, b) => a.send_time.localeCompare(b.send_time))
-      this.viewed.concat(msg.data)
-      // post->vieded
+      this.viewed = this.viewed.concat(msg.data)
+      await MessageServices.setViewed(msg.data)
     },
     async getViewed () {
       if (!this.session) return
       const msg = await MessageServices.getViewed({id1: this.session.id1, id2: this.session.id2})
       msg.data.sort((a, b) => a.send_time.localeCompare(b.send_time))
       this.viewed = msg.data
+    },
+    async checkUnviewed () {
+      const ret = await MessageServices.checkNew(
+        this.session.id1 === this.$store.state.user.id
+          ? {sender_id: this.session.id2, receiver_id: this.session.id1}
+          : {sender_id: this.session.id1, receiver_id: this.session.id2}
+      )
+      // console.log(ret.data.hasUnviewed)
+      this.hasUnviewed = ret.data.hasUnviewed
+    },
+    // 定时事件
+    createIntervals () {
+      let _this = this
+      _this.IntervalTime1 = setInterval(() => {
+        setTimeout(async function () {
+          const promises = [_this.checkUnviewed()]
+          await Promise.all(promises)
+        }, Math.floor(Math.random() * 1000))
+      }, 5000)
     }
   },
   computed: {
   },
   async mounted () {
     await global.checkLogin()
+    if (this.session) {
+      this.hasUnviewed = this.session.hasUnviewed
+    }
   },
   watch: {
     session: {
       handler (newValue, oldValue) {
-        console.log('old', oldValue)
-        console.log('new', newValue)
+        // console.log('old', oldValue)
+        // console.log('new', newValue)
         this.session = newValue
         if (newValue !== null && oldValue === null) {
           this.getViewed()
-          // console.log(this.viewed)
+          this.checkUnviewed()
+          this.createIntervals()
         }
-        // this.getUnviewed()
-        // if (this.session === null) {
-        //   this.viewed = []
-        //   this.text = ''
-        // }
-      },
-      deep: true,
-      immediate: true
+        if (newValue === null && oldValue !== null) {
+          clearInterval(this.IntervalTime1)
+        }
+      }
+    },
+    hasUnviewed (newValue, oldValue) {
+      // console.log('old', oldValue)
+      // console.log('new', newValue)
+      this.hasUnviewed = newValue
+      if (this.hasUnviewed === true) {
+        this.getUnviewed()
+      }
     }
+  },
+  async destroyed () {
+    clearInterval(this.IntervalTime1)
   }
 }
 </script>
