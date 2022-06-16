@@ -61,6 +61,9 @@ module.exports = (app) => {
   app.get('/practices/:id',
     isAuthenticated,
     PracticeController.show)
+  app.post('/practices/vote/:id', // vote
+    isAuthenticated,
+    PracticeController.vote)
   app.post('/practices/history/:id',
     isAuthenticated,
     PracticeController.postHistory)

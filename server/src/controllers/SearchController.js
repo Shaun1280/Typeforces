@@ -1,4 +1,4 @@
-const { Round, User, Practice } = require('../models')
+const { Round, User, Practice, PracticeVote } = require('../models')
 const { Op } = require('sequelize')
 
 module.exports = {
@@ -33,7 +33,11 @@ module.exports = {
           include: [
             {
               attributes: ['user_name', 'rating'],
-              model: User
+              model: User,
+            },
+            {
+              attributes: ['voter_id'],
+              model: PracticeVote
             }
           ],
           where: {

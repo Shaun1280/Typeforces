@@ -1,4 +1,4 @@
-const { User, Practice, Content, PracticeHistory, Round } = require('../models')
+const { User, Practice, Content, PracticeHistory, Round, PracticeVote} = require('../models')
 
 module.exports = {
   async index (req, res) {
@@ -7,11 +7,18 @@ module.exports = {
         include: [
           {
             attributes: ['user_name', 'rating'],
-            model: User
+            model: User,
+          },
+          {
+            attributes: ['voter_id'],
+            model: PracticeVote
           }
         ],
         where: {}
       })
+      // for (let i of practices) {
+      //   console.log(i.toJSON())
+      // }
       res.send({
         practices: practices
       })
@@ -33,6 +40,10 @@ module.exports = {
             where: {
               user_name: req.params.username
             }
+          },
+          {
+            attributes: ['voter_id'],
+            model: PracticeVote
           }
         ],
         where: {}
@@ -277,6 +288,24 @@ module.exports = {
       console.log(err)
       res.status(500).send({
         error: `An error has occured when trying to get practice by contest`,
+        detail: err
+      })
+    }
+  },
+  async vote (req, res) { // 投票
+    try {
+      await PracticeVote.create({
+        practice_no: req.params.id,
+        voter_id: req.user.id,
+        vote_time: Date.parse(new Date())
+      })
+      res.send({
+        msg: 'vote success'
+      })
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: `An error has occured when trying to vote`,
         detail: err
       })
     }

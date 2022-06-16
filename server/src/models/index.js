@@ -39,4 +39,14 @@ sequelize.models.Practice.belongsTo(sequelize.models.User, {
   targetKey: 'id'
 })
 
+sequelize.models.Practice.hasMany(sequelize.models.PracticeVote, {
+  foreignKey: 'practice_no',
+  targetKey: 'practice_no'
+})
+
+sequelize.models.User.hasOne(sequelize.models.PracticeVote, {
+  foreignKey: 'voter_id',
+  targetKey: 'id'
+})
+
 module.exports = db

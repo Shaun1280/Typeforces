@@ -51,8 +51,26 @@
         :key="index"
         outlined
         elevation="1"
-       >
-        <br/>
+      >
+        <v-flex class="d-flex flex-row justify-start mt-1">
+          <v-btn
+            @click="vote(practice)"
+            right
+            fab
+            height="25px" width="25px"
+            class="mybutton ml-2"
+            title="Vote practice"
+            dark
+            outlined
+            hover
+          >
+            <v-icon dark :color="voteColor[index]">
+              mdi-star
+            </v-icon>
+          </v-btn>
+          <div class="ml-2">{{practice.PracticeVotes ? practice.PracticeVotes.length : 0}}</div>
+        </v-flex>
+
         Practice: {{practice.practice_name}}
         <br/><br/>
 
@@ -105,6 +123,7 @@
 
 <script>
 import global from '@/global'
+import PracticeServices from '@/services/PracticeServices'
 
 export default {
   props: [
@@ -128,9 +147,9 @@ export default {
         sorted.sort(function (a, b) {
           return b.practice_no - a.practice_no
         })
-      } else { // need changes
+      } else {
         sorted.sort(function (a, b) {
-          return a.practice_no - b.practice_no
+          return a.vote_count - b.vote_count
         })
       }
 
@@ -143,6 +162,20 @@ export default {
     },
     length () {
       return Math.max(1, Math.ceil(this.practices.length / this.pageSize))
+    },
+    voteColor () {
+      if (!this.practices) return []
+      let ret = new Array(this.practices.length)
+      for (let i = 0; i < ret.length; i++) {
+        ret[i] = 'grey'
+        for (let votes of this.practices[i].PracticeVotes) {
+          if (votes.voter_id === this.$store.state.user.id) {
+            ret[i] = 'yellow'
+            break
+          }
+        }
+      }
+      return ret
     }
   },
   methods: {
@@ -151,10 +184,26 @@ export default {
     },
     nameColor (User) {
       return global.nameColor(User.user_name, User.rating)
+    },
+    async vote (practice) {
+      try {
+        await PracticeServices.vote(practice.practice_no)
+        practice.vote_count += 1
+        practice.PracticeVotes.push({
+          voter_id: this.$store.state.user.id
+        })
+      } catch (error) {
+        if (error.response) {
+          this.$store.dispatch('setDialog', {
+            dialog: true,
+            error: 'You can not vote again, nor cancel voting.',
+            redirectName: null
+          })
+        }
+      }
     }
   },
   mounted () {
-
   }
 }
 </script>

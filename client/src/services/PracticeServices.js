@@ -28,5 +28,8 @@ export default {
   },
   postHistory (id, data) {
     return Api().post(`practices/history/${id}`, data)
+  },
+  vote (id) {
+    return Api().post(`practices/vote/${id}`)
   }
 }
