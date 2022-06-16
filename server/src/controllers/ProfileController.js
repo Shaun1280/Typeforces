@@ -2,9 +2,22 @@ const { User, CompetitionHistory, PracticeHistory, Practice, Round, Friend } = r
 
 const { Op } = require('sequelize')
 
+const passport = require('passport')
+
 module.exports = {
   async index (req, res) {
     try {
+      passport.authenticate('jwt', function (err, user) {
+        if (err) {
+          res.status(400).send({
+            error: 'An error occurs when trying to get profile',
+            detail: error
+          })
+        } else {
+          req.user = user
+        }
+      })(req, res)
+
       const userName = req.params.username
       const user = await User.findOne({
         where: {
@@ -57,7 +70,23 @@ module.exports = {
         }
       })
 
+      let isFriend = 0
+      if (req.user) {
+        let id1 = req.user.id
+        let id2 = user.id
+        isFriend = (await Friend.findAndCountAll({
+          where: {
+            id1: id1 < id2 ? id1 : id2,
+            id2: id1 < id2 ? id2 : id1,
+            created_time: {
+              [Op.not]: null
+            }
+          }
+        })).count
+      }
+
       res.send({
+        id: user.id,
         email: user.email,
         user_name: user.user_name,
         status: user.status,
@@ -67,7 +96,8 @@ module.exports = {
         last_visit: user.last_visit,
         competitionHistories: competitionHistories,
         practiceHistories: practiceHistories,
-        friendCount: count
+        friendCount: count,
+        isFriend: isFriend
       })
     } catch (err) {
       console.log(err)

@@ -11,6 +11,7 @@ import Profile from '@/components/profile/Profile'
 import Search from '@/components/Search'
 import Rating from '@/components/Rating'
 import Friend from '@/components/friend/Friend'
+import FriendRequests from '@/components/friend/FriendRequests'
 import Practices from '@/components/practices/Practices'
 import UserPractices from '@/components/practices/UserPractices'
 import viewPractice from '@/components/practices/ViewPractice'
@@ -100,6 +101,11 @@ export default new Router({
       path: '/Friend',
       name: 'friend',
       component: Friend
+    },
+    {
+      path: '/Friend/Requests',
+      name: 'friendRequests',
+      component: FriendRequests
     },
     {
       path: '/*',

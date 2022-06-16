@@ -94,4 +94,10 @@ module.exports = (app) => {
   app.get('/message/check', isAuthenticated, MessageController.checkNew)
   app.get('/message/viewed', isAuthenticated, MessageController.getViewed)
   app.get('/message/unviewed', isAuthenticated, MessageController.getUnviewed)
+
+  // friend request
+  app.post('/friend/req', isAuthenticated, FriendController.friendRequest)
+  app.get('/friend/req', isAuthenticated, FriendController.getRequests)
+  app.post('/friend/accept', isAuthenticated, FriendController.accept)
+  app.post('/friend/refuse', isAuthenticated, FriendController.refuse)
 }

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row justify="space-around">
-      <v-card width="80%">
+      <v-card width="80%" :loading="loading">
         <v-toolbar
           color="blue"
           dark
@@ -50,6 +50,13 @@
                 })"
               >
                 <v-list-item-title>{{isSelf() ? 'My practices' : 'User practices'}}</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                v-if="isSelf()"
+                @click="navigateTo({name: 'friendRequests'})"
+              >
+                <v-list-item-title>Friend Requests</v-list-item-title>
               </v-list-item>
 
               <v-list-item
@@ -110,6 +117,7 @@ export default {
   data () {
     return {
       user: {
+        id: '',
         rating: -1,
         register_time: 0,
         user_name: '',
@@ -120,7 +128,8 @@ export default {
         practiceHistories: [],
         friendCount: 0,
         is_online: false
-      }
+      },
+      loading: 'white'
     }
   },
   methods: {
@@ -157,10 +166,12 @@ export default {
 
         console.log(this.$store.state.route.params.username)
         const response = await ProfileServices.index(this.$store.state.route.params.username)
+        this.loading = false
         this.user = response.data
         this.calc()
         console.log(this.user)
       } catch (error) {
+        this.loading = false
         console.log(error)
       }
     }

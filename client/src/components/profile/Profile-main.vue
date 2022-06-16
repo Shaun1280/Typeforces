@@ -1,37 +1,6 @@
 <template>
 <v-flex>
-    <v-card-text height="20%">
-        <v-card-title class="black--text mt-8">
-        <v-avatar size="64" color="grey">
-            <v-icon dark>
-            mdi-account-circle
-            </v-icon>
-        </v-avatar>
-        <div class="ml-10">
-            <!-- user title -->
-            <font
-            v-for="(char, index) in calcTitle"
-            :key="index"
-            class="title_font"
-            v-bind:color="titleColor"
-            >
-            {{char === ' ' ? '&nbsp;' : char}}
-            </font>
-            <br/>
-            <!-- user name & status -->
-            <font
-            v-for="(char, index) in user.user_name"
-            :key="index + 'only'"
-            class="name_font"
-            v-bind:color="nameColor[index]"
-            >
-            {{char}}
-            </font>
-            <br/>
-            <font>{{user.status ? `(${user.status})` : ''}}</font>
-        </div>
-        </v-card-title>
-    </v-card-text>
+    <profile-user :user="user"/>
 
     <v-divider></v-divider>
 
@@ -87,14 +56,16 @@
 </template>
 
 <script>
+import ProfileUser from '@/components/profile/Profile-user'
 import global from '@/global'
 
 export default {
   props: ['user'],
+  components: {
+    ProfileUser
+  },
   data () {
-    return {
-      userWpm: null
-    }
+    return {}
   },
   methods: {
     navigateTo (route) {
