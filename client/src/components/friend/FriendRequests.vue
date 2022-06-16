@@ -70,6 +70,32 @@
           </v-btn>
         </template>
       </v-data-table>
+
+      <v-dialog
+        v-model="data"
+        persistent
+        max-width="290"
+      >
+        <v-card>
+          <v-card-title class="text-h5">
+            Message
+          </v-card-title>
+
+          <v-card-text v-html="error">
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+              <v-btn
+              color="green darken-1"
+              text
+              @click="redirect"
+              >
+              OK
+              </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
 </template>
 
@@ -81,7 +107,9 @@ export default {
   data () {
     return {
       users: [],
-      search: ''
+      search: '',
+      data: false,
+      error: null
     }
   },
   computed: {
@@ -108,12 +136,9 @@ export default {
     async accept (item) {
       try {
         const response = await FriendServices.accept(item.User.id)
-        this.$store.dispatch('setDialog', {
-          dialog: true,
-          error: response.data.msg,
-          redirectName: null
-        })
         this.users.splice(this.users.indexOf(item), 1)
+        this.data = true
+        this.error = response.data.msg
       } catch (error) {
         console.log(error)
         this.$store.dispatch('setDialog', {
@@ -140,6 +165,10 @@ export default {
           redirectName: null
         })
       }
+    },
+    redirect () {
+      this.data = false
+      this.$router.go(0)
     }
   },
   async mounted () {
