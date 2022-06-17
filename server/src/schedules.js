@@ -1,12 +1,17 @@
 const schedule = require('node-schedule')
 
-const { User, CompetitionHistory, Round } = require('./models')
+const { User, CompetitionHistory, Round, Practice } = require('./models')
 const { Op } = require('sequelize')
 
 const ruleUpdateRating = new schedule.RecurrenceRule()
 ruleUpdateRating.hour = [4, 16]
 ruleUpdateRating.minute = 0
 ruleUpdateRating.second = 0
+
+const rulePractice = new schedule.RecurrenceRule()
+rulePractice.hour = [0, 15]
+rulePractice.minute = 0
+rulePractice.second = 0
 
 module.exports = {
   data: null,
@@ -157,9 +162,45 @@ module.exports = {
     }
     await forRounds(rounds.length - 1)
   },
+  async clone (round, index) {
+    if ((new Date()).getTime() <= (new Date(round.start_time)).getTime() +
+      round.duration * 60000) return
+
+    const admin = await User.findOne({
+      where: {
+        user_name: 'admin',
+        status: 'admin'
+      }
+    })
+
+    let practice = await Practice.findOne({
+      where: {
+        content_id: round.content_id,
+        practice_name: `${round.round_name}(practice)`,
+        writer_id: admin.id
+      }
+    })
+    if (practice) return
+
+    await Practice.create({
+      practice_name: `${round.round_name}(practice)`,
+      content_id: round.content_id,
+      publish_time: Date.parse(new Date()),
+      writer_id: admin.id
+    })
+  },
+  async contestToPractice () {
+    const rounds = await Round.findAll({
+      where: {}
+    })
+    await Promise.all(rounds.map(this.clone))
+  },
   scheduleUpdateRating () {
     schedule.scheduleJob(ruleUpdateRating, async () => {
       await this.updateRating()
+    })
+    schedule.scheduleJob(rulePractice, async () => {
+      await this.contestToPractice()
     })
   }
 }
