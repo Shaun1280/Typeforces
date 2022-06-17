@@ -130,6 +130,7 @@ export default {
           ? {sender_id: this.session.id2, receiver_id: this.session.id1}
           : {sender_id: this.session.id1, receiver_id: this.session.id2}
       )
+      console.log(this.session)
       // console.log(ret.data.hasUnviewed)
       this.hasUnviewed = ret.data.hasUnviewed
     },
@@ -158,15 +159,21 @@ export default {
         // console.log('old', oldValue)
         // console.log('new', newValue)
         this.session = newValue
-        if (newValue !== null && oldValue === null) {
-          this.getViewed()
-          this.checkUnviewed()
-          this.createIntervals()
-        }
-        if (newValue === null && oldValue !== null) {
+        if (newValue !== oldValue) {
           clearInterval(this.IntervalTime1)
+          this.text = ''
+          if (this.session) {
+            this.hasUnviewed = this.session.hasUnviewed
+          }
+          this.viewed = []
+          if (newValue !== null) {
+            this.getViewed()
+            this.checkUnviewed()
+            this.createIntervals()
+          }
         }
-      }
+      },
+      deep: true
     },
     hasUnviewed (newValue, oldValue) {
       // console.log('old', oldValue)
