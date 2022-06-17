@@ -130,7 +130,7 @@ export default {
           ? {sender_id: this.session.id2, receiver_id: this.session.id1}
           : {sender_id: this.session.id1, receiver_id: this.session.id2}
       )
-      console.log(this.session)
+      // console.log(this.session)
       // console.log(ret.data.hasUnviewed)
       this.hasUnviewed = ret.data.hasUnviewed
     },
