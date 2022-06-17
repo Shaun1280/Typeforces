@@ -143,7 +143,7 @@ export default {
           const promises = [_this.checkUnviewed()]
           await Promise.all(promises)
         }, Math.floor(Math.random() * 1000))
-      }, 5000)
+      }, 4000)
     }
   },
   computed: {
