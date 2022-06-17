@@ -133,6 +133,7 @@ export default {
       // console.log(this.session)
       // console.log(ret.data.hasUnviewed)
       this.hasUnviewed = ret.data.hasUnviewed
+      this.session.hasUnviewed = ret.data.hasUnviewed
     },
     // 定时事件
     createIntervals () {
@@ -169,6 +170,7 @@ export default {
           if (newValue !== null) {
             this.getViewed()
             this.checkUnviewed()
+            this.getViewed()
             this.createIntervals()
           }
         }
