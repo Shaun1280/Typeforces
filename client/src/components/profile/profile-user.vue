@@ -47,7 +47,7 @@
       </v-btn>
     </div>
 
-    <div class="ml-10">
+    <div class="ml-10" style="text-align:start;">
         <!-- user title -->
         <font
         v-for="(char, index) in calcTitle"

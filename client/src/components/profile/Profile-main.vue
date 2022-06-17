@@ -2,11 +2,11 @@
 <v-flex>
     <profile-user :user="user"/>
 
-    <v-divider></v-divider>
+    <v-divider class="mb-4"></v-divider>
 
-    <v-card-text>
+    <v-card-text style="font-size:1em">
         <!-- max rating part -->
-        <div class="font-weight-bold ml-8 mb-2 row justify-center">
+        <div class="font-weight-bold ml-8 mb-2 row justify-start">
         Contest rating: &nbsp;
         <font v-bind:color="ratingColor">
             {{user.rating !== -1 ? user.rating: 'Unrated'}}
@@ -26,30 +26,30 @@
         </div>
         <!-- end of max rating part -->
 
-        <div class="font-weight-bold ml-8 mb-2">
+        <div class="font-weight-bold ml-8 mb-2 row justify-start">
         WPM : {{user.user_wpm ? user.user_wpm : 'Unknown'}}
         </div>
 
-        <div class="font-weight-bold ml-8 mb-2">
+        <div class="font-weight-bold ml-8 mb-2 row justify-start">
         Email: {{user.email}}
         </div>
 
-        <div class="font-weight-bold ml-8 mb-2">
+        <div class="font-weight-bold ml-8 mb-2 row justify-start">
         Country: {{user.country}}
         </div>
 
-        <div class="font-weight-bold ml-8 mb-2">
+        <div class="font-weight-bold ml-8 mb-2 row justify-start">
         Friend of : {{user.friendCount}} users
         </div>
 
-        <div class="font-weight-bold ml-8 mb-2">
+        <div class="font-weight-bold ml-8 mb-2 row justify-start">
+        Registered: {{(new Date(user.register_time)).toISOString().substr(0, 10)}}
+        </div>
+
+        <div class="font-weight-bold ml-8 mb-2 row justify-start">
         Last Visit : {{!user.is_online ?
             (new Date(user.last_visit)) :
             'Online now'}}
-        </div>
-
-        <div class="font-weight-bold ml-8 mb-2">
-        Registered: {{(new Date(user.register_time)).toISOString().substr(0, 10)}}
         </div>
     </v-card-text>
 </v-flex>
