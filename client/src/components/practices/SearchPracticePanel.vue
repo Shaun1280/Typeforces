@@ -41,7 +41,10 @@
         outlined
         elevation="1"
        >
-        <v-flex class="d-flex flex-row justify-start mt-1">
+        <v-flex
+          v-if="$store.state.isUserLoggedIn"
+          class="d-flex flex-row justify-start mt-1"
+        >
           <v-btn
             @click="vote(practice)"
             right
@@ -59,6 +62,7 @@
           </v-btn>
           <div class="ml-2">{{practice.PracticeVotes ? practice.PracticeVotes.length : 0}}</div>
         </v-flex>
+        <br v-if="!$store.state.isUserLoggedIn"/>
 
         Practice: {{practice.practice_name}}
         <br/><br/>
