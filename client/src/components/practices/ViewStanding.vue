@@ -150,7 +150,6 @@ export default {
       // 添加排名
       let count = 1
       this.record.forEach((element, index) => {
-
         // score 相同的排名相同
         if (index > 0 && this.record[index].score !== this.record[index - 1].score) {
           count = count + 1
