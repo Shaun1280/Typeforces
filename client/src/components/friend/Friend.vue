@@ -195,6 +195,7 @@ export default {
       })
     },
     async checkUnviewed (element, index) {
+      if (!this.$store.state.user.id) return
       const ret = await MessageServices.checkNew(
         element.id1 === this.$store.state.user.id
           ? {sender_id: element.id2, receiver_id: element.id1}

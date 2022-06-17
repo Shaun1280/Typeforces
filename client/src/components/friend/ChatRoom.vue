@@ -112,6 +112,8 @@ export default {
     async getUnviewed () {
       if (!this.session || !this.session.hasUnviewed) return
       const msg = await MessageServices.getUnviewed({id1: this.session.id1, id2: this.session.id2})
+      this.hasUnviewed = false
+      this.session.hasUnviewed = false
       msg.data.sort((a, b) => a.send_time.localeCompare(b.send_time))
       this.viewed = this.viewed.concat(msg.data)
       await MessageServices.setViewed(msg.data)
