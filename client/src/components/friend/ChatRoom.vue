@@ -110,13 +110,15 @@ export default {
       this.$emit('close')
     },
     async getUnviewed () {
-      if (!this.session || !this.session.hasUnviewed) return
+      if (!this.session || !this.hasUnviewed) return
+      // console.log(1)
       const msg = await MessageServices.getUnviewed({id1: this.session.id1, id2: this.session.id2})
-      this.hasUnviewed = false
-      this.session.hasUnviewed = false
       msg.data.sort((a, b) => a.send_time.localeCompare(b.send_time))
       this.viewed = this.viewed.concat(msg.data)
+      // console.log(this.viewed)
       await MessageServices.setViewed(msg.data)
+      this.hasUnviewed = false
+      this.session.hasUnviewed = false
     },
     async getViewed () {
       if (!this.session) return
@@ -150,9 +152,6 @@ export default {
   },
   async mounted () {
     await global.checkLogin()
-    if (this.session) {
-      this.hasUnviewed = this.session.hasUnviewed
-    }
     let ele = document.getElementById('scrolling-techniques-7')
     if (ele) {
       ele.scrollTop = ele.scrollHeight
@@ -166,21 +165,21 @@ export default {
   },
   watch: {
     session: {
-      handler (newValue, oldValue) {
+      async handler (newValue, oldValue) {
         // console.log('old', oldValue)
         // console.log('new', newValue)
         this.session = newValue
         if (newValue !== oldValue) {
           clearInterval(this.IntervalTime1)
           this.text = ''
-          if (this.session) {
-            this.hasUnviewed = this.session.hasUnviewed
-          }
           this.viewed = []
           if (newValue !== null) {
-            this.getViewed()
-            this.checkUnviewed()
-            this.getUnviewed()
+            await this.getViewed()
+            // this.checkUnviewed()
+            // this.getUnviewed()
+            if (this.session) {
+              this.hasUnviewed = this.session.hasUnviewed
+            }
             this.createIntervals()
           }
         }
