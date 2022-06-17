@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     wpm: {
       type: DataTypes.FLOAT(4, 1),
       allowNull: false
+    },
+    score: {
+      type: DataTypes.INTEGER
     }
   }, {
     timestamps: false

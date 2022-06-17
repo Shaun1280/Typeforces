@@ -31,5 +31,8 @@ export default {
   },
   vote (id) {
     return Api().post(`practices/vote/${id}`)
+  },
+  getStanding (id) {
+    return Api().get(`practices/standing/${id}`)
   }
 }

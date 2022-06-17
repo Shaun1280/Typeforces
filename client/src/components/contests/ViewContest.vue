@@ -89,19 +89,26 @@
     <!-- refresh hint -->
     <v-dialog
       v-model="refresh"
-      max-width="290"
+      :max-width="typingStatus===2?320:290"
     >
       <v-card>
         <v-card-title class="text-h5">
           Message
         </v-card-title>
 
-        <v-card-text>
+        <v-card-text v-if="typingStatus!==2">
           Are you sure to refresh?
           <br/>
           Your typing data won't be saved.
           <br/>
           Make sure you wanna do that.
+        </v-card-text>
+        <v-card-text v-else>
+          Your typing data has already been saved.
+          <br/>
+          You can refresh and do this contest again.
+          <br/>
+          We will record the highest score you get.
         </v-card-text>
 
         <v-card-actions>

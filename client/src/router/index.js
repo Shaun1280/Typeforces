@@ -6,6 +6,7 @@ import Login from '@/components/Login'
 import Contests from '@/components/contests/Contests'
 import ViewContest from '@/components/contests/ViewContest'
 import ViewStanding from '@/components/contests/ViewStanding'
+import ViewPracticeStanding from '@/components/practices/ViewStanding'
 import ManageContests from '@/components/contests/ManageContests'
 import Profile from '@/components/profile/Profile'
 import Search from '@/components/Search'
@@ -66,6 +67,11 @@ export default new Router({
       path: '/Contests/Standing/:id',
       name: 'viewStanding',
       component: ViewStanding
+    },
+    {
+      path: '/Practices/Standing/:id',
+      name: 'viewPracticeStanding',
+      component: ViewPracticeStanding
     },
     {
       path: '/Practices',

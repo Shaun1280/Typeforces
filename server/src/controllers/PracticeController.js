@@ -262,7 +262,8 @@ module.exports = {
         practice_no: req.params.id,
         practicer_id: req.user.id,
         miss_count: req.body.miss_count,
-        wpm: req.body.wpm
+        wpm: req.body.wpm,
+        score: req.body.score
       })
       res.send(history.toJSON())
     } catch (err) {
@@ -306,6 +307,44 @@ module.exports = {
       console.log(err)
       res.status(500).send({
         error: `An error has occured when trying to vote`,
+        detail: err
+      })
+    }
+  },
+  async getStanding (req, res) {
+    try {
+      // console.log("id: ", req.params.id)
+      // 查询练习是否存在
+      const prac = await Practice.findOne({
+        where: {
+          practice_no: req.params.id
+        }
+      })
+      // 练习不存在
+      if (!prac) {
+        return res.status(400).send({
+          error: 'No such practice!'
+        })
+      }
+      const record = await PracticeHistory.findAll({
+        attributes: ['miss_count', 'wpm', 'score'],
+        include: [         
+          {
+            model: User,
+            attributes: ['rating', 'user_name', 'country'],
+            required: false
+          }
+        ],
+        where: {
+          practice_no: req.params.id
+        }
+      })
+
+      res.send({ record: record })
+    } catch (err) {
+      // console.log(err)
+      res.status(500).send({
+        error: 'An error has occured trying to get rating list',
         detail: err
       })
     }

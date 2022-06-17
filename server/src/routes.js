@@ -36,6 +36,9 @@ module.exports = (app) => {
   app.get('/contests/standing/:id',
     isAuthenticated,
     ContestsController.getStanding)
+  app.get('/practices/standing/:id',
+    isAuthenticated,
+    PracticeController.getStanding)
   app.post('/contests/history/:id',
     isAuthenticated,
     ContestsController.postHistory)

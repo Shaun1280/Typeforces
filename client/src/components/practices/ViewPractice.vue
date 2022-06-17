@@ -5,6 +5,19 @@
         class="mx-2"
         fab
         dark
+        large
+        color="cyan"
+        title="Standing"
+        @click="mode = 0, openStanding()"
+      >
+        <v-icon dark>
+          mdi-seal-variant
+        </v-icon>
+      </v-btn>
+      <v-btn
+        class="mx-2"
+        fab
+        dark
         color="indigo"
         title="Refresh"
         @click="mode = 0, refresh = true"
@@ -58,19 +71,24 @@
     <!-- refresh hint -->
     <v-dialog
       v-model="refresh"
-      max-width="290"
+      :max-width="typingStatus===2?320:290"
     >
       <v-card>
         <v-card-title class="text-h5">
           Message
         </v-card-title>
 
-        <v-card-text>
+        <v-card-text v-if="typingStatus!==2">
           Are you sure to refresh?
           <br/>
           Your typing data won't be saved.
           <br/>
           Make sure you wanna do that.
+        </v-card-text>
+        <v-card-text v-else>
+          Your typing data has already been saved.
+          <br/>
+          You can refresh and do this practice again.
         </v-card-text>
 
         <v-card-actions>
@@ -119,10 +137,26 @@ export default {
       typingStatus: 0, // 0 wait for typing, 1 is typing, 2 end typing
       // time management
       typingStartTime: (new Date()).getTime(),
-      refresh: false
+      refresh: false,
+      score: 0
     }
   },
   methods: {
+    // 打开排名新窗口
+    openStanding (route) {
+      let info = this.$router.resolve({
+        name: 'viewPracticeStanding',
+        params: {
+          id: this.$store.state.route.params.id
+        }
+      })
+      window.open(info.href, '_blank')
+    },
+    calcScore () {
+      let ret = this.score
+      ret += Math.trunc(this.wpm * 5)
+      return ret
+    },
     adjustOffset (curoffsest, delta) {
       let arr = this.$refs.vChips
       for (let i = this.cursor; i < arr.length; i++) {
@@ -152,12 +186,14 @@ export default {
           if (_this.color[_this.cursor] !== 'red') { // don't change missed char color
             _this.$set(_this.color, _this.cursor, '#E0E0E0')
             _this.rightCount++
+            _this.score += 100
           }
           _this.cursor = _this.cursor + 1
         } else {
           if (_this.color[_this.cursor] !== 'red') { // first wrong
             _this.$set(_this.color, _this.cursor, 'red')
             _this.missCount++
+            _this.score -= 500
           }
         }
 
@@ -188,8 +224,8 @@ export default {
       try {
         const response = await PracticeServices.postHistory(this.practice.practice_no, {
           miss_count: this.missCount,
-          type_progress: this.cursor,
-          wpm: this.wpm
+          wpm: this.wpm,
+          score: this.calcScore()
         })
 
         console.log(response)
