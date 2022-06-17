@@ -13,7 +13,7 @@
         <br/>
         StartTime: {{new Date(round.start_time)}}
         <br/>
-        Dutation: {{round.duration}} min
+        Duration: {{round.duration}} min
         <br/>
         Divison: {{round.division}}
         <br/>
