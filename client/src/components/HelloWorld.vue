@@ -1,6 +1,11 @@
 <template>
-  <v-flex class="d-flex justify-center">
-    <div class="homediv mt-16">
+  <v-flex>
+    <v-img
+      src="static/board.png"
+      contain
+      aspect-ratio="3.3"
+    ></v-img>
+    <div class="homediv mt-8">
       <typical
         :steps="['Hello', 1000, 'Hello world!', 500]"
         :wrapper="'h1'"
