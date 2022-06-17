@@ -170,7 +170,7 @@ export default {
           if (newValue !== null) {
             this.getViewed()
             this.checkUnviewed()
-            this.getViewed()
+            this.getUnviewed()
             this.createIntervals()
           }
         }
