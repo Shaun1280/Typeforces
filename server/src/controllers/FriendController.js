@@ -1,4 +1,4 @@
-const { User, Friend } = require('../models')
+const { User, Friend, Message } = require('../models')
 const { Op } = require('sequelize')
 
 module.exports = {
@@ -63,6 +63,18 @@ module.exports = {
                 where: {
                     id1: req.body.id1,
                     id2: req.body.id2
+                }
+            })
+            await Message.destroy({
+                where: {
+                    sender_id: req.body.id1,
+                    receiver_id: req.body.id2
+                }
+            })
+            await Message.destroy({
+                where: {
+                    sender_id: req.body.id2,
+                    receiver_id: req.body.id1
                 }
             })
             return res.end()
