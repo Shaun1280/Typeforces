@@ -153,6 +153,16 @@ export default {
     if (this.session) {
       this.hasUnviewed = this.session.hasUnviewed
     }
+    let ele = document.getElementById('scrolling-techniques-7')
+    if (ele) {
+      ele.scrollTop = ele.scrollHeight
+    }
+  },
+  updated () {
+    let ele = document.getElementById('scrolling-techniques-7')
+    if (ele) {
+      ele.scrollTop = ele.scrollHeight
+    }
   },
   watch: {
     session: {
