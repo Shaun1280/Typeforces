@@ -106,9 +106,7 @@
         <v-card-text v-else>
           Your typing data has already been saved.
           <br/>
-          You can refresh and do this contest again.
-          <br/>
-          We will record the highest score you get.
+          Refresh and do this contest again.
         </v-card-text>
 
         <v-card-actions>

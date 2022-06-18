@@ -162,15 +162,18 @@ export default {
       this.record = response.data.record
 
       // 按 score 从大到小排序
-      this.record.sort((a, b) => b.score - a.score)
-
+      this.record.sort((a, b) => {
+        if (a.score === b.score) {
+          return b.type_progress - a.type_progress
+        }
+        return b.score - a.score
+      })
       // 添加排名
       let count = 1
       this.record.forEach((element, index) => {
         // type_progress -> [0, 100] int
         if (Math.abs(element.type_progress - 1) < 1e-6) element.type_progress = 100
         else element.type_progress = Math.floor(element.type_progress * 100)
-
         // score 相同的排名相同
         if (index > 0 && this.record[index].score !== this.record[index - 1].score) {
           count = count + 1
