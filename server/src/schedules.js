@@ -125,6 +125,28 @@ module.exports = {
     this.adjustRating(sumdi)
 
     await this.save()
+
+    // 没有打完字的选手
+    this.data = await CompetitionHistory.findAll({
+      include: {
+        model: User
+      },
+      where: {
+        round_no: roundNo,
+        score: {
+          [Op.is]: null
+        }
+      }
+    })
+    this.delta = new Array(this.data.length)
+
+    for (let i = 0; i < this.data.length; i++) {
+      this.data[i].prev_rating = this.data[i].User.rating
+      const ri = this.data[i].prev_rating === -1 ? 1500 : this.data[i].prev_rating
+      this.delta[i] = -40.0 * (1.0 + ri / 10000)
+    }
+
+    await this.save()
   },
   async updateRating () {
     Round.hasMany(CompetitionHistory, {
