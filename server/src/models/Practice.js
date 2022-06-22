@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true
     },
     practice_name: {
-      type: DataTypes.STRING(40),
+      type: DataTypes.STRING(50),
       allowNull: false
     },
     content_id: {
