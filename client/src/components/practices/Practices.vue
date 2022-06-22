@@ -35,6 +35,8 @@ export default {
       const response = await PracticeServices.index()
 
       this.practices = response.data.practices
+
+      for (let i of this.practices) i.vote_count = i.PracticeVotes.length
     } catch (error) {
       console.log(error)
     }

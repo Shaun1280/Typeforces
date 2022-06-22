@@ -107,6 +107,7 @@ export default {
             return b.rating - a.rating
           })
           this.practices = response.data.practices
+          for (let i of this.practices) i.vote_count = i.PracticeVotes.length
           this.serverTime = response.data.serverTime
         } catch (error) {
           console.log(error)

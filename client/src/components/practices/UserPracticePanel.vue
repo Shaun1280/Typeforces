@@ -149,7 +149,7 @@ export default {
         })
       } else { // need changes
         sorted.sort(function (a, b) {
-          return a.vote_count - b.vote_count
+          return b.vote_count - a.vote_count
         })
       }
 
