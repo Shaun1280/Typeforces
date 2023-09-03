@@ -1,6 +1,4 @@
 # Typeforces
-Database System Principle Curriculum Design
-
 Typeforces is designed to help users practice and compete in typing. You can enhance your typing skills or engage in thrilling typing competitions.
 
 ## About Typeforces
